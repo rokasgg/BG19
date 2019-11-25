@@ -1,6 +1,6 @@
 [
   {
-    "id": 0,
+    "id": 10,
     "stadiumName": "Daugiabuciu kiemo stadionas",
     "rating": "6/10",
     "adress": "Minites gatve 42",
@@ -107,7 +107,7 @@
     "longitudeDelta": 0.0421
   },
   {
-    "id": 8,
+    "id": 9,
     "stadiumName": "Dilgyne",
     "rating": "3/10",
     "adress": "Užusienio g., Užusieniai",

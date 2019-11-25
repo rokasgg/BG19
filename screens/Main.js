@@ -67,7 +67,7 @@ class Main extends React.Component {
     latitude1: 0,
     longitude1: 0,
     location: "Your location is set!",
-
+    clicked:false,
     //Passing data to modal(markers)
     markersData: {
       stadiumName: "",
@@ -80,11 +80,11 @@ class Main extends React.Component {
     //Markers of all stadiums.
     markers: [
       {
-        id: 0,
+        id: 1,
         stadiumName: "Daugiabuciu kiemo stadionas",
         rating: "6/10",
         adress: "Minites gatve 42",
-        paid: true,
+
         latitude: 54.70315661,
         longitude: 25.29878855,
         latitudeDelta: 0.0922,
@@ -187,7 +187,7 @@ class Main extends React.Component {
         longitudeDelta: 0.0421
       },
       {
-        id: 8,
+        id: 9,
         stadiumName: "Dilgyne",
         rating: "3/10",
         adress: "Užusienio g., Užusieniai",
@@ -345,27 +345,150 @@ class Main extends React.Component {
 
   // }
 
-  filterStadiums = async selectedStadiums => {
+  filterStadiums = selectedStadiums => {
     let stadiums = this.state.markers;
-    const data = stadiums.filter(item => item.paid === true);
-    if (selectedStadiums !== undefined && selectedStadiums.length !== 0) {
-      this.setState({
-        modalFilterState: false,
-        markers: data
-      });
-    } else {
-      this.setState(
-        {
-          modalFilterState: false
-        },
-        () =>
-          console.log(
-            this.state.markers,
-            this.state.modalFilterState,
-            selectedStadiums
-          )
-      );
-    }
+    const data = stadiums.filter(item => item.id === 1);
+    console.log(data, stadiums);
+    if(!this.state.clicked)
+    this.setState({markers:data, clicked:!this.state.clicked})
+    else
+    this.setState({markers:[
+      {
+        id: 1,
+        stadiumName: "Daugiabuciu kiemo stadionas",
+        rating: "6/10",
+        adress: "Minites gatve 42",
+
+        latitude: 54.70315661,
+        longitude: 25.29878855,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 1,
+        stadiumName: "Fanu stadionas",
+        rating: "7/10",
+        adress: "Linkmenu g. 8",
+        paid: false,
+
+        latitude: 54.70298303,
+        longitude: 25.26908684,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 2,
+        stadiumName: "Saltoniskiu",
+        rating: "7/10",
+        paid: false,
+
+        adress: "adresas",
+        latitude: 54.7256165,
+        longitude: 25.33971691,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 3,
+        stadiumName: "Vilniaus futbolo mokykla",
+        rating: "6/10",
+        paid: true,
+
+        adress: "P. Žadeikos g. 2",
+        latitude: 54.73247345,
+        longitude: 25.23948812,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 4,
+        stadiumName: "Senvages stadionas",
+        rating: "8/10",
+        paid: true,
+
+        adress: "Širvintų g. 80",
+        latitude: 54.71181975,
+        longitude: 25.28022765,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 5,
+        stadiumName: "LEU stadionas",
+        rating: "6/10",
+        adress: "Vytauto g. 3",
+        paid: true,
+
+        latitude: 54.68641516,
+        longitude: 25.25449562,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 6,
+        stadiumName: "LFF stadium",
+        rating: "10/10",
+        adress: "Stadiono g. 2",
+        paid: false,
+
+        latitude: 54.6685367,
+        longitude: 25.29470536,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 7,
+        stadiumName: "Dilgyne",
+        rating: "3/10",
+        adress: "Užusienio g., Užusieniai",
+        paid: true,
+
+        latitude: 54.6341547,
+        longitude: 25.24488293,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 8,
+        stadiumName: "Dilgyne",
+        rating: "3/10",
+        adress: "Užusienio g., Užusieniai",
+        paid: false,
+
+        latitude: 54.70016598,
+        longitude: 25.28913259,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      {
+        id: 9,
+        stadiumName: "Dilgyne",
+        rating: "3/10",
+        adress: "Užusienio g., Užusieniai",
+        latitude: 55.730496,
+        longitude: 24.369558,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }
+    ],clicked:!this.state.clicked})
+    // if (selectedStadiums !== undefined && selectedStadiums.length !== 0) {
+    //   this.setState({
+    //     modalFilterState: false,
+    //     markers: data
+    //   });
+    // } else {
+    //   this.setState(
+    //     {
+    //       modalFilterState: false
+    //     },
+    //     () =>
+    //       console.log(
+    //         this.state.markers,
+    //         this.state.modalFilterState,
+    //         selectedStadiums
+    //       )
+    //   );
+    // }
   };
 
   reservationModalClose = () => {
@@ -377,28 +500,6 @@ class Main extends React.Component {
   };
 
   //CONFIRMING RESERVATION--------------------------
-  confirmData = () => {
-    let resData = {
-      resDate: this.state.dateTime,
-      resPayment: this.state.paymentMethod,
-      resFieldSpace: this.state.stadiumSpaceValue
-    };
-    this.props.dispatch(dummyAction("John Doe"));
-    this.props.navigation.push("Reservation", {
-      resValues1: "2015",
-      resValues2: this.state.paymentMethod,
-      resValues3: this.state.stadiumSpaceValue,
-
-      resValues4: this.state.markersData.adress,
-      resValues5: this.state.markersData.stadiumName,
-
-      resValueLongi: this.state.markersData.longitude,
-      resValueLati: this.state.markersData.latitude
-    });
-    this.setState({
-      isOpenEvent: false
-    });
-  };
 
   openFilter = () => {
     this.setState({ modalFilterState: true });
