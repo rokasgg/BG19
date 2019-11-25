@@ -1,0 +1,119 @@
+[
+  {
+    "id": 0,
+    "stadiumName": "Daugiabuciu kiemo stadionas",
+    "rating": "6/10",
+    "adress": "Minites gatve 42",
+    "paid": true,
+    "latitude": 54.70315661,
+    "longitude": 25.29878855,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 1,
+    "stadiumName": "Fanu stadionas",
+    "rating": "7/10",
+    "adress": "Linkmenu g. 8",
+    "paid": false,
+
+    "latitude": 54.70298303,
+    "longitude": 25.26908684,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 2,
+    "stadiumName": "Saltoniskiu",
+    "rating": "7/10",
+    "paid": false,
+
+    "adress": "adresas",
+    "latitude": 54.7256165,
+    "longitude": 25.33971691,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 3,
+    "stadiumName": "Vilniaus futbolo mokykla",
+    "rating": "6/10",
+    "paid": true,
+
+    "adress": "P. Žadeikos g. 2",
+    "latitude": 54.73247345,
+    "longitude": 25.23948812,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 4,
+    "stadiumName": "Senvages stadionas",
+    "rating": "8/10",
+    "paid": true,
+
+    "adress": "Širvintų g. 80",
+    "latitude": 54.71181975,
+    "longitude": 25.28022765,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 5,
+    "stadiumName": "LEU stadionas",
+    "rating": "6/10",
+    "adress": "Vytauto g. 3",
+    "paid": true,
+
+    "latitude": 54.68641516,
+    "longitude": 25.25449562,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 6,
+    "stadiumName": "LFF stadium",
+    "rating": "10/10",
+    "adress": "Stadiono g. 2",
+    "paid": false,
+
+    "latitude": 54.6685367,
+    "longitude": 25.29470536,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 7,
+    "stadiumName": "Dilgyne",
+    "rating": "3/10",
+    "adress": "Užusienio g., Užusieniai",
+    "paid": true,
+
+    "latitude": 54.6341547,
+    "longitude": 25.24488293,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 8,
+    "stadiumName": "Dilgyne",
+    "rating": "3/10",
+    "adress": "Užusienio g., Užusieniai",
+    "paid": false,
+
+    "latitude": 54.70016598,
+    "longitude": 25.28913259,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  },
+  {
+    "id": 8,
+    "stadiumName": "Dilgyne",
+    "rating": "3/10",
+    "adress": "Užusienio g., Užusieniai",
+    "latitude": 55.730496,
+    "longitude": 24.369558,
+    "latitudeDelta": 0.0922,
+    "longitudeDelta": 0.0421
+  }
+]

@@ -1,0 +1,15 @@
+<View style={{ flex: 1, flexDirection: "row",
+        justifyContent:'center', alignContent:'center' }}>
+            <View style={styles.modalView1}>
+              <Text style={styles.text}>Adress:</Text>
+              <Text style={styles.text}>Stadium:</Text>
+              <Text style={styles.text}>Quality:</Text>
+            </View>
+            <View style={styles.modalView2}>
+              <Text style={styles.text}>"l;k;h"</Text>
+              <Text style={styles.text}>
+                hk;lk
+              </Text>
+              <Text style={styles.text}>kjhl</Text>
+            </View>
+          </View>
