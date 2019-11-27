@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { moderateScale } from "./ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import IconFeather from 'react-native-vector-icons/Feather'
 
 export default class modalStadiumDetails extends React.Component {
   constructor(props) {
@@ -36,7 +37,7 @@ export default class modalStadiumDetails extends React.Component {
           <Image
             style={{
               width: moderateScale(345),
-              height: moderateScale(100),
+              height: moderateScale(75),
               resizeMode: "center",
               justifyContent: "center",
               alignItems: "center"
@@ -92,8 +93,8 @@ export default class modalStadiumDetails extends React.Component {
               ]}
               onPress={this.props.createEvent}
             >
-              <Icon
-                name="corner-right-up"
+              <IconFeather
+                name="navigation"
                 size={moderateScale(20)}
                 color="hsl(126, 62%, 40%)"
               />

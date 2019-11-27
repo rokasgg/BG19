@@ -72,7 +72,7 @@ export default class modalFilter extends React.Component {
         text: "Teikia kamuolius"
       },
       {
-        id: "byInside",
+        id: "futsal",
         text: "Salės futbolas"
       },
       {

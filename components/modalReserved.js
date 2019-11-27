@@ -12,7 +12,7 @@ import {
 import {moderateScale} from './ScaleElements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MapView, { Marker } from "react-native-maps";
-
+import {Dimensions} from 'react-native';
 export default class modalReserved extends React.Component {
   constructor(props){
     super(props)
@@ -23,29 +23,25 @@ export default class modalReserved extends React.Component {
 
   render() {
     return (
-      <Modal
-      visible={this.props.visible}
-      onSwipeComplete={this.props.closeModal}
-      hasBackdrop={false}
-      backdropColor='black'
-      backdropOpacity={0.8}
-      animationInTiming={10000}
-      animationOutTiming={10000}
-      backdropTransitionInTiming={2000}
-      backdropTransitionOutTiming={2000}
-      style={{justifyContent:'flex-end', margin:0, backgroundColor:'white', alignItems: "center", backgroundColor:'#f2f2f2', height: moderateScale(230)}}
->
+//       <Modal
+//       visible={this.props.visible}
+//       onSwipeComplete={this.props.closeModal}
+
+//       backdropColor='black'
+//       backdropOpacity={0.8}
+//       style={{justifyContent:'center', backgroundColor:'black', alignItems: "center"}}
+// >
+<View style={{justifyContent:'center', backgroundColor:'black', alignItems: "center", flex:1}}>
         <View style={styles.topHalf}>
             <MapView
               style={{
-                height:moderateScale(500),
-                width:moderateScale(500),
-                borderWidth: 1,
-                borderColor: "black"
+                height:moderateScale(375),
+                width:Dimensions.get('window').width,
+
               }}
               region={{
-                latitude: 54.6685367,
-                longitude: 25.29470536,
+                latitude: this.props.data.latitude,
+                longitude: this.props.data.longitude,
                 longitudeDelta: 0.0421,
                 latitudeDelta: 0.0922
               }}
@@ -54,9 +50,9 @@ export default class modalReserved extends React.Component {
               <Marker
                 image={require("../pictures/kamuolys.png")}
                 coordinate={{
-                  latitude: 54.6685367,
-                  longitude: 25.29470536,
-
+                  latitude: this.props.data.latitude,
+                  longitude: this.props.data.longitude,
+  
                   longitudeDelta: 0.0421,
                   latitudeDelta: 0.0922
                 }}
@@ -64,21 +60,21 @@ export default class modalReserved extends React.Component {
             </MapView>
           </View>
           <View style={styles.bottomHalf}>
-          <View style={{ flex: 1, flexDirection: "column",
+            <View style={{ height:moderateScale(150), flexDirection: "column",
         justifyContent:'center', alignItems:'center' }}>
-              <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
-                  <Text style={styles.textLeft}>Stadiono pavadinimas:</Text>
-                  {this.props.data ? <Text style={styles.textRight}>{this.props.data.stadiumName}</Text>:null}
-              </View>
-              <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340),borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
-                  <Text style={styles.textLeft}>Rezervacijos diena:</Text>
-                  {this.props.data ? <Text style={styles.textRight}>{this.props.data.reservationDate}</Text>:null}
-              </View>
-              <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
-                  <Text style={styles.textLeft}>Rezervacijos laikas:</Text>
-                  {this.props.data ? <Text style={styles.textRight}>{this.props.data.reservationTime}</Text>:null}
-              </View>
-          </View>
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
+                    <Text style={styles.textLeft}>Stadiono pavadinimas:</Text>
+                    {this.props.data ? <Text style={styles.textRight}>{this.props.data.stadiumName}</Text>:null}
+                </View>
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340),borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
+                    <Text style={styles.textLeft}>Rezervacijos diena:</Text>
+                    {this.props.data ? <Text style={styles.textRight}>{this.props.data.reservationDate}</Text>:null}
+                </View>
+                <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsl(186, 62%, 40%)', borderBottomWidth:1,}}>
+                    <Text style={styles.textLeft}>Rezervacijos laikas:</Text>
+                    {this.props.data ? <Text style={styles.textRight}>{this.props.data.reservationTime}</Text>:null}
+                </View>
+            </View>
             <View style={{ justifyContent:'center', alignItems:'center', marginBottom:moderateScale(10) }}>
               <TouchableOpacity style={styles.button1} onPress={this.props.closeModal}>
                 <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
@@ -87,7 +83,8 @@ export default class modalReserved extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-      </Modal>
+      {/* //</Modal>  */}
+      </View>
     );
   }
   componentDidMount(){
@@ -101,12 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#f2f2f2',
     height: moderateScale(230)
   },
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
-  },
+  
   topHalf: {
     flex: 2,
     flexDirection: "column",
@@ -115,6 +107,10 @@ const styles = StyleSheet.create({
   bottomHalf: {
     flex: 1,
     flexDirection: "column",
+    backgroundColor:'#f2f2f2',
+    justifyContent:'center',
+    width:Dimensions.get('window').width
+
     
   },
   button1: {

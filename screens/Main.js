@@ -23,10 +23,13 @@ import ModalReservation from "../components/modalReservation";
 import ModalFilter from "../components/modalFilter";
 import { dummyAction } from "../redux/actions/dummyAction";
 import { createBottomTabNavigator } from "react-navigation";
-import * as firebase from "firebase";
+
 import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";
 import Icon from "react-native-vector-icons/AntDesign";
+
+import firebase from 'firebase';
+import 'firebase/firestore';
 
 export async function requestLocationPermission() {
   try {
@@ -78,125 +81,7 @@ class Main extends React.Component {
     },
 
     //Markers of all stadiums.
-    markers: [
-      {
-        id: 1,
-        stadiumName: "Daugiabuciu kiemo stadionas",
-        rating: "6/10",
-        adress: "Minites gatve 42",
-
-        latitude: 54.70315661,
-        longitude: 25.29878855,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 1,
-        stadiumName: "Fanu stadionas",
-        rating: "7/10",
-        adress: "Linkmenu g. 8",
-        paid: false,
-
-        latitude: 54.70298303,
-        longitude: 25.26908684,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 2,
-        stadiumName: "Saltoniskiu",
-        rating: "7/10",
-        paid: false,
-
-        adress: "adresas",
-        latitude: 54.7256165,
-        longitude: 25.33971691,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 3,
-        stadiumName: "Vilniaus futbolo mokykla",
-        rating: "6/10",
-        paid: true,
-
-        adress: "P. Žadeikos g. 2",
-        latitude: 54.73247345,
-        longitude: 25.23948812,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 4,
-        stadiumName: "Senvages stadionas",
-        rating: "8/10",
-        paid: true,
-
-        adress: "Širvintų g. 80",
-        latitude: 54.71181975,
-        longitude: 25.28022765,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 5,
-        stadiumName: "LEU stadionas",
-        rating: "6/10",
-        adress: "Vytauto g. 3",
-        paid: true,
-
-        latitude: 54.68641516,
-        longitude: 25.25449562,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 6,
-        stadiumName: "LFF stadium",
-        rating: "10/10",
-        adress: "Stadiono g. 2",
-        paid: false,
-
-        latitude: 54.6685367,
-        longitude: 25.29470536,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 7,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        paid: true,
-
-        latitude: 54.6341547,
-        longitude: 25.24488293,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 8,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        paid: false,
-
-        latitude: 54.70016598,
-        longitude: 25.28913259,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 9,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        latitude: 55.730496,
-        longitude: 24.369558,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
-    ],
+    markers: require('../database/data.json'),
     selectedStadium: [],
     setModalVisible: false,
     //Reservation modal
@@ -222,17 +107,12 @@ class Main extends React.Component {
     //RESERVATION VALUES
     stadiumSpaceValue: "",
     paymentMethod: "",
-    filterColor: "hsla(120, 85%, 30%, 0.79)"
+    filterColor: "#fff"
   };
   createEvent = () => {
     this.setState({
       modalStadiumDetailVisiable: false
 
-      // isOpenEvent: true,
-
-      // stadiumSpaceValue: "",
-      // paymentMethod: "",
-      // dateTime: ["Set time"]
     });
     this.props.navigation.navigate("StadiumRes", {
       data: this.state.markersData
@@ -254,11 +134,11 @@ class Main extends React.Component {
           }}
           showsUserLocation={true}
         >
-          {this.state.markers.map(marker => {
+          {this.state.markers.map((marker, index) => {
             return (
               <TouchableOpacity>
                 <Marker
-                  key={marker.id}
+                  key={index}
                   image={require("../pictures/kamuolys.png")}
                   coordinate={{
                     latitude: marker.latitude,
@@ -271,9 +151,9 @@ class Main extends React.Component {
                     this.setState({
                       modalStadiumDetailVisiable: true,
                       markersData: {
-                        adress: marker.adress,
+                        adress: marker.address,
                         stadiumName: marker.stadiumName,
-                        rating: marker.rating,
+                        rating: '10',
                         longitude: marker.longitude,
                         latitude: marker.latitude
                       },
@@ -286,14 +166,14 @@ class Main extends React.Component {
             );
           })}
         </MapView>
-        <View style={{ justifyContent: "flex-start", alignItems: "flex-end" }}>
+        <View style={{ justifyContent: "flex-start", alignItems: "flex-end", marginRight:moderateScale(10) }}>
           <TouchableOpacity
             onPress={this.openFilter}
             style={{
               height: moderateScale(45),
               width: moderateScale(45),
               borderRadius: 90,
-              backgroundColor: "#FFF",
+              backgroundColor: "hsla(120, 85%, 30%, 0.79)",
               justifyContent: "center",
               alignItems: "center"
             }}
@@ -346,149 +226,53 @@ class Main extends React.Component {
   // }
 
   filterStadiums = selectedStadiums => {
-    let stadiums = this.state.markers;
-    const data = stadiums.filter(item => item.id === 1);
-    console.log(data, stadiums);
-    if(!this.state.clicked)
-    this.setState({markers:data, clicked:!this.state.clicked})
-    else
-    this.setState({markers:[
-      {
-        id: 1,
-        stadiumName: "Daugiabuciu kiemo stadionas",
-        rating: "6/10",
-        adress: "Minites gatve 42",
+    let stadiums = Array.from(this.state.markersOfficial);
 
-        latitude: 54.70315661,
-        longitude: 25.29878855,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 1,
-        stadiumName: "Fanu stadionas",
-        rating: "7/10",
-        adress: "Linkmenu g. 8",
-        paid: false,
+    const data33 = stadiums.filter(item => item.paid === true);
+    console.log(data33, stadiums, selectedStadiums, 'YO');
+    // if(!this.state.clicked)
+    // this.setState({markers:data, clicked:!this.state.clicked})
+    // else
+    // this.setState({markers:require('../database/data.json'),clicked:!this.state.clicked})
+    let items= Array.from(this.state.markersOfficial);
+    if(selectedStadiums.length > 0)
+      switch(selectedStadiums[0].id)  {
+        case 'byInventor':
+          let data2 = items.filter(item => item.inventor === true);
+          this.setState({markers:data2,modalFilterState :false})
+          console.log('inventor',data2)
+        break;
+        case 'byPaid':
+          let byPaid = items.filter(item => item.isPaid === true);
+          this.setState({markers:byPaid,modalFilterState :false})
+          console.log('paid', byPaid)
+        break;
+        case 'byFree':
+          let byFree = items.filter(item => item.isPaid === false);
+          this.setState({markers:byFree,modalFilterState :false})
+          console.log('byFree', byFree)
+        break;
+        case 'byGrass':
+          let byGrass = items.filter(item => item.floorType === "grass");
+          this.setState({markers:byGrass,modalFilterState :false})
+          console.log('byGrass', byGrass)
+        break;
+        case 'futsal':
+          let futsal = items.filter(item => item.floorType === "futsal");
+          this.setState({markers:futsal,modalFilterState :false})
+          console.log('futsal', futsal)
+        break;
+        case 'byPlasticGrass':
+          let byPlasticGrass = items.filter(item => item.floorType === "synthetic");
+          this.setState({markers:byPlasticGrass,modalFilterState :false})
+          console.log('byPlasticGrass', byPlasticGrass)
+        break;
 
-        latitude: 54.70298303,
-        longitude: 25.26908684,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 2,
-        stadiumName: "Saltoniskiu",
-        rating: "7/10",
-        paid: false,
-
-        adress: "adresas",
-        latitude: 54.7256165,
-        longitude: 25.33971691,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 3,
-        stadiumName: "Vilniaus futbolo mokykla",
-        rating: "6/10",
-        paid: true,
-
-        adress: "P. Žadeikos g. 2",
-        latitude: 54.73247345,
-        longitude: 25.23948812,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 4,
-        stadiumName: "Senvages stadionas",
-        rating: "8/10",
-        paid: true,
-
-        adress: "Širvintų g. 80",
-        latitude: 54.71181975,
-        longitude: 25.28022765,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 5,
-        stadiumName: "LEU stadionas",
-        rating: "6/10",
-        adress: "Vytauto g. 3",
-        paid: true,
-
-        latitude: 54.68641516,
-        longitude: 25.25449562,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 6,
-        stadiumName: "LFF stadium",
-        rating: "10/10",
-        adress: "Stadiono g. 2",
-        paid: false,
-
-        latitude: 54.6685367,
-        longitude: 25.29470536,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 7,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        paid: true,
-
-        latitude: 54.6341547,
-        longitude: 25.24488293,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 8,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        paid: false,
-
-        latitude: 54.70016598,
-        longitude: 25.28913259,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      },
-      {
-        id: 9,
-        stadiumName: "Dilgyne",
-        rating: "3/10",
-        adress: "Užusienio g., Užusieniai",
-        latitude: 55.730496,
-        longitude: 24.369558,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        default :
+          this.setState({markers:this.state.markersOfficial,modalFilterState :false})
       }
-    ],clicked:!this.state.clicked})
-    // if (selectedStadiums !== undefined && selectedStadiums.length !== 0) {
-    //   this.setState({
-    //     modalFilterState: false,
-    //     markers: data
-    //   });
-    // } else {
-    //   this.setState(
-    //     {
-    //       modalFilterState: false
-    //     },
-    //     () =>
-    //       console.log(
-    //         this.state.markers,
-    //         this.state.modalFilterState,
-    //         selectedStadiums
-    //       )
-    //   );
-    // }
+    else
+      this.setState({markers:this.state.markersOfficial,modalFilterState :false}, ()=>console.log('Nieko nepasirinkote'))
   };
 
   reservationModalClose = () => {
@@ -507,51 +291,10 @@ class Main extends React.Component {
   closeFilter = () => {
     this.setState({ modalFilterState: false });
   };
-  //--------------------------CONFIRMING RESERVATION
 
-  triggerModal = () => {
-    this.setState({
-      modalStadiumDetailVisiable: true,
-      markersData: {
-        adress: marker.adress,
-        stadiumName: marker.stadiumName,
-        rating: marker.rating,
-        longitude: marker.longitude,
-        latitude: marker.latitude
-      },
-      longitude1: marker.longitude,
-      latitude1: marker.latitude
-    });
-  };
-  //DATA PICKER-------------------------------------
-  showDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: true });
-  };
 
-  hideDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: false });
-  };
 
-  handleDatePicked = date => {
-    this.setState({ dateTime: moment(date).format("YYYY MM DD, HH:mm") });
-    console.log(this.state.dateTime);
-    this.hideDateTimePicker();
-  };
-  ////-------------------------------------DATA PICKER
 
-  setModalItem = marker => {
-    this.setState(
-      {
-        selectedStadium: marker
-      },
-      () => {
-        this.setModalVisible(true);
-      }
-    );
-  };
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
 
   findCoords = async () => {
     Geolocation.getCurrentPosition(
@@ -567,25 +310,66 @@ class Main extends React.Component {
     );
   };
 
-  getLoc = async () => {
-    return getCurrentLocation().then(position => {
-      if (position) {
-        this.setState({
-          cord: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003
-          }
-        });
+
+  filterStadiumsBy = async (filter)=>{
+    let stadiumArray = []
+    let qe= firebase.firestore().collection("stadiums")
+    
+    await qe.get()
+    .then(res=> res.forEach(data=>{
+      let stadium = {
+        stadiumName:data._document.proto.fields.stadiumName.stringValue,
+        address:data._document.proto.fields.address.stringValue,
+        longitude:data._document.proto.fields.coordinates.geoPointValue.longitude,
+        latitude:data._document.proto.fields.coordinates.geoPointValue.latitude,
+        isPaid:data._document.proto.fields.paid.booleanValue,
+        phone:data._document.proto.fields.phone.integerValue,
+        floorType:data._document.proto.fields.floorType.stringValue,
+        stadiumType:data._document.proto.fields.stadiumType.stringValue,
+        inventor:data._document.proto.fields.providesInventor.booleanValue,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
       }
-    });
-  };
+      stadiumArray.push(stadium)
+      console.log("STADIONAI IS FIREBASE", data, stadium)
+  }))
+  console.log(stadiumArray)
+  this.setState({markers:stadiumArray})
+
+  }
+  getStadiumData = async ()=>{
+    let stadiumArray = []
+    let qe= firebase.firestore().collection("stadiums")
+    
+    await qe.get()
+    .then(res=> res.forEach(data=>{
+      let stadium = {
+        stadiumName:data._document.proto.fields.stadiumName.stringValue,
+        address:data._document.proto.fields.address.stringValue,
+        longitude:data._document.proto.fields.coordinates.geoPointValue.longitude,
+        latitude:data._document.proto.fields.coordinates.geoPointValue.latitude,
+        isPaid:data._document.proto.fields.paid.booleanValue,
+        phone:data._document.proto.fields.phone.integerValue,
+        floorType:data._document.proto.fields.floorType.stringValue,
+        stadiumType:data._document.proto.fields.stadiumType.stringValue,
+        inventor:data._document.proto.fields.providesInventor.booleanValue,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }
+      stadiumArray.push(stadium)
+      console.log("STADIONAI IS FIREBASE", data, stadium)
+  }))
+  console.log(stadiumArray)
+  this.setState({markers:stadiumArray, markersOfficial:stadiumArray})
+
+  }
+
 
   componentDidMount() {
     // const res = db.collection('stadiums')
     // console.log(res)
     this.findCoords();
+    this.getStadiumData()
     LocaleConfig.locales["lt"] = {
       monthNames: [
         "Sausis",

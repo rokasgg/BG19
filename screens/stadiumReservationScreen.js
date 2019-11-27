@@ -55,9 +55,11 @@ export default class stadiumReservationScreen extends React.Component {
     return item1 != item2;
   }
   onCancel =()=>{
-    console.log('NavBack', this.state.selectedTime, this.state.selectedDay,this.props.navigation.state.params.data.stadiumName )
+    console.log('NavBack', this.state.selectedTime, this.state.selectedDay,this.props.navigation.state.params.data )
     let data = {
       stadiumName:this.props.navigation.state.params.data.stadiumName,
+      longitude:this.props.navigation.state.params.data.longitude,
+      latitude:this.props.navigation.state.params.data.latitude,
       reservationTime:this.state.selectedTime,
       reservationDate:this.state.selectedDay
     }

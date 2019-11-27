@@ -52,8 +52,8 @@ class ReservationScreen extends React.Component {
     const { text = "" } = dummyReducer;
     console.log(text);
     return (
-      <View style={styles.container}>
-        <View style={styles.all}>
+      
+        (!this.state.modalReservationVisible ?<View style={styles.container}><View style={styles.all}>
           <Ionicons name="info-with-circle" size={45} color="#555" />
           <Text style={{ fontSize: 25, color: "lightgrey" }}>
             Nėra aktyvios rezervacijos :[
@@ -75,15 +75,18 @@ class ReservationScreen extends React.Component {
               Ieškoti žaidejų
             </Text>
           </TouchableOpacity>
-        </View>
-
+          
+        </View></View>:
         <ModalReserved
           visible={this.state.modalReservationVisible}
           data={this.state.data}
           closeModal={this.reservationModalClose}
           createEvent={this.createEvent}
-        />
-      </View>
+        />)
+        
+        
+        
+      
     );
   }
   componentDidMount(){
@@ -94,20 +97,11 @@ class ReservationScreen extends React.Component {
       
     }
     console.log(ifPropsComing,"whateva ifas" )
-
   }
-
-  
-  
   reservationModalClose = () => {
     this.setState({ modalReservationVisible: false })
   }
 
-  l = () => {
-    this.setState({
-      modalOn: false
-    });
-  };
 }
 
 const styles = StyleSheet.create({
