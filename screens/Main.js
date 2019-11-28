@@ -155,11 +155,12 @@ class Main extends React.Component {
                         stadiumName: marker.stadiumName,
                         rating: '10',
                         longitude: marker.longitude,
-                        latitude: marker.latitude
+                        latitude: marker.latitude,
+                        stadiumId:marker.stadiumId
                       },
                       longitude1: marker.longitude,
                       latitude1: marker.latitude
-                    })
+                    },()=>{console.log(marker)})
                   }
                 />
               </TouchableOpacity>
@@ -353,11 +354,12 @@ class Main extends React.Component {
         floorType:data._document.proto.fields.floorType.stringValue,
         stadiumType:data._document.proto.fields.stadiumType.stringValue,
         inventor:data._document.proto.fields.providesInventor.booleanValue,
+        stadiumId:data.ref.id,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       }
       stadiumArray.push(stadium)
-      console.log("STADIONAI IS FIREBASE", data, stadium)
+      console.log("STADIONAI IS FIREBASE", data.ref.id, stadium)
   }))
   console.log(stadiumArray)
   this.setState({markers:stadiumArray, markersOfficial:stadiumArray})

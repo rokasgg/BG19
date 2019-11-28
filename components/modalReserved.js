@@ -35,7 +35,7 @@ export default class modalReserved extends React.Component {
         <View style={styles.topHalf}>
             <MapView
               style={{
-                height:moderateScale(375),
+                height:moderateScale(500),
                 width:Dimensions.get('window').width,
 
               }}
