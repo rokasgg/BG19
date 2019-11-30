@@ -28,8 +28,8 @@ import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";
 import Icon from "react-native-vector-icons/AntDesign";
 
-import firebase from 'firebase';
-import 'firebase/firestore';
+import firebase from "firebase";
+import "firebase/firestore";
 
 export async function requestLocationPermission() {
   try {
@@ -70,7 +70,7 @@ class Main extends React.Component {
     latitude1: 0,
     longitude1: 0,
     location: "Your location is set!",
-    clicked:false,
+    clicked: false,
     //Passing data to modal(markers)
     markersData: {
       stadiumName: "",
@@ -81,7 +81,7 @@ class Main extends React.Component {
     },
 
     //Markers of all stadiums.
-    markers: require('../database/data.json'),
+    markers: require("../database/data.json"),
     selectedStadium: [],
     setModalVisible: false,
     //Reservation modal
@@ -112,7 +112,6 @@ class Main extends React.Component {
   createEvent = () => {
     this.setState({
       modalStadiumDetailVisiable: false
-
     });
     this.props.navigation.navigate("StadiumRes", {
       data: this.state.markersData
@@ -148,26 +147,40 @@ class Main extends React.Component {
                     latitudeDelta: 0.0922
                   }}
                   onPress={() =>
-                    this.setState({
-                      modalStadiumDetailVisiable: true,
-                      markersData: {
-                        adress: marker.address,
-                        stadiumName: marker.stadiumName,
-                        rating: '10',
-                        longitude: marker.longitude,
-                        latitude: marker.latitude,
-                        stadiumId:marker.stadiumId
+                    this.setState(
+                      {
+                        modalStadiumDetailVisiable: true,
+                        markersData: {
+                          adress: marker.address,
+                          stadiumName: marker.stadiumName,
+                          rating: "10",
+                          longitude: marker.longitude,
+                          latitude: marker.latitude,
+                          stadiumId: marker.stadiumId,
+                          floorType: marker.floorType,
+                          stadiumType: marker.stadiumType,
+                          phone: marker.phone
+                        },
+                        longitude1: marker.longitude,
+                        latitude1: marker.latitude
                       },
-                      longitude1: marker.longitude,
-                      latitude1: marker.latitude
-                    },()=>{console.log(marker)})
+                      () => {
+                        console.log(marker);
+                      }
+                    )
                   }
                 />
               </TouchableOpacity>
             );
           })}
         </MapView>
-        <View style={{ justifyContent: "flex-start", alignItems: "flex-end", marginRight:moderateScale(10) }}>
+        <View
+          style={{
+            justifyContent: "flex-start",
+            alignItems: "flex-end",
+            marginRight: moderateScale(10)
+          }}
+        >
           <TouchableOpacity
             onPress={this.openFilter}
             style={{
@@ -203,7 +216,7 @@ class Main extends React.Component {
           closeModal={this.reservationModalClose}
           createEvent={this.createEvent}
         />
-        {/* ________________________________________---MAKING RESERVATION MODAL---________________________________________ */}
+        {/* ________________________________________---FILTRAS---________________________________________ */}
 
         <ModalFilter
           visible={this.state.modalFilterState}
@@ -215,65 +228,62 @@ class Main extends React.Component {
     );
   }
 
-  // passData() {
-  //   this.setState({selectedStadium:
-  //     {
-  //       stadiumName:props.stadiumName,
-  //       adress:props.adress,
-  //       rating:props.rating
-  //     }});
-  //   () => this.refs.modal4.open();
-
-  // }
-
   filterStadiums = selectedStadiums => {
     let stadiums = Array.from(this.state.markersOfficial);
 
     const data33 = stadiums.filter(item => item.paid === true);
-    console.log(data33, stadiums, selectedStadiums, 'YO');
+    console.log(data33, stadiums, selectedStadiums, "YO");
     // if(!this.state.clicked)
     // this.setState({markers:data, clicked:!this.state.clicked})
     // else
     // this.setState({markers:require('../database/data.json'),clicked:!this.state.clicked})
-    let items= Array.from(this.state.markersOfficial);
-    if(selectedStadiums.length > 0)
-      switch(selectedStadiums[0].id)  {
-        case 'byInventor':
+    let items = Array.from(this.state.markersOfficial);
+    if (selectedStadiums.length > 0)
+      switch (selectedStadiums[0].id) {
+        case "byInventor":
           let data2 = items.filter(item => item.inventor === true);
-          this.setState({markers:data2,modalFilterState :false})
-          console.log('inventor',data2)
-        break;
-        case 'byPaid':
+          this.setState({ markers: data2, modalFilterState: false });
+          console.log("inventor", data2);
+          break;
+        case "byPaid":
           let byPaid = items.filter(item => item.isPaid === true);
-          this.setState({markers:byPaid,modalFilterState :false})
-          console.log('paid', byPaid)
-        break;
-        case 'byFree':
+          this.setState({ markers: byPaid, modalFilterState: false });
+          console.log("paid", byPaid);
+          break;
+        case "byFree":
           let byFree = items.filter(item => item.isPaid === false);
-          this.setState({markers:byFree,modalFilterState :false})
-          console.log('byFree', byFree)
-        break;
-        case 'byGrass':
+          this.setState({ markers: byFree, modalFilterState: false });
+          console.log("byFree", byFree);
+          break;
+        case "byGrass":
           let byGrass = items.filter(item => item.floorType === "grass");
-          this.setState({markers:byGrass,modalFilterState :false})
-          console.log('byGrass', byGrass)
-        break;
-        case 'futsal':
+          this.setState({ markers: byGrass, modalFilterState: false });
+          console.log("byGrass", byGrass);
+          break;
+        case "futsal":
           let futsal = items.filter(item => item.floorType === "futsal");
-          this.setState({markers:futsal,modalFilterState :false})
-          console.log('futsal', futsal)
-        break;
-        case 'byPlasticGrass':
-          let byPlasticGrass = items.filter(item => item.floorType === "synthetic");
-          this.setState({markers:byPlasticGrass,modalFilterState :false})
-          console.log('byPlasticGrass', byPlasticGrass)
-        break;
+          this.setState({ markers: futsal, modalFilterState: false });
+          console.log("futsal", futsal);
+          break;
+        case "byPlasticGrass":
+          let byPlasticGrass = items.filter(
+            item => item.floorType === "synthetic"
+          );
+          this.setState({ markers: byPlasticGrass, modalFilterState: false });
+          console.log("byPlasticGrass", byPlasticGrass);
+          break;
 
-        default :
-          this.setState({markers:this.state.markersOfficial,modalFilterState :false})
+        default:
+          this.setState({
+            markers: this.state.markersOfficial,
+            modalFilterState: false
+          });
       }
     else
-      this.setState({markers:this.state.markersOfficial,modalFilterState :false}, ()=>console.log('Nieko nepasirinkote'))
+      this.setState(
+        { markers: this.state.markersOfficial, modalFilterState: false },
+        () => console.log("Nieko nepasirinkote")
+      );
   };
 
   reservationModalClose = () => {
@@ -293,10 +303,6 @@ class Main extends React.Component {
     this.setState({ modalFilterState: false });
   };
 
-
-
-
-
   findCoords = async () => {
     Geolocation.getCurrentPosition(
       pos => {
@@ -311,67 +317,70 @@ class Main extends React.Component {
     );
   };
 
+  filterStadiumsBy = async filter => {
+    let stadiumArray = [];
+    let qe = firebase.firestore().collection("stadiums");
 
-  filterStadiumsBy = async (filter)=>{
-    let stadiumArray = []
-    let qe= firebase.firestore().collection("stadiums")
-    
-    await qe.get()
-    .then(res=> res.forEach(data=>{
-      let stadium = {
-        stadiumName:data._document.proto.fields.stadiumName.stringValue,
-        address:data._document.proto.fields.address.stringValue,
-        longitude:data._document.proto.fields.coordinates.geoPointValue.longitude,
-        latitude:data._document.proto.fields.coordinates.geoPointValue.latitude,
-        isPaid:data._document.proto.fields.paid.booleanValue,
-        phone:data._document.proto.fields.phone.integerValue,
-        floorType:data._document.proto.fields.floorType.stringValue,
-        stadiumType:data._document.proto.fields.stadiumType.stringValue,
-        inventor:data._document.proto.fields.providesInventor.booleanValue,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
-      stadiumArray.push(stadium)
-      console.log("STADIONAI IS FIREBASE", data, stadium)
-  }))
-  console.log(stadiumArray)
-  this.setState({markers:stadiumArray})
+    await qe.get().then(res =>
+      res.forEach(data => {
+        let stadium = {
+          stadiumName: data._document.proto.fields.stadiumName.stringValue,
+          address: data._document.proto.fields.address.stringValue,
+          longitude:
+            data._document.proto.fields.coordinates.geoPointValue.longitude,
+          latitude:
+            data._document.proto.fields.coordinates.geoPointValue.latitude,
+          isPaid: data._document.proto.fields.paid.booleanValue,
+          phone: data._document.proto.fields.phone.integerValue,
+          floorType: data._document.proto.fields.floorType.stringValue,
+          stadiumType: data._document.proto.fields.stadiumType.stringValue,
+          inventor: data._document.proto.fields.providesInventor.booleanValue,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421
+        };
+        stadiumArray.push(stadium);
+        console.log("STADIONAI IS FIREBASE", data, stadium);
+      })
+    );
+    console.log(stadiumArray);
+    this.setState({ markers: stadiumArray });
+  };
+  getStadiumsData = async () => {
+    let stadiumArray = [];
+    let qe = firebase.firestore().collection("stadiums");
 
-  }
-  getStadiumData = async ()=>{
-    let stadiumArray = []
-    let qe= firebase.firestore().collection("stadiums")
-    
-    await qe.get()
-    .then(res=> res.forEach(data=>{
-      let stadium = {
-        stadiumName:data._document.proto.fields.stadiumName.stringValue,
-        address:data._document.proto.fields.address.stringValue,
-        longitude:data._document.proto.fields.coordinates.geoPointValue.longitude,
-        latitude:data._document.proto.fields.coordinates.geoPointValue.latitude,
-        isPaid:data._document.proto.fields.paid.booleanValue,
-        phone:data._document.proto.fields.phone.integerValue,
-        floorType:data._document.proto.fields.floorType.stringValue,
-        stadiumType:data._document.proto.fields.stadiumType.stringValue,
-        inventor:data._document.proto.fields.providesInventor.booleanValue,
-        stadiumId:data.ref.id,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
-      stadiumArray.push(stadium)
-      console.log("STADIONAI IS FIREBASE", data.ref.id, stadium)
-  }))
-  console.log(stadiumArray)
-  this.setState({markers:stadiumArray, markersOfficial:stadiumArray})
-
-  }
-
+    await qe.get().then(res =>
+      res.forEach(data => {
+        let stadium = {
+          stadiumName: data._document.proto.fields.stadiumName.stringValue,
+          address: data._document.proto.fields.address.stringValue,
+          longitude:
+            data._document.proto.fields.coordinates.geoPointValue.longitude,
+          latitude:
+            data._document.proto.fields.coordinates.geoPointValue.latitude,
+          isPaid: data._document.proto.fields.paid.booleanValue,
+          phone: data._document.proto.fields.phone.integerValue,
+          floorType: data._document.proto.fields.floorType.stringValue,
+          stadiumType: data._document.proto.fields.stadiumType.stringValue,
+          inventor: data._document.proto.fields.providesInventor.booleanValue,
+          stadiumId: data.ref.id,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421
+        };
+        stadiumArray.push(stadium);
+        console.log("STADIONAI IS FIREBASE", data.ref.id, stadium);
+      })
+    );
+    console.log(stadiumArray);
+    this.setState({ markers: stadiumArray, markersOfficial: stadiumArray });
+  };
 
   componentDidMount() {
     // const res = db.collection('stadiums')
     // console.log(res)
+
     this.findCoords();
-    this.getStadiumData()
+    this.getStadiumsData();
     LocaleConfig.locales["lt"] = {
       monthNames: [
         "Sausis",

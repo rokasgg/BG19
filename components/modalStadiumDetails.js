@@ -14,13 +14,21 @@ import {
 } from "react-native";
 import { moderateScale } from "./ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import IconFeather from 'react-native-vector-icons/Feather'
+import IconFeather from "react-native-vector-icons/Feather";
+import IconMaterial from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default class modalStadiumDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  // icons for details:
+  // location-pin
+  // phone
+  // floor-plan  MaterialCommunityIcons
+  // soccer-field
+  //phone
 
   render() {
     return (
@@ -62,9 +70,46 @@ export default class modalStadiumDetails extends React.Component {
                 alignItems: "flex-start"
               }}
             >
-              <Text style={styles.text}>Adresas:</Text>
-              <Text style={styles.text}>Stadiono pavadinimas:</Text>
-              <Text style={styles.text}>Kokybė:</Text>
+              <View style={{ flexDirection: "row" }}>
+                <IconMaterial
+                  name="stadium"
+                  size={moderateScale(19)}
+                  color="hsl(186, 62%, 40%)"
+                />
+                <Text style={styles.text}>Pavadinimas:</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <IconMaterial
+                  name="map-marker"
+                  size={moderateScale(19)}
+                  color="hsl(186, 62%, 40%)"
+                />
+                <Text style={styles.text}>Adresas:</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <IconMaterial
+                  name="phone"
+                  size={moderateScale(19)}
+                  color="hsl(186, 62%, 40%)"
+                />
+                <Text style={styles.text}>Telefono numeris:</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <IconMaterial
+                  name="soccer-field"
+                  size={moderateScale(19)}
+                  color="hsl(186, 62%, 40%)"
+                />
+                <Text style={styles.text}>Aikštelės tipas:</Text>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <IconMaterial
+                  name="floor-plan"
+                  size={moderateScale(19)}
+                  color="hsl(186, 62%, 40%)"
+                />
+                <Text style={styles.text}>Grindinis:</Text>
+              </View>
             </View>
             <View
               style={{
@@ -73,17 +118,20 @@ export default class modalStadiumDetails extends React.Component {
                 alignItems: "flex-end"
               }}
             >
-              <Text style={styles.text}>{this.props.data.adress}</Text>
               <Text style={styles.text}>{this.props.data.stadiumName}</Text>
-              <Text style={styles.text}>{this.props.data.rating}</Text>
+              <Text style={styles.text}>{this.props.data.adress}</Text>
+              <Text style={styles.text}>{this.props.data.phone}</Text>
+              <Text style={styles.text}>{this.props.data.stadiumType}</Text>
+              <Text style={styles.text}>{this.props.data.floorType}</Text>
             </View>
           </View>
           <View
             style={{
               flex: 1,
               flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center"
+              justifyContent: "space-around",
+              alignItems: "center",
+              width: moderateScale(350)
             }}
           >
             <TouchableOpacity
@@ -141,13 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#f2f2f2",
-    height: moderateScale(230)
-  },
-  modalReserve: {
-    height: 650
-  },
-  modalEvent: {
-    height: 600
+    height: moderateScale(275)
   },
 
   modalView1: {
@@ -167,7 +209,7 @@ const styles = StyleSheet.create({
 
   text: {
     color: "black",
-    fontSize: moderateScale(15),
+    fontSize: moderateScale(14),
     marginBottom: 10
   },
   button: {
