@@ -122,7 +122,170 @@ export default class modalFilter extends React.Component {
         onBackdropPress={this.props.closeModal}
       >
         <View style={styles.modal}>
+          <Text style={{ color: "black", fontSize: moderateScale(15) }}>
+            Filtracija
+          </Text>
           <View
+            style={{
+              flex: 2,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: moderateScale(250),
+              flexDirection: "column",
+              backgroundColor: "red"
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(11),
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)",
+                marginLeft: moderateScale(15),
+                backgroundColor: "green",
+                flex: 1
+              }}
+            >
+              Stadiono tipas
+            </Text>
+            <View
+              style={{
+                backgroundColor: "yellow",
+                flex: 2,
+                justifyContent: "center",
+                flexDirection: "column",
+                width: moderateScale(250)
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  justifyContent: "center"
+                }}
+              >
+                <View style={{ flex: 1, backgroundColor: "blue" }}>
+                  <Text>Item1</Text>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: "lightblue",
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <Text>Item2</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  backgroundColor: "lightpink"
+                }}
+              >
+                <Text>Item3</Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 2,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: moderateScale(250),
+              flexDirection: "column",
+              backgroundColor: "red"
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(11),
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)",
+                marginLeft: moderateScale(15),
+                backgroundColor: "green",
+                flex: 1
+              }}
+            >
+              Dangos tipas
+            </Text>
+            <View
+              style={{
+                backgroundColor: "yellow",
+                flex: 2,
+                justifyContent: "center",
+                flexDirection: "row",
+                width: moderateScale(250)
+              }}
+            >
+              <View style={{ flex: 1, backgroundColor: "blue" }}>
+                <Text>Item</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "lightblue",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Text>Item</Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: moderateScale(250),
+              flexDirection: "column",
+              backgroundColor: "red"
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(11),
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)",
+                marginLeft: moderateScale(15),
+                backgroundColor: "green",
+                flex: 1
+              }}
+            >
+              Kaina
+            </Text>
+            <View
+              style={{
+                backgroundColor: "yellow",
+                flex: 2,
+                justifyContent: "center",
+                flexDirection: "row",
+                width: moderateScale(250)
+              }}
+            >
+              <View style={{ flex: 1, backgroundColor: "blue" }}>
+                <Text>Item</Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "lightblue",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Text>Item</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* <View
             style={{
               flex: 3,
               justifyContent: "space-evenly",
@@ -130,12 +293,14 @@ export default class modalFilter extends React.Component {
               paddingTop: moderateScale(5),
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
+              backgroundColor: "yellow"
             }}
           >
             <FlatList
               contentContainerStyle={{
-                justifyContent: "flex-start"
+                justifyContent: "flex-start",
+                backgroundColor: "green"
               }}
               numColumns={1}
               horizontal={false}
@@ -205,14 +370,15 @@ export default class modalFilter extends React.Component {
                 );
               }}
             />
-          </View>
+          </View> */}
 
           <View
             style={{
               flex: 1,
               flexDirection: "row",
               justifyContent: "flex-end",
-              alignItems: "center"
+              alignItems: "center",
+              backgroundColor: "red"
             }}
           >
             <TouchableOpacity
@@ -249,6 +415,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f2f2f2",
     height: moderateScale(300),
+    width: moderateScale(250),
     flexDirection: "column",
     borderRadius: 15
   },

@@ -67,8 +67,8 @@ class Main extends React.Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421
     },
-    latitude1: 0,
-    longitude1: 0,
+    mapLatitude: 0,
+    mapLongitude: 0,
     location: "Your location is set!",
     clicked: false,
     //Passing data to modal(markers)
@@ -120,14 +120,11 @@ class Main extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={this.findCoords}>
-          <Text>CLICKHERE</Text>
-        </TouchableOpacity>
         <MapView
           style={styles.map}
           region={{
-            longitude: this.state.longitude1,
-            latitude: this.state.latitude1,
+            longitude: this.state.mapLongitude,
+            latitude: this.state.mapLatitude,
             longitudeDelta: 0.0421,
             latitudeDelta: 0.0922
           }}
@@ -142,7 +139,6 @@ class Main extends React.Component {
                   coordinate={{
                     latitude: marker.latitude,
                     longitude: marker.longitude,
-
                     longitudeDelta: 0.0421,
                     latitudeDelta: 0.0922
                   }}
@@ -161,8 +157,8 @@ class Main extends React.Component {
                           stadiumType: marker.stadiumType,
                           phone: marker.phone
                         },
-                        longitude1: marker.longitude,
-                        latitude1: marker.latitude
+                        mapLongitude: marker.longitude,
+                        mapLatitude: marker.latitude
                       },
                       () => {
                         console.log(marker);
@@ -233,10 +229,7 @@ class Main extends React.Component {
 
     const data33 = stadiums.filter(item => item.paid === true);
     console.log(data33, stadiums, selectedStadiums, "YO");
-    // if(!this.state.clicked)
-    // this.setState({markers:data, clicked:!this.state.clicked})
-    // else
-    // this.setState({markers:require('../database/data.json'),clicked:!this.state.clicked})
+
     let items = Array.from(this.state.markersOfficial);
     if (selectedStadiums.length > 0)
       switch (selectedStadiums[0].id) {
@@ -307,8 +300,8 @@ class Main extends React.Component {
     Geolocation.getCurrentPosition(
       pos => {
         this.setState({
-          longitude1: pos.coords.longitude,
-          latitude1: pos.coords.latitude,
+          mapLongitude: pos.coords.longitude,
+          mapLatitude: pos.coords.latitude,
           error: null
         });
       },

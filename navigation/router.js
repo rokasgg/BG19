@@ -13,15 +13,15 @@ import Main from "../screens/Main";
 import Events from "../screens/Events";
 import EventsDetails from "../screens/EventDetails";
 import Reservation from "../screens/ReservationScreen";
-import Reg from '../screens/RegistrationScreen';
-import ReservationScreen from '../screens/stadiumReservationScreen';
+import Reg from "../screens/RegistrationScreen";
+import ReservationScreen from "../screens/stadiumReservationScreen";
 
 import Ionicons from "react-native-vector-icons/Entypo";
 
 const MainTab = createStackNavigator(
   {
     Main: Main,
-    StadiumRes : ReservationScreen
+    StadiumRes: ReservationScreen
   },
   {
     defaultNavigationOptions: {
@@ -82,11 +82,11 @@ const ReservationTab = createStackNavigator(
 
 const Nav = createBottomTabNavigator(
   {
-    Search: { screen: MainTab },
-    Events: { screen: EventsTab },
-    Reservation: { screen: ReservationTab },
-    Profile: { screen: LoginTab },
-    
+    Paieška: { screen: MainTab },
+    Įvykiai: { screen: EventsTab },
+    Rezervacija: { screen: ReservationTab },
+    Profilis: { screen: LoginTab }
+
     // EventDet:{screen:EventDe}
   },
   {
@@ -96,13 +96,13 @@ const Nav = createBottomTabNavigator(
         let IconComponent = Ionicons;
         let iconName;
 
-        if (routeName === "Search") {
+        if (routeName === "Paieška") {
           iconName = "map";
-        } else if (routeName === "Profile") {
+        } else if (routeName === "Profilis") {
           iconName = "man";
-        } else if (routeName === "Events") {
+        } else if (routeName === "Įvykiai") {
           iconName = "archive";
-        } else if (routeName === "Reservation") {
+        } else if (routeName === "Rezervacija") {
           iconName = "back-in-time";
         }
 
@@ -121,7 +121,7 @@ const Nav = createBottomTabNavigator(
 
 const AuthStack = createStackNavigator({
   Loginn: LoginScreen,
-  Registration: Reg 
+  Registration: Reg
 });
 
 const App = createAppContainer(
@@ -137,4 +137,3 @@ const App = createAppContainer(
   )
 );
 export default App;
-

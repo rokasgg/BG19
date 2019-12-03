@@ -199,15 +199,12 @@ export default class stadiumReservationScreen extends React.Component {
   };
 
   getStadiumInfo = async date => {
+    const data = this.props.navigation.state.params.data;
     let qwery = firebase
       .firestore()
       .collection("reservations")
       .where("date", "==", date)
-      .where(
-        "stadiumId",
-        "==",
-        this.props.navigation.state.params.data.stadiumId
-      );
+      .where("stadiumId", "==", data.stadiumId);
     let availableTimeItems = Array.from(this.state.form);
     await qwery.get().then(res => {
       console.log("ISSAUNA BENT?", res);
@@ -288,6 +285,21 @@ export default class stadiumReservationScreen extends React.Component {
               <Text style={styles.textLeft}>Pavadinimas:</Text>
               <Text style={styles.textRight}>{data.stadiumName}</Text>
             </View>
+            {data.phone !== "0" ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: moderateScale(340),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={styles.textLeft}>Telefono numeris:</Text>
+                <Text style={styles.textRight}>{data.phone}</Text>
+              </View>
+            ) : null}
             <View
               style={{
                 flexDirection: "row",
@@ -298,8 +310,10 @@ export default class stadiumReservationScreen extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Telefono numberi:</Text>
-              <Text style={styles.textRight}>{data.phone}</Text>
+              <Text style={styles.textLeft}>Dangos tipas:</Text>
+              <Text style={styles.textRight}>
+                {data.floorType === "synthetic" ? "Dirbtinė danga" : null}
+              </Text>
             </View>
             <View
               style={{
@@ -311,21 +325,10 @@ export default class stadiumReservationScreen extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Telefono numberi:</Text>
-              <Text style={styles.textRight}>{data.stadiumType}</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: moderateScale(340),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={styles.textLeft}>Telefono numberi:</Text>
-              <Text style={styles.textRight}>{data.floorType}</Text>
+              <Text style={styles.textLeft}>Stadiono tipas:</Text>
+              <Text style={styles.textRight}>
+                {data.stadiumType === "outdoor" ? "Lauko" : null}
+              </Text>
             </View>
           </View>
 

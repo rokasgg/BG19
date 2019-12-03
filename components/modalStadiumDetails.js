@@ -100,7 +100,7 @@ export default class modalStadiumDetails extends React.Component {
                   size={moderateScale(19)}
                   color="hsl(186, 62%, 40%)"
                 />
-                <Text style={styles.text}>Aikštelės tipas:</Text>
+                <Text style={styles.text}>Stadiono tipas:</Text>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <IconMaterial
@@ -108,7 +108,7 @@ export default class modalStadiumDetails extends React.Component {
                   size={moderateScale(19)}
                   color="hsl(186, 62%, 40%)"
                 />
-                <Text style={styles.text}>Grindinis:</Text>
+                <Text style={styles.text}>Dangos tipas:</Text>
               </View>
             </View>
             <View
