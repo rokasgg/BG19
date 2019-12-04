@@ -245,7 +245,7 @@ export default class modalFilter extends React.Component {
         onBackdropPress={this.props.closeModal}
       >
         <View style={styles.modal}>
-          <Text style={{ color: "black", fontSize: moderateScale(15) }}>
+          <Text style={{ color: "black", fontSize: moderateScale(16) }}>
             Filtracija
           </Text>
           <View
@@ -253,9 +253,10 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(250),
+              width: moderateScale(240),
               flexDirection: "column",
-              backgroundColor: "red"
+              borderTopWidth: 1,
+              borderColor: "grey"
             }}
           >
             <Text
@@ -265,7 +266,6 @@ export default class modalFilter extends React.Component {
                 borderBottomWidth: 1,
                 borderColor: "hsl(126, 62%, 40%)",
                 marginLeft: moderateScale(15),
-                backgroundColor: "green",
                 flex: 1
               }}
             >
@@ -273,11 +273,10 @@ export default class modalFilter extends React.Component {
             </Text>
             <View
               style={{
-                backgroundColor: "yellow",
                 flex: 2,
                 justifyContent: "center",
                 flexDirection: "column",
-                width: moderateScale(250)
+                width: moderateScale(240)
               }}
             >
               <View
@@ -290,7 +289,6 @@ export default class modalFilter extends React.Component {
                 <View
                   style={{
                     flex: 1,
-                    backgroundColor: "blue",
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center"
@@ -325,7 +323,6 @@ export default class modalFilter extends React.Component {
                 <View
                   style={{
                     flex: 1,
-                    backgroundColor: "lightblue",
                     justifyContent: "center",
                     alignItems: "center"
                   }}
@@ -362,8 +359,7 @@ export default class modalFilter extends React.Component {
                   flex: 1,
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "lightpink"
+                  justifyContent: "center"
                 }}
               >
                 <TouchableOpacity
@@ -400,9 +396,10 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(250),
+              width: moderateScale(240),
               flexDirection: "column",
-              backgroundColor: "red"
+              borderTopWidth: 1,
+              borderColor: "grey"
             }}
           >
             <Text
@@ -412,7 +409,6 @@ export default class modalFilter extends React.Component {
                 borderBottomWidth: 1,
                 borderColor: "hsl(126, 62%, 40%)",
                 marginLeft: moderateScale(15),
-                backgroundColor: "green",
                 flex: 1
               }}
             >
@@ -420,17 +416,15 @@ export default class modalFilter extends React.Component {
             </Text>
             <View
               style={{
-                backgroundColor: "yellow",
                 flex: 2,
                 justifyContent: "center",
                 flexDirection: "row",
-                width: moderateScale(250)
+                width: moderateScale(240)
               }}
             >
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "blue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -464,7 +458,6 @@ export default class modalFilter extends React.Component {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "lightblue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -502,9 +495,10 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(250),
+              width: moderateScale(240),
               flexDirection: "column",
-              backgroundColor: "red"
+              borderTopWidth: 1,
+              borderColor: "grey"
             }}
           >
             <Text
@@ -514,7 +508,6 @@ export default class modalFilter extends React.Component {
                 borderBottomWidth: 1,
                 borderColor: "hsl(126, 62%, 40%)",
                 marginLeft: moderateScale(15),
-                backgroundColor: "green",
                 flex: 1
               }}
             >
@@ -522,17 +515,15 @@ export default class modalFilter extends React.Component {
             </Text>
             <View
               style={{
-                backgroundColor: "yellow",
                 flex: 2,
                 justifyContent: "center",
                 flexDirection: "row",
-                width: moderateScale(250)
+                width: moderateScale(240)
               }}
             >
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "blue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -566,7 +557,6 @@ export default class modalFilter extends React.Component {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "lightblue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -605,25 +595,25 @@ export default class modalFilter extends React.Component {
               flex: 1,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(250),
+              width: moderateScale(240),
               flexDirection: "column",
-              backgroundColor: "red"
+              borderTopWidth: 1,
+              borderColor: "grey"
             }}
           >
             <View
               style={{
-                backgroundColor: "yellow",
                 flex: 1,
                 justifyContent: "center",
                 flexDirection: "row",
-                width: moderateScale(250)
+                width: moderateScale(240)
               }}
             >
               <View
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "flex-start"
                 }}
               >
                 <Text
@@ -632,8 +622,7 @@ export default class modalFilter extends React.Component {
                     fontSize: moderateScale(11),
                     borderBottomWidth: 1,
                     borderColor: "hsl(126, 62%, 40%)",
-                    marginLeft: moderateScale(15),
-                    backgroundColor: "green"
+                    marginLeft: moderateScale(15)
                   }}
                 >
                   Suteikia invenorių
@@ -642,7 +631,6 @@ export default class modalFilter extends React.Component {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "lightblue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -667,9 +655,10 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(250),
+              width: moderateScale(240),
               flexDirection: "column",
-              backgroundColor: "red"
+              borderTopWidth: 1,
+              borderColor: "grey"
             }}
           >
             <Text
@@ -679,7 +668,6 @@ export default class modalFilter extends React.Component {
                 borderBottomWidth: 1,
                 borderColor: "hsl(126, 62%, 40%)",
                 marginLeft: moderateScale(15),
-                backgroundColor: "green",
                 flex: 1
               }}
             >
@@ -687,17 +675,15 @@ export default class modalFilter extends React.Component {
             </Text>
             <View
               style={{
-                backgroundColor: "yellow",
                 flex: 2,
                 justifyContent: "center",
                 flexDirection: "row",
-                width: moderateScale(250)
+                width: moderateScale(240)
               }}
             >
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "blue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -731,7 +717,6 @@ export default class modalFilter extends React.Component {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: "lightblue",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
@@ -772,8 +757,9 @@ export default class modalFilter extends React.Component {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
-              backgroundColor: "red",
-              width: moderateScale(250)
+              width: moderateScale(250),
+              borderColor: "grey",
+              borderTopWidth: 1
             }}
           >
             <TouchableOpacity
