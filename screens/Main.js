@@ -226,53 +226,94 @@ class Main extends React.Component {
 
   filterStadiums = selectedStadiums => {
     let stadiums = Array.from(this.state.markersOfficial);
-
+    let slength = selectedStadiums.length;
     const data33 = stadiums.filter(item => item.paid === true);
-    console.log(data33, stadiums, selectedStadiums, "YO");
+    console.log(data33, stadiums, selectedStadiums, "YO", slength);
 
-    let items = Array.from(this.state.markersOfficial);
-    if (selectedStadiums.length > 0)
-      switch (selectedStadiums[0].id) {
-        case "byInventor":
-          let data2 = items.filter(item => item.inventor === true);
-          this.setState({ markers: data2, modalFilterState: false });
-          console.log("inventor", data2);
-          break;
-        case "byPaid":
-          let byPaid = items.filter(item => item.isPaid === true);
-          this.setState({ markers: byPaid, modalFilterState: false });
-          console.log("paid", byPaid);
-          break;
-        case "byFree":
-          let byFree = items.filter(item => item.isPaid === false);
-          this.setState({ markers: byFree, modalFilterState: false });
-          console.log("byFree", byFree);
-          break;
-        case "byGrass":
-          let byGrass = items.filter(item => item.floorType === "grass");
-          this.setState({ markers: byGrass, modalFilterState: false });
-          console.log("byGrass", byGrass);
-          break;
-        case "futsal":
-          let futsal = items.filter(item => item.floorType === "futsal");
-          this.setState({ markers: futsal, modalFilterState: false });
-          console.log("futsal", futsal);
-          break;
-        case "byPlasticGrass":
-          let byPlasticGrass = items.filter(
-            item => item.floorType === "synthetic"
-          );
-          this.setState({ markers: byPlasticGrass, modalFilterState: false });
-          console.log("byPlasticGrass", byPlasticGrass);
-          break;
-
-        default:
-          this.setState({
-            markers: this.state.markersOfficial,
-            modalFilterState: false
-          });
-      }
-    else
+    if (selectedStadiums.length > 0) {
+      let filteredStadiums = Array.from(this.state.markersOfficial);
+      selectedStadiums.forEach(element => {
+        switch (element.type) {
+          case "inventor":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.inventor === true
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "paid":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.isPaid === true
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "free":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.isPaid === false
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "grass":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.floorType === "grass"
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "futsal":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.floorType === "futsal"
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "indoor":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.stadiumType === "indoor"
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "outdoor":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.stadiumType === "outdoor"
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          case "synthetic":
+            filteredStadiums = filteredStadiums.filter(
+              item => item.floorType === "synthetic"
+            );
+            this.setState({
+              markers: filteredStadiums,
+              modalFilterState: false
+            });
+            break;
+          default:
+            this.setState({
+              markers: this.state.markersOfficial,
+              modalFilterState: false
+            });
+        }
+      });
+    } else
       this.setState(
         { markers: this.state.markersOfficial, modalFilterState: false },
         () => console.log("Nieko nepasirinkote")

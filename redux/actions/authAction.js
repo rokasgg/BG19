@@ -44,4 +44,3 @@ export default function login(userName, password, isRemembered) {
       });
   };
 }
-z;
