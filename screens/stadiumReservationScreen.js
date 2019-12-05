@@ -21,12 +21,13 @@ import {
   Agenda,
   LocaleConfig
 } from "react-native-calendars";
+import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
 import FlashMessage from "react-native-flash-message";
 import firebase from "firebase";
 import "firebase/firestore";
 
-export default class stadiumReservationScreen extends React.Component {
+ class stadiumReservationScreen extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
     super(props);
@@ -149,7 +150,8 @@ export default class stadiumReservationScreen extends React.Component {
         stadiumName: this.props.navigation.state.params.data.stadiumName,
         date: this.state.selectedDay,
         time: this.state.selectedTime.type,
-        stadiumId: this.props.navigation.state.params.data.stadiumId
+        stadiumId: this.props.navigation.state.params.data.stadiumId,
+        userId:this.props.userId
       };
       const resId = "";
       await firebase
@@ -558,3 +560,10 @@ const styles = StyleSheet.create({
     marginLeft: 10
   }
 });
+const mapStateToProps = state => ({
+  userId:state.auth.userUid
+
+});
+export default connect(
+  mapStateToProps
+)(stadiumReservationScreen);

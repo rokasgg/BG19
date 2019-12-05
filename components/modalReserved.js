@@ -14,30 +14,27 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import firebase, { firestore } from "firebase";
+import "firebase/firestore";
+
 export default class modalReserved extends React.Component {
+  static navigationOptions = { header: null };
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   render() {
-    return (
-      //       <Modal
-      //       visible={this.props.visible}
-      //       onSwipeComplete={this.props.closeModal}
+    const data = this.props.navigation.state.params.data;
 
-      //       backdropColor='black'
-      //       backdropOpacity={0.8}
-      //       style={{justifyContent:'center', backgroundColor:'black', alignItems: "center"}}
-      // >
-      <View
-        style={{
-          justifyContent: "center",
-          backgroundColor: "black",
+    return (
+
+        <View style={{   
+          backgroundColor: "white",
           alignItems: "center",
-          flex: 1
-        }}
-      >
+          width:Dimensions.get("window").width,
+          height:Dimensions.get("window").height,
+          paddingBottom:moderateScale(70)}}>
         <View style={styles.topHalf}>
           <MapView
             style={{
@@ -45,8 +42,8 @@ export default class modalReserved extends React.Component {
               width: Dimensions.get("window").width
             }}
             region={{
-              latitude: this.props.data.latitude,
-              longitude: this.props.data.longitude,
+              latitude: 54.70298303,
+              longitude: 25.26908684,
               longitudeDelta: 0.0421,
               latitudeDelta: 0.0922
             }}
@@ -55,9 +52,8 @@ export default class modalReserved extends React.Component {
             <Marker
               image={require("../pictures/kamuolys.png")}
               coordinate={{
-                latitude: this.props.data.latitude,
-                longitude: this.props.data.longitude,
-
+                latitude: 54.70298303,
+                longitude: 25.26908684,
                 longitudeDelta: 0.0421,
                 latitudeDelta: 0.0922
               }}
@@ -84,9 +80,9 @@ export default class modalReserved extends React.Component {
               }}
             >
               <Text style={styles.textLeft}>Pavadinimas:</Text>
-              {this.props.data ? (
+              {data? (
                 <Text style={styles.textRight}>
-                  {this.props.data.stadiumName}
+                  {data.stadiumName}
                 </Text>
               ) : null}
             </View>
@@ -101,9 +97,9 @@ export default class modalReserved extends React.Component {
               }}
             >
               <Text style={styles.textLeft}>Rezervacijos diena:</Text>
-              {this.props.data ? (
+              {data ? (
                 <Text style={styles.textRight}>
-                  {this.props.data.reservationDate}
+                  {data.reservationDate}
                 </Text>
               ) : null}
             </View>
@@ -118,9 +114,9 @@ export default class modalReserved extends React.Component {
               }}
             >
               <Text style={styles.textLeft}>Rezervacijos ID:</Text>
-              {this.props.data ? (
+              {data ? (
                 <Text style={styles.textRight}>
-                  {this.props.data.reservationId.id}
+                  {data.reservationId}
                 </Text>
               ) : null}
             </View>
@@ -135,23 +131,32 @@ export default class modalReserved extends React.Component {
               }}
             >
               <Text style={styles.textLeft}>Rezervacijos laikas:</Text>
-              {this.props.data ? (
+              {data ? (
                 <Text style={styles.textRight}>
-                  {this.props.data.reservationTime}
+                  {data.reservationTime}
                 </Text>
               ) : null}
             </View>
           </View>
           <View
             style={{
-              justifyContent: "center",
+              justifyContent: 'space-around',
               alignItems: "center",
-              marginBottom: moderateScale(10)
+              flexDirection:'row',
+              marginBottom: moderateScale(15)
             }}
           >
             <TouchableOpacity
+              style={[styles.button1,{backgroundColor:'white', borderWidth:1, borderColor:'hsl(186, 62%, 40%)'}]}
+              onPress={()=>this.props.navigation.goBack()}
+            >
+              <Text style={{ fontSize: moderateScale(17), color: "hsl(186, 62%, 40%)" }}>
+                Grižti
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.button1}
-              onPress={this.props.closeModal}
+              onPress={()=>this.cancelReservation(data.reservationId)}
             >
               <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
                 Atšaukti rezervaciją
@@ -160,8 +165,8 @@ export default class modalReserved extends React.Component {
           </View>
         </View>
         {/* //</Modal>  */}
-        <FlashMessage ref="war" position="top" />
-      </View>
+        {/* <FlashMessage ref="war" position="top" /> */}
+        </View>
     );
   }
   showWarn = () => {
@@ -173,10 +178,20 @@ export default class modalReserved extends React.Component {
       hideOnPress: true
     });
   };
-
+  cancelReservation = (reservationId)=>{
+    this.props.navigation.state.params.onGoBack(reservationId);
+    this.props.navigation.goBack()
+    
+    firebase
+      .firestore()
+      .collection("reservations")
+      .doc(reservationId)
+      .delete();
+  }
   componentDidMount() {
-    console.log("PROPSAI", this.props.data);
-    this.showWarn();
+    console.log("PROPSAI", this.props.data,this.props.navigation
+    );
+
   }
 }
 const styles = StyleSheet.create({
@@ -189,7 +204,8 @@ const styles = StyleSheet.create({
 
   topHalf: {
     flex: 2,
-    flexDirection: "column"
+    flexDirection: "column",
+    backgroundColor:'yellow'
   },
   bottomHalf: {
     flex: 1,
@@ -199,7 +215,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width
   },
   button1: {
-    width: moderateScale(200),
+    width: moderateScale(170),
     height: 40,
     backgroundColor: "red",
     alignItems: "center",

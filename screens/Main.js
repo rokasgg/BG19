@@ -13,16 +13,10 @@ import {
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import Geolocation, { watchPosition } from "react-native-geolocation-service";
-import stadiumMarkers from "../database/data.json";
-import Modal from "react-native-modalbox";
-import moment from "moment";
-import DateTimePicker from "react-native-modal-datetime-picker";
 import { connect } from "react-redux";
 import ModalStadiumDetails from "../components/modalStadiumDetails";
 import ModalReservation from "../components/modalReservation";
 import ModalFilter from "../components/modalFilter";
-import { dummyAction } from "../redux/actions/dummyAction";
-import { createBottomTabNavigator } from "react-navigation";
 
 import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";

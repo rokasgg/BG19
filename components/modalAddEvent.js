@@ -25,7 +25,8 @@ export default class modalReservation extends React.Component {
         dateTime:null,
         peopleNeeded:null,
         stadiumName:'',
-        stadiumAddress:''
+        stadiumAddress:'',
+        time:null
 
     }
   }
@@ -56,7 +57,8 @@ export default class modalReservation extends React.Component {
           stadiumName:this.state.stadiumName,
           stadiumAddress:this.state.stadiumAddress,
           peopleNeeded:this.state.peopleNeeded,
-          dateTime:this.state.dateTime
+          dateTime:this.state.dateTime,
+          time:this.state.time
       }
       this.props.createEvent(searchDetails)
   }
@@ -124,6 +126,38 @@ export default class modalReservation extends React.Component {
                     date={this.state.dateTime}
                     androidMode='spinner'
                     onDateChange={val =>{this.setState({dateTime:val})}}
+                    confirmBtnText='Pick'
+                    cancelBtnText='Cancel'
+                />
+            </View>
+            <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', height:moderateScale(45) ,width:moderateScale(340), borderColor:'hsla(126, 62%, 40%, 0.44)', borderBottomWidth:1,}}>
+                <Text style={styles.textLeft}>Laikas:</Text>
+                <DateTimePicker
+                    style={{color: "black",
+                    fontSize: moderateScale(15),
+                    marginBottom: 5,
+                    marginTop:5,
+                    textAlign:'right',
+                    justifyContent:'flex-end', 
+                    paddingRight:5}}
+                    customStyles={{
+                        dateText:{
+                            fonstSize:moderateScale(13)
+                        },
+                        dateInput:{
+                            alignItems:'flex-end'
+                            ,borderWidth:0,
+                            paddingLeft:4,
+                            marginRight:4,
+                            flex:1
+                        },
+                        dateIcon:{display:"none"}
+                    }}
+                    mode={'time'}
+                    mode='time'
+                    date={this.state.time}
+                    androidMode='spinner'
+                    onDateChange={value =>{this.setState({time:value})}}
                     confirmBtnText='Pick'
                     cancelBtnText='Cancel'
                 />

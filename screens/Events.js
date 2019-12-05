@@ -136,6 +136,7 @@ export default class Events extends React.Component {
       reservationTime: eventsInfo.dateTime,
       stadiumAdress: eventsInfo.stadiumAddress,
       peopleNeed: eventsInfo.peopleNeeded,
+      time:eventsInfo.time,
       id: "1"
     };
     // var newStateArray = this.state.ok;
@@ -143,25 +144,7 @@ export default class Events extends React.Component {
     console.log(this.state.allEvents)
     let eventList= Array.from(this.state.allEvents)
     eventList.push(eventDetails);
-
-
-    // var heloo = await AsyncStorage.getItem("event");
-    // heloo = JSON.parse(heloo);
-    // if(heloo !==null){
-    //   heloo.push(eventDetails);
-    // console.log(heloo);
-    // }
-
-    // console.log("VA CIA VISI KAS TEN YRA", heloo);
-    // AsyncStorage.setItem("event", JSON.stringify(heloo));
-
-    // let user = await AsyncStorage.getItem("event");
-    // let next = await JSON.parse(user);
     this.setState({ allEvents: eventList, modalCreateEventVisible:false }, ()=>console.log("Ir cia visi eventai:", this.state.allEvents));
-
-    // let heloos = await AsyncStorage.getItem("event");
-
-    // console.log("VA CIA VISI KAS TEN YRA", heloos);
   };
 
   //-------------------------------------CREATING AN EVENT

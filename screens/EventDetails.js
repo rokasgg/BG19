@@ -71,8 +71,12 @@ export default class EventDetails extends React.Component {
                   <Text style={styles.textRight}>{this.props.navigation.state.params.item1.peopleNeed}</Text>
               </View>
               <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsla(126, 62%, 40%, 0.44)', borderBottomWidth:1,}}>
-                  <Text style={styles.textLeft}>Laikas:</Text>
+                  <Text style={styles.textLeft}>Data:</Text>
                   <Text style={styles.textRight}>{this.props.navigation.state.params.item1.reservationTime}</Text>
+              </View>
+              <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsla(126, 62%, 40%, 0.44)', borderBottomWidth:1,}}>
+                  <Text style={styles.textLeft}>Laikas:</Text>
+                  <Text style={styles.textRight}>{this.props.navigation.state.params.item1.time}</Text>
               </View>
           </View>
           

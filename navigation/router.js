@@ -15,7 +15,7 @@ import EventsDetails from "../screens/EventDetails";
 import Reservation from "../screens/ReservationScreen";
 import Reg from "../screens/RegistrationScreen";
 import ReservationScreen from "../screens/stadiumReservationScreen";
-
+import ReservationDetails from '../components/modalReserved';
 import Ionicons from "react-native-vector-icons/Entypo";
 
 const MainTab = createStackNavigator(
@@ -67,7 +67,8 @@ const LoginTab = createStackNavigator(
 
 const ReservationTab = createStackNavigator(
   {
-    Reservation: Reservation
+    Reservation: Reservation,
+    ReservationDetails: ReservationDetails,
   },
   {
     defaultNavigationOptions: {

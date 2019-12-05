@@ -88,52 +88,6 @@ export default class modalFilter extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.getFilterItems();
-  }
-
-  getFilterItems = () => {
-    const filterItems = [
-      {
-        id: "byPaid",
-        text: "Mokami stadionai"
-      },
-      {
-        id: "byFree",
-        text: "Nemokami stadionai"
-      },
-      {
-        id: "byGrass",
-        text: "Tikra žolė"
-      },
-      {
-        id: "byInventor",
-        text: "Teikia kamuolius"
-      },
-      {
-        id: "futsal",
-        text: "Salės futbolas"
-      },
-      {
-        id: "byPlasticGrass",
-        text: "Dirbtinė danga"
-      }
-    ];
-    this.setState({ data: filterItems });
-  };
-  onFilterPress = item => {
-    let availableTimeList = Array.from(this.state.data);
-    const numb = availableTimeList.length;
-    for (let i = 0; i < numb; i++) {
-      if (i === item.index) {
-        if (availableTimeList[i].chosenItem === true)
-          availableTimeList[i].chosenItem = false;
-        else availableTimeList[i].chosenItem = true;
-      }
-    }
-    this.setState({ data: availableTimeList });
-  };
-
   confirmFilters = () => {
     let floor = Array.from(this.state.floorType);
     let price = Array.from(this.state.priceType);
@@ -250,27 +204,32 @@ export default class modalFilter extends React.Component {
           </Text>
           <View
             style={{
-              flex: 2,
+              flex: 3,
               justifyContent: "flex-start",
               alignItems: "flex-start",
               width: moderateScale(240),
               flexDirection: "column",
               borderTopWidth: 1,
-              borderColor: "grey"
+              borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <Text
-              style={{
-                color: "black",
-                fontSize: moderateScale(11),
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)",
-                marginLeft: moderateScale(15),
-                flex: 1
-              }}
-            >
-              Dangos tipas
-            </Text>
+          <View style={{marginLeft: moderateScale(15),
+            flex: 1,
+            marginBottom:moderateScale(5),
+            justifyContent:'flex-end',
+            alignItems:'flex-end',
+            borderBottomWidth: 1,
+            borderColor: "hsl(126, 62%, 40%)",}}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: moderateScale(11),             
+                  paddingBottom:moderateScale(1)
+                }}
+              >
+                Dangos tipas
+              </Text>
+            </View>
             <View
               style={{
                 flex: 2,
@@ -290,8 +249,9 @@ export default class modalFilter extends React.Component {
                   style={{
                     flex: 1,
                     flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center"
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    paddingLeft:moderateScale(20)
                   }}
                 >
                   <TouchableOpacity
@@ -323,8 +283,9 @@ export default class modalFilter extends React.Component {
                 <View
                   style={{
                     flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center"
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                   }}
                 >
                   <TouchableOpacity
@@ -375,7 +336,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -399,21 +360,26 @@ export default class modalFilter extends React.Component {
               width: moderateScale(240),
               flexDirection: "column",
               borderTopWidth: 1,
-              borderColor: "grey"
+              borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <Text
-              style={{
-                color: "black",
-                fontSize: moderateScale(11),
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)",
-                marginLeft: moderateScale(15),
-                flex: 1
-              }}
-            >
-              Stadiono tipas
-            </Text>
+            <View style={{marginLeft: moderateScale(15),
+              flex: 1,
+              paddingTop:moderateScale(3),
+              justifyContent:'flex-end',
+              alignItems:'flex-end',
+              borderBottomWidth: 1,
+              borderColor: "hsl(126, 62%, 40%)",}}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: moderateScale(11),             
+                  paddingBottom:moderateScale(1)
+                }}
+              >
+                Stadiono tipas
+              </Text>
+            </View>
             <View
               style={{
                 flex: 2,
@@ -426,7 +392,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -442,7 +409,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -459,7 +426,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -475,7 +443,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -498,21 +466,26 @@ export default class modalFilter extends React.Component {
               width: moderateScale(240),
               flexDirection: "column",
               borderTopWidth: 1,
-              borderColor: "grey"
+              borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <Text
-              style={{
-                color: "black",
-                fontSize: moderateScale(11),
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)",
-                marginLeft: moderateScale(15),
-                flex: 1
-              }}
-            >
-              Kaina
-            </Text>
+            <View style={{marginLeft: moderateScale(15),
+              flex: 1,
+              paddingTop:moderateScale(3),
+              justifyContent:'flex-end',
+              alignItems:'flex-end',
+              borderBottomWidth: 1,
+              borderColor: "hsl(126, 62%, 40%)",}}>
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: moderateScale(11),             
+                  paddingBottom:moderateScale(1)
+                }}
+              >
+                Kaina
+              </Text>
+            </View>
             <View
               style={{
                 flex: 2,
@@ -525,7 +498,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -541,7 +515,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -558,7 +532,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -574,7 +549,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -592,13 +567,13 @@ export default class modalFilter extends React.Component {
           {/* -----------------------------------------------------Inventoriu teikia \/ */}
           <View
             style={{
-              flex: 1,
+              flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
               width: moderateScale(240),
               flexDirection: "column",
               borderTopWidth: 1,
-              borderColor: "grey"
+              borderColor: "hsl(186, 62%, 40%)"
             }}
           >
             <View
@@ -658,7 +633,7 @@ export default class modalFilter extends React.Component {
               width: moderateScale(240),
               flexDirection: "column",
               borderTopWidth: 1,
-              borderColor: "grey"
+              borderColor: "hsl(186, 62%, 40%)"
             }}
           >
             <Text
@@ -685,7 +660,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: 'flex-start',
+                  paddingLeft:moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -701,7 +677,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -734,7 +710,7 @@ export default class modalFilter extends React.Component {
                         : "circle"
                     }
                     color="black"
-                    size={moderateScale(12)}
+                    size={moderateScale(13)}
                   />
                   <Text
                     style={{
@@ -758,7 +734,7 @@ export default class modalFilter extends React.Component {
               justifyContent: "space-around",
               alignItems: "center",
               width: moderateScale(250),
-              borderColor: "grey",
+              borderColor: "hsl(186, 62%, 40%)",
               borderTopWidth: 1
             }}
           >
@@ -816,7 +792,7 @@ const styles = StyleSheet.create({
   modal: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#fff",
     height: moderateScale(300),
     width: moderateScale(250),
     flexDirection: "column",
@@ -828,8 +804,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   button: {
-    width: moderateScale(90),
-    height: moderateScale(32),
+    width: moderateScale(85),
+    height: moderateScale(27),
     backgroundColor: "white",
     borderColor: "hsl(126, 62%, 40%)",
     borderWidth: 2,
