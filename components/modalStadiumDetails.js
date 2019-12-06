@@ -29,6 +29,29 @@ export default class modalStadiumDetails extends React.Component {
   // floor-plan  MaterialCommunityIcons
   // soccer-field
   //phone
+  handleStadiumType = () => {
+    switch (this.props.data.stadiumType) {
+      case "indoor":
+        return "Vidus";
+      case "outdoor":
+        return "Laukas";
+      default:
+        return null;
+    }
+  };
+
+  handleFloorType = () => {
+    switch (this.props.data.floorType) {
+      case "synthetic":
+        return "Dirbtinė danga";
+      case "futsal":
+        return "Salė";
+      case "grass":
+        return "Tikra žolė";
+      default:
+        return null;
+    }
+  };
 
   render() {
     return (
@@ -86,14 +109,17 @@ export default class modalStadiumDetails extends React.Component {
                 />
                 <Text style={styles.text}>Adresas:</Text>
               </View>
-              <View style={{ flexDirection: "row" }}>
-                <IconMaterial
-                  name="phone"
-                  size={moderateScale(19)}
-                  color="hsl(186, 62%, 40%)"
-                />
-                <Text style={styles.text}>Telefono numeris:</Text>
-              </View>
+              {this.props.data.phone !== "0" ? (
+                <View style={{ flexDirection: "row" }}>
+                  <IconMaterial
+                    name="phone"
+                    size={moderateScale(19)}
+                    color="hsl(186, 62%, 40%)"
+                  />
+                  <Text style={styles.text}>Telefono numeris:</Text>
+                </View>
+              ) : null}
+
               <View style={{ flexDirection: "row" }}>
                 <IconMaterial
                   name="soccer-field"
@@ -120,9 +146,11 @@ export default class modalStadiumDetails extends React.Component {
             >
               <Text style={styles.text}>{this.props.data.stadiumName}</Text>
               <Text style={styles.text}>{this.props.data.adress}</Text>
-              <Text style={styles.text}>{this.props.data.phone}</Text>
-              <Text style={styles.text}>{this.props.data.stadiumType}</Text>
-              <Text style={styles.text}>{this.props.data.floorType}</Text>
+              {this.props.data.phone !== "0" ? (
+                <Text style={styles.text}>{this.props.data.phone} </Text>
+              ) : null}
+              <Text style={styles.text}>{this.handleStadiumType()}</Text>
+              <Text style={styles.text}>{this.handleFloorType()}</Text>
             </View>
           </View>
           <View

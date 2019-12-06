@@ -2,14 +2,11 @@ import React, { Component } from "react";
 import Modal from "react-native-modal";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import {
-  Platform,
   ActivityIndicator,
   StyleSheet,
   Text,
   View,
-  PermissionsAndroid,
   Image,
-  Button,
   TouchableOpacity,
   TextInput,
   ScrollView,
@@ -24,10 +21,11 @@ import {
 import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
 import FlashMessage from "react-native-flash-message";
+import Spinner from "react-native-loading-spinner-overlay";
 import firebase from "firebase";
 import "firebase/firestore";
 
- class stadiumReservationScreen extends React.Component {
+class stadiumReservationScreen extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
     super(props);
@@ -72,7 +70,8 @@ import "firebase/firestore";
       ],
       markersInfo: null,
       selectedTime: "",
-      selectedDay: ""
+      selectedDay: "",
+      spinner: false
     };
   }
 
@@ -132,12 +131,8 @@ import "firebase/firestore";
   };
   onFinish = async () => {
     if (this.state.selectedTime !== "" && this.state.selectedDay !== "") {
-      console.log(
-        "NavBack",
-        this.state.selectedTime,
-        this.state.selectedDay,
-        this.props.navigation.state.params.data
-      );
+      this.startSpinner();
+
       let data = {
         stadiumName: this.props.navigation.state.params.data.stadiumName,
         longitude: this.props.navigation.state.params.data.longitude,
@@ -151,7 +146,7 @@ import "firebase/firestore";
         date: this.state.selectedDay,
         time: this.state.selectedTime.type,
         stadiumId: this.props.navigation.state.params.data.stadiumId,
-        userId:this.props.userId
+        userId: this.props.userId
       };
       const resId = "";
       await firebase
@@ -162,9 +157,8 @@ import "firebase/firestore";
           data.reservationId = res;
         })
         .catch(err => console.log("Jei neipraein reservacija>>", err));
-      console.log("AR GAUNU AS CIA KNRS", data.reservationId);
-      this.props.navigation.goBack();
-      this.props.navigation.push("Reservation", { data: data });
+
+      this.finishSpinner(data);
     } else {
       this.refs.warnning.showMessage({
         message: "Prašome pasirinkti data ir laiką",
@@ -234,6 +228,18 @@ import "firebase/firestore";
       console.log("FALSE", allform);
     }
     this.setState({ form: allform });
+  };
+
+  startSpinner = () => {
+    this.setState({ spinner: true });
+  };
+  finishSpinner = data => {
+    setTimeout(() => {
+      this.setState({ spinner: false }, () => {
+        this.props.navigation.goBack();
+        this.props.navigation.push("Reservation", { data: data });
+      });
+    }, 5000);
   };
 
   render() {
@@ -488,6 +494,11 @@ import "firebase/firestore";
             </TouchableOpacity>
           </View>
         </View>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={"Vykdoma..."}
+          textStyle={{ color: "grey" }}
+        />
         <FlashMessage ref="warnning" position="top" />
       </ScrollView>
     );
@@ -561,9 +572,6 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => ({
-  userId:state.auth.userUid
-
+  userId: state.auth.userUid
 });
-export default connect(
-  mapStateToProps
-)(stadiumReservationScreen);
+export default connect(mapStateToProps)(stadiumReservationScreen);

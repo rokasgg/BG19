@@ -26,6 +26,7 @@
     "react-native-flash-message": "^0.1.15",
     "react-native-geolocation-service": "^2.0.1",
     "react-native-gesture-handler": "^1.0.16",
+    "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-maps": "^0.24.2",
     "react-native-modal": "^11.5.1",
     "react-native-modal-datetime-picker": "^7.4.2",

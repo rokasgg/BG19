@@ -7,14 +7,17 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Button
+  Button,
+  ActivityIndicator,
+  ScrollView,
+  RefreshControl
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MapView, { Marker } from "react-native-maps";
 
 import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
-import ModalReserved from "../components/modalReserved";
+import ReservedDetails from "../components/ReservedDetails";
 import ReservationList from "../components/reservationList";
 import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -34,10 +37,13 @@ class ReservationScreen extends React.Component {
       reservationTime: ""
     },
     modalReservationVisible: false,
-    allEvents:[],
-        data:[],
-        modalReservationVisiblee:false
-  };  
+    allEvents: [],
+    data: [],
+    modalReservationVisiblee: false,
+    checkSpinner: false,
+    refresh: false,
+    refresh2: false
+  };
   render() {
     const { navigate } = this.props.navigation;
 
@@ -45,80 +51,99 @@ class ReservationScreen extends React.Component {
     const { text = "" } = dummyReducer;
     console.log(text);
     return this.state.allEvents.length === 0 ? (
-      <View style={styles.container}>
-        <View style={styles.all}>
-          <Ionicons name="md-information-circle-outline" size={45} color="#555" />
-          <Text style={{ fontSize: 25, color: "lightgrey" }}>
-            Nėra aktyvių rezervacijų :[
-          </Text>
-          <TouchableOpacity
-            onPress={() => navigate("Main")}
-            style={[styles.button1, { marginTop: 100 }]}
-          >
-            <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
-              Ieškoti aikštelės
+      this.state.checkSpinner ? (
+        <ActivityIndicator size="large" color="grey" />
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.all}>
+            <Ionicons
+              name="md-information-circle-outline"
+              size={45}
+              color="#555"
+            />
+            <Text style={{ fontSize: 25, color: "lightgrey" }}>
+              Nėra aktyvių rezervacijų :[
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigate("Events")}
-            style={[
-              styles.button1,
-              { backgroundColor: "lightgrey", marginTop: 15 }
-            ]}
-          >
-            <Text style={{ fontSize: moderateScale(17), color: "black" }}>
-              Ieškoti žaidejų
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigate("Main")}
+              style={[styles.button1, { marginTop: 100 }]}
+            >
+              <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
+                Ieškoti aikštelės
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigate("Events")}
+              style={[
+                styles.button1,
+                { backgroundColor: "lightgrey", marginTop: 15 }
+              ]}
+            >
+              <Text style={{ fontSize: moderateScale(17), color: "black" }}>
+                Ieškoti žaidejų
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )
     ) : (
-      <View style={{ flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#F5FCFF",flexDirection: "column" }}>
       <View
         style={{
-          justifyContent: "space-between",
-          flexDirection: "row",
-          alignItems: "stretch",
-          marginLeft: 10,
-          marginTop: 30,
-          width: moderateScale(330)
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#F5FCFF",
+          flexDirection: "column"
         }}
       >
-        <View style={{justifyContent:'flex-start', alignItems:'center'}}>
-          <Text style={{ fontSize: 20, color: "black" }}>
-            Aktyvios rezervacijos
-          </Text>
-        </View>
-          <View style={{justifyContent:'flex-end', alignItems:'center'}}>
-            <TouchableOpacity onPress={()=>this.setState({modalCreateEventVisible:true})}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            flexDirection: "row",
+            alignItems: "stretch",
+            marginLeft: 10,
+            marginTop: 30,
+            width: moderateScale(330)
+          }}
+        >
+          <View style={{ justifyContent: "flex-start", alignItems: "center" }}>
+            <Text style={{ fontSize: 20, color: "black" }}>
+              Aktyvios rezervacijos
+            </Text>
+          </View>
+          <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
+            <TouchableOpacity
+              onPress={() => this.setState({ modalCreateEventVisible: true })}
+            >
               {/* <Ionicons name="plus" size={25} color="#90c5df" /> */}
             </TouchableOpacity>
           </View>
-      </View>
+        </View>
 
-      <FlatList
-        style={{ marginTop: 2, flex: 1 }}
-        data={this.state.allEvents}
-        renderItem={this.renderItems}
-        keyExtractor={item => item.id}
-      />
-      {/* <ModalReserved
+        <FlatList
+          style={{ marginTop: 2, flex: 1 }}
+          data={this.state.allEvents}
+          renderItem={this.renderItems}
+          keyExtractor={item => item.id}
+          onRefresh={() => this.onRefreshing()}
+          refreshing={this.state.refresh}
+        />
+        {/* <ReservedDetails
         visible={this.state.modalReservationVisiblee}
         data={this.state.data}
         closeModal={this.reservationModalClose}
         createEvent={this.createEvent}
     /> */}
-    </View>
-      
-      
+      </View>
     );
   }
-  
+
   componentDidMount() {
-    console.log("EJO PROPSAI ",this.props.userId, this.props.navigation.getParam("data"));
+    console.log(
+      "EJO PROPSAI ",
+      this.props.userId,
+      this.props.navigation.getParam("data")
+    );
     const ifPropsComing = this.props.navigation.getParam("data");
     this.getUserReservations();
     if (ifPropsComing !== undefined) {
@@ -138,49 +163,70 @@ class ReservationScreen extends React.Component {
     }
     console.log(ifPropsComing, "whateva ifas");
   }
-  getUserReservations = async () =>{
-    let eventList= Array.from(this.state.allEvents)
-    await firebase.firestore().collection("reservations")
-    .where("userId", "==", this.props.userId).get().then(res=>
-      {console.log("IESKOT ID RES", res)
-      if(res.docs.length >0){
-        res.forEach(data=>{
-          console.log("IESKOT ID RES", data)
-          let eventDetails = {
-            stadiumId: data._document.proto.fields.stadiumId.stringValue,
-            stadiumName:data._document.proto.fields.stadiumName.stringValue,
-            reservationTime: data._document.proto.fields.time.stringValue,
-            reservationDate: data._document.proto.fields.date.stringValue,
-            userId: data._document.proto.fields.userId.stringValue,
-            reservationId:data.id
-          };
-          eventList.push(eventDetails);
-          console.log(eventList)
-        })
-      }else{
-        eventList=[]
-      }
-    }
-  );
-    this.setState({allEvents:eventList})
-}
 
-deleteReservation =(reservationId)=>{
-  // console.log('PIRMAS CHEKAS', reservationId)
-  this.getUserReservations();
+  onRefreshing = () => {
+    this.setState({ refresh: true });
+    setTimeout(() => {
+      this.setState({ refresh: false });
+    }, 2000);
+  };
 
-  // let allReservations = Array.from(this.state.allEvents);
-  // const index = allReservations.findIndex(item=>{
-  //   item.reservationId === reservationId
-  // });
-  // allReservations.slice(index, 1);
-  // console.log('ANTRAS CHEKAS', allReservations)
+  startSpinner = () => {
+    setTimeout(() => {
+      this.setState({ checkSpinner: true });
+    }, 1000);
+  };
 
-  // this.setState({allEvents:allReservations}, ()=>console.log('PIRMAS CHEKAS', this.state.allEvents));
-}
-  moreResDetails =(item)=>{
-    this.props.navigation.navigate('ReservationDetails', {onGoBack:()=>this.deleteReservation(),data:item})
-  }
+  getUserReservations = async () => {
+    this.startSpinner();
+    let eventList = [];
+    await firebase
+      .firestore()
+      .collection("reservations")
+      .where("userId", "==", this.props.userId)
+      .get()
+      .then(res => {
+        console.log("IESKOT ID RES", res);
+        if (res.docs.length > 0) {
+          res.forEach(data => {
+            console.log("IESKOT ID RES", data);
+            let eventDetails = {
+              stadiumId: data._document.proto.fields.stadiumId.stringValue,
+              stadiumName: data._document.proto.fields.stadiumName.stringValue,
+              reservationTime: data._document.proto.fields.time.stringValue,
+              reservationDate: data._document.proto.fields.date.stringValue,
+              userId: data._document.proto.fields.userId.stringValue,
+              reservationId: data.id
+            };
+            eventList.push(eventDetails);
+            console.log(eventList);
+          });
+        } else {
+          eventList = [];
+        }
+      });
+    this.setState({ allEvents: eventList });
+  };
+
+  deleteReservation = reservationId => {
+    // console.log('PIRMAS CHEKAS', reservationId)
+    this.getUserReservations();
+
+    // let allReservations = Array.from(this.state.allEvents);
+    // const index = allReservations.findIndex(item=>{
+    //   item.reservationId === reservationId
+    // });
+    // allReservations.slice(index, 1);
+    // console.log('ANTRAS CHEKAS', allReservations)
+
+    // this.setState({allEvents:allReservations}, ()=>console.log('PIRMAS CHEKAS', this.state.allEvents));
+  };
+  moreResDetails = item => {
+    this.props.navigation.navigate("ReservationDetails", {
+      onGoBack: () => this.deleteReservation(),
+      data: item
+    });
+  };
 
   reservationModalClose = () => {
     firebase
@@ -191,39 +237,86 @@ deleteReservation =(reservationId)=>{
     this.setState({ modalReservationVisible: false });
   };
 
-  reservationModalClose=()=>{
-    this.setState({modalReservationVisiblee:false})
-  }
-  
+  reservationModalClose = () => {
+    this.setState({ modalReservationVisiblee: false });
+  };
 
   renderItems = ({ item }) => {
-
     return (
-      <View style={{ flexDirection: "row", width: moderateScale(330), flex:1, height: 80, marginTop: 20, borderRadius: 5, borderColor: "#90c5df", borderBottomWidth: 2, justifyContent:'space-evenly' }}>
-        <View style={{borderColor: "#90c5df",justifyContent: "center",alignItems: "center", flex:1}}>
-          <MCIcons name="calendar-clock" size={moderateScale(32)} color="#55A6CE" />  
-        </View>
-        
-        <View style={{flexDirection: "column",alignItems: "flex-start",justifyContent: "center",flex:3 }}> 
-          <Text style={{color:'black', fontSize:moderateScale(14), fontWeight:'600'}}>{item.reservationDate}</Text>
-          <Text style={{color:'black', fontSize:moderateScale(14)}}>{item.reservationTime}</Text>
-          <Text style={{color:'black', fontSize:moderateScale(14)}}>{item.stadiumName}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          width: moderateScale(330),
+          flex: 1,
+          height: 80,
+          marginTop: 20,
+          borderRadius: 5,
+          borderColor: "#90c5df",
+          borderBottomWidth: 2,
+          justifyContent: "space-evenly"
+        }}
+      >
+        <View
+          style={{
+            borderColor: "#90c5df",
+            justifyContent: "center",
+            alignItems: "center",
+            flex: 1
+          }}
+        >
+          <MCIcons
+            name="calendar-clock"
+            size={moderateScale(32)}
+            color="#55A6CE"
+          />
         </View>
 
-        <View style={{flexDirection: "row",alignItems: "center",justifyContent: 'center',flex:1,  }}>
-          <TouchableOpacity style={{ flexDirection: "row" }} onPressIn={()=>{this.moreResDetails(item)}}>
+        <View
+          style={{
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            flex: 3
+          }}
+        >
+          <Text
+            style={{
+              color: "black",
+              fontSize: moderateScale(14),
+              fontWeight: "600"
+            }}
+          >
+            {item.reservationDate}
+          </Text>
+          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+            {item.reservationTime}
+          </Text>
+          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+            {item.stadiumName}
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1
+          }}
+        >
+          <TouchableOpacity
+            style={{ flexDirection: "row" }}
+            onPressIn={() => {
+              this.moreResDetails(item);
+            }}
+          >
             <Ionicons name="ios-more" size={25} color="hsl(126, 62%, 40%)" />
           </TouchableOpacity>
         </View>
-        
       </View>
     );
   };
-
-
-
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -281,10 +374,6 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => ({
-  userId:state.auth.userUid
-
+  userId: state.auth.userUid
 });
-export default connect(
-  mapStateToProps
-)(ReservationScreen);
-
+export default connect(mapStateToProps)(ReservationScreen);

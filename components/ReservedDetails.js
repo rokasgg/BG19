@@ -14,27 +14,32 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import Spinner from "react-native-loading-spinner-overlay";
 import firebase, { firestore } from "firebase";
 import "firebase/firestore";
 
-export default class modalReserved extends React.Component {
+export default class ReservedDetails extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      spinner: false
+    };
   }
 
   render() {
     const data = this.props.navigation.state.params.data;
 
     return (
-
-        <View style={{   
+      <View
+        style={{
           backgroundColor: "white",
           alignItems: "center",
-          width:Dimensions.get("window").width,
-          height:Dimensions.get("window").height,
-          paddingBottom:moderateScale(70)}}>
+          width: Dimensions.get("window").width,
+          height: Dimensions.get("window").height,
+          paddingBottom: moderateScale(70)
+        }}
+      >
         <View style={styles.topHalf}>
           <MapView
             style={{
@@ -80,10 +85,8 @@ export default class modalReserved extends React.Component {
               }}
             >
               <Text style={styles.textLeft}>Pavadinimas:</Text>
-              {data? (
-                <Text style={styles.textRight}>
-                  {data.stadiumName}
-                </Text>
+              {data ? (
+                <Text style={styles.textRight}>{data.stadiumName}</Text>
               ) : null}
             </View>
             <View
@@ -98,9 +101,7 @@ export default class modalReserved extends React.Component {
             >
               <Text style={styles.textLeft}>Rezervacijos diena:</Text>
               {data ? (
-                <Text style={styles.textRight}>
-                  {data.reservationDate}
-                </Text>
+                <Text style={styles.textRight}>{data.reservationDate}</Text>
               ) : null}
             </View>
             <View
@@ -115,9 +116,7 @@ export default class modalReserved extends React.Component {
             >
               <Text style={styles.textLeft}>Rezervacijos ID:</Text>
               {data ? (
-                <Text style={styles.textRight}>
-                  {data.reservationId}
-                </Text>
+                <Text style={styles.textRight}>{data.reservationId}</Text>
               ) : null}
             </View>
             <View
@@ -132,41 +131,56 @@ export default class modalReserved extends React.Component {
             >
               <Text style={styles.textLeft}>Rezervacijos laikas:</Text>
               {data ? (
-                <Text style={styles.textRight}>
-                  {data.reservationTime}
-                </Text>
+                <Text style={styles.textRight}>{data.reservationTime}</Text>
               ) : null}
             </View>
           </View>
           <View
             style={{
-              justifyContent: 'space-around',
+              justifyContent: "space-around",
               alignItems: "center",
-              flexDirection:'row',
+              flexDirection: "row",
               marginBottom: moderateScale(15)
             }}
           >
             <TouchableOpacity
-              style={[styles.button1,{backgroundColor:'white', borderWidth:1, borderColor:'hsl(186, 62%, 40%)'}]}
-              onPress={()=>this.props.navigation.goBack()}
+              style={[
+                styles.button1,
+                {
+                  backgroundColor: "white",
+                  borderWidth: 1,
+                  borderColor: "hsl(186, 62%, 40%)"
+                }
+              ]}
+              onPress={() => this.props.navigation.goBack()}
             >
-              <Text style={{ fontSize: moderateScale(17), color: "hsl(186, 62%, 40%)" }}>
+              <Text
+                style={{
+                  fontSize: moderateScale(17),
+                  color: "hsl(186, 62%, 40%)"
+                }}
+              >
                 Grižti
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button1}
-              onPress={()=>this.cancelReservation(data.reservationId)}
+              onPress={() => this.cancelReservation(data.reservationId)}
             >
               <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
                 Atšaukti rezervaciją
               </Text>
             </TouchableOpacity>
           </View>
+          <Spinner
+            visible={this.state.spinner}
+            textContent={"Vykdoma..."}
+            textStyle={styles.spinnerTextStyle}
+          />
         </View>
         {/* //</Modal>  */}
         {/* <FlashMessage ref="war" position="top" /> */}
-        </View>
+      </View>
     );
   }
   showWarn = () => {
@@ -178,20 +192,32 @@ export default class modalReserved extends React.Component {
       hideOnPress: true
     });
   };
-  cancelReservation = (reservationId)=>{
-    this.props.navigation.state.params.onGoBack(reservationId);
-    this.props.navigation.goBack()
-    
-    firebase
+  deleteItem = async reservationId => {
+    await firebase
       .firestore()
       .collection("reservations")
       .doc(reservationId)
       .delete();
-  }
-  componentDidMount() {
-    console.log("PROPSAI", this.props.data,this.props.navigation
-    );
+  };
+  startSpinner = () => {
+    this.setState({ spinner: true });
+  };
+  finishSpinner = () => {
+    setTimeout(() => {
+      this.setState({ spinner: false }, () => {
+        this.props.navigation.goBack();
+      });
+    }, 5000);
+  };
+  cancelReservation = async reservationId => {
+    this.startSpinner();
+    this.props.navigation.state.params.onGoBack(reservationId);
+    this.deleteItem(reservationId);
 
+    this.finishSpinner();
+  };
+  componentDidMount() {
+    console.log("PROPSAI", this.props.data, this.props.navigation);
   }
 }
 const styles = StyleSheet.create({
@@ -205,7 +231,7 @@ const styles = StyleSheet.create({
   topHalf: {
     flex: 2,
     flexDirection: "column",
-    backgroundColor:'yellow'
+    backgroundColor: "yellow"
   },
   bottomHalf: {
     flex: 1,
@@ -241,5 +267,8 @@ const styles = StyleSheet.create({
     textAlign: "right",
     justifyContent: "flex-end",
     paddingRight: 5
+  },
+  spinnerTextStyle: {
+    color: "grey"
   }
 });
