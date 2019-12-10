@@ -13,16 +13,17 @@ import {
   RefreshControl
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import MapView, { Marker } from "react-native-maps";
-
+import FlashMessage from "react-native-flash-message";
 import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
 import ReservedDetails from "../components/ReservedDetails";
 import ReservationList from "../components/reservationList";
 import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
+import { getTodaysTime } from "../components/getTodaysTime";
+import { formateTime } from "../components/timeConverte";
 import firebase, { firestore } from "firebase";
 import "firebase/firestore";
+import undefined from "firebase/firestore";
 
 class ReservationScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -38,6 +39,8 @@ class ReservationScreen extends React.Component {
     },
     modalReservationVisible: false,
     allEvents: [],
+    activeReservations: [],
+    inactiveReservations: [],
     data: [],
     modalReservationVisiblee: false,
     checkSpinner: false,
@@ -50,43 +53,7 @@ class ReservationScreen extends React.Component {
     const { dummyReducer = {} } = this.props;
     const { text = "" } = dummyReducer;
     console.log(text);
-    return this.state.allEvents.length === 0 ? (
-      this.state.checkSpinner ? (
-        <ActivityIndicator size="large" color="grey" />
-      ) : (
-        <View style={styles.container}>
-          <View style={styles.all}>
-            <Ionicons
-              name="md-information-circle-outline"
-              size={45}
-              color="#555"
-            />
-            <Text style={{ fontSize: 25, color: "lightgrey" }}>
-              Nėra aktyvių rezervacijų :[
-            </Text>
-            <TouchableOpacity
-              onPress={() => navigate("Main")}
-              style={[styles.button1, { marginTop: 100 }]}
-            >
-              <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
-                Ieškoti aikštelės
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigate("Events")}
-              style={[
-                styles.button1,
-                { backgroundColor: "lightgrey", marginTop: 15 }
-              ]}
-            >
-              <Text style={{ fontSize: moderateScale(17), color: "black" }}>
-                Ieškoti žaidejų
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )
-    ) : (
+    return (
       <View
         style={{
           flex: 1,
@@ -98,147 +65,282 @@ class ReservationScreen extends React.Component {
       >
         <View
           style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            alignItems: "stretch",
-            marginLeft: 10,
-            marginTop: 30,
-            width: moderateScale(330)
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F5FCFF",
+            flexDirection: "column"
           }}
         >
-          <View style={{ justifyContent: "flex-start", alignItems: "center" }}>
-            <Text style={{ fontSize: 20, color: "black" }}>
-              Aktyvios rezervacijos
-            </Text>
-          </View>
-          <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
-            <TouchableOpacity
-              onPress={() => this.setState({ modalCreateEventVisible: true })}
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "stretch",
+              marginLeft: 10,
+              marginTop: 30,
+              width: moderateScale(330)
+            }}
+          >
+            <View
+              style={{ justifyContent: "flex-start", alignItems: "center" }}
             >
-              {/* <Ionicons name="plus" size={25} color="#90c5df" /> */}
-            </TouchableOpacity>
+              <Text style={{ fontSize: 20, color: "black" }}>
+                Aktyvios rezervacijos
+              </Text>
+            </View>
+            <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
+              <TouchableOpacity
+                onPress={() => this.setState({ modalCreateEventVisible: true })}
+              >
+                {/* <Ionicons name="plus" size={25} color="#90c5df" /> */}
+              </TouchableOpacity>
+            </View>
           </View>
+          {this.state.checkSpinner ? (
+            <View style={{ marginTop: 2, flex: 1 }}>
+              <ActivityIndicator size="large" color="green" />
+            </View>
+          ) : (
+            <FlatList
+              style={{ marginTop: 2, flex: 1 }}
+              data={this.state.activeReservations}
+              renderItem={this.renderItems}
+              extraData={this.state.activeReservations}
+              keyExtractor={item => item.id}
+              onRefresh={() => this.onRefreshing()}
+              refreshing={this.state.refresh}
+              ListEmptyComponent={this.renderEmptyList}
+            />
+          )}
         </View>
-
-        <FlatList
-          style={{ marginTop: 2, flex: 1 }}
-          data={this.state.allEvents}
-          renderItem={this.renderItems}
-          keyExtractor={item => item.id}
-          onRefresh={() => this.onRefreshing()}
-          refreshing={this.state.refresh}
-        />
-        {/* <ReservedDetails
-        visible={this.state.modalReservationVisiblee}
-        data={this.state.data}
-        closeModal={this.reservationModalClose}
-        createEvent={this.createEvent}
-    /> */}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F5FCFF",
+            flexDirection: "column"
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "stretch",
+              marginLeft: 10,
+              marginTop: 30,
+              width: moderateScale(330)
+            }}
+          >
+            <View
+              style={{ justifyContent: "flex-start", alignItems: "center" }}
+            >
+              <Text style={{ fontSize: 20, color: "black" }}>
+                Rezervacijų istorija
+              </Text>
+            </View>
+            <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
+              <TouchableOpacity
+                onPress={() => this.setState({ modalCreateEventVisible: true })}
+              >
+                {/* <Ionicons name="plus" size={25} color="#90c5df" /> */}
+              </TouchableOpacity>
+            </View>
+          </View>
+          {this.state.checkSpinner ? (
+            <View style={{ marginTop: 2, flex: 1 }}>
+              <ActivityIndicator size="large" color="green" />
+            </View>
+          ) : (
+            <FlatList
+              style={{ marginTop: 2, flex: 1 }}
+              data={this.state.inactiveReservations}
+              renderItem={this.renderItems}
+              extraData={this.state.inactiveReservations}
+              keyExtractor={item => item.id}
+              onRefresh={() => this.onRefreshing()}
+              refreshing={this.state.refresh}
+              ListEmptyComponent={this.renderEmptyHistoryList}
+            />
+          )}
+        </View>
+        <FlashMessage ref="resSuccess" position="top" />
       </View>
     );
   }
 
   componentDidMount() {
-    console.log(
-      "EJO PROPSAI ",
-      this.props.userId,
-      this.props.navigation.getParam("data")
-    );
-    const ifPropsComing = this.props.navigation.getParam("data");
+    console.log("componentDidMount", ifPropsComing, reservationSuccess);
+    let reservationSuccess = this.props.navigation.getParam("success");
+
+    let ifPropsComing = this.props.navigation.getParam("data");
     this.getUserReservations();
-    if (ifPropsComing !== undefined) {
-      this.setState(
-        {
-          modalReservationVisible: true,
-          data: this.props.navigation.getParam("data")
-        },
-        () =>
-          console.log(
-            ifPropsComing,
-            "true ifas",
-            this.props,
-            this.props.navigation.state.params.data
-          )
-      );
+    if (reservationSuccess) {
+      this.showWarn();
+      this.getUserReservations();
     }
-    console.log(ifPropsComing, "whateva ifas");
+    if (ifPropsComing !== undefined) {
+      console.log(ifPropsComing, "whateva ifas");
+    }
   }
 
+  showWarn = () => {
+    this.refs.resSuccess.showMessage({
+      message: "Rezervacija atlikta sėkmingai!",
+      type: "success",
+      duration: 10000,
+      autoHide: true,
+      hideOnPress: true
+    });
+  };
+
+  ifJustAdded = resId => {
+    let reservationSuccess = this.props.navigation.getParam("success");
+    let propsData = this.props.navigation.getParam("data");
+    if (reservationSuccess) {
+      if (resId === propsData.reservationId) return true;
+      else return false;
+    }
+  };
+
   onRefreshing = () => {
-    this.setState({ refresh: true });
+    this.setState({ refresh: true }, () => this.getUserReservations());
     setTimeout(() => {
       this.setState({ refresh: false });
     }, 2000);
   };
 
   startSpinner = () => {
-    setTimeout(() => {
-      this.setState({ checkSpinner: true });
-    }, 1000);
+    this.setState({ checkSpinner: true });
   };
 
   getUserReservations = async () => {
+    console.log("BLABLABLA", this.props.userId, this.getTodaysDate());
     this.startSpinner();
-    let eventList = [];
+    let activeReservations = [];
+    let inactiveReservations = [];
+    let yesterday = this.getYesterdaysDate();
+    console.log("AR vyksta ?", yesterday, this.props.userId);
     await firebase
       .firestore()
       .collection("reservations")
       .where("userId", "==", this.props.userId)
+      .where("date", ">=", yesterday)
+      .orderBy("date", "asc")
+      .orderBy("reservationStart", "asc")
       .get()
       .then(res => {
-        console.log("IESKOT ID RES", res);
+        console.log("res", res);
         if (res.docs.length > 0) {
           res.forEach(data => {
-            console.log("IESKOT ID RES", data);
-            let eventDetails = {
-              stadiumId: data._document.proto.fields.stadiumId.stringValue,
-              stadiumName: data._document.proto.fields.stadiumName.stringValue,
-              reservationTime: data._document.proto.fields.time.stringValue,
-              reservationDate: data._document.proto.fields.date.stringValue,
-              userId: data._document.proto.fields.userId.stringValue,
-              reservationId: data.id
-            };
-            eventList.push(eventDetails);
-            console.log(eventList);
+            const propsData = data._document.proto.fields;
+            console.log("IESKOT ID RES", propsData);
+            if (
+              this.checkIfResActive({
+                date: propsData.date.stringValue,
+                time: propsData.time.stringValue,
+                start: propsData.reservationStart.stringValue,
+                finish: propsData.reservationFinish.stringValue
+              })
+            ) {
+              let activeResDetails = {
+                stadiumId: propsData.stadiumId.stringValue,
+                stadiumName: propsData.stadiumName.stringValue,
+                reservationTime: propsData.time.stringValue,
+                reservationStart: propsData.reservationStart.stringValue,
+                reservationFinish: propsData.reservationFinish.stringValue,
+                reservationDate: propsData.date.stringValue,
+                userId: propsData.userId.stringValue,
+                reservationId: data.id,
+                active: true,
+                started: this.checkIfResStarted({
+                  start: propsData.reservationStart.stringValue
+                })
+              };
+              activeReservations.push(activeResDetails);
+              console.log("Active list", activeReservations);
+            } else {
+              let inactiveResDetails = {
+                stadiumId: propsData.stadiumId.stringValue,
+                stadiumName: propsData.stadiumName.stringValue,
+                reservationTime: propsData.time.stringValue,
+                reservationStart: propsData.reservationStart.stringValue,
+                reservationFinish: propsData.reservationFinish.stringValue,
+                reservationDate: propsData.date.stringValue,
+                userId: propsData.userId.stringValue,
+                reservationId: data.id,
+                active: false
+              };
+              inactiveReservations.push(inactiveResDetails);
+              console.log("Inactive list", inactiveReservations);
+            }
           });
-        } else {
-          eventList = [];
         }
       });
-    this.setState({ allEvents: eventList });
+    this.setState(
+      {
+        activeReservations,
+        inactiveReservations,
+        checkSpinner: false
+      },
+      () => console.log("Ar bv kazkas")
+    );
+  };
+  checkIfResStarted = res => {
+    let timeNow = getTodaysTime();
+    if (res.start < timeNow) {
+      return true;
+    } else return false;
   };
 
-  deleteReservation = reservationId => {
-    // console.log('PIRMAS CHEKAS', reservationId)
-    this.getUserReservations();
-
-    // let allReservations = Array.from(this.state.allEvents);
-    // const index = allReservations.findIndex(item=>{
-    //   item.reservationId === reservationId
-    // });
-    // allReservations.slice(index, 1);
-    // console.log('ANTRAS CHEKAS', allReservations)
-
-    // this.setState({allEvents:allReservations}, ()=>console.log('PIRMAS CHEKAS', this.state.allEvents));
+  checkIfResActive = item => {
+    let today = this.getTodaysDate();
+    let timeNow = getTodaysTime();
+    let reservationDate = item.date;
+    let reservationeTime = formateTime(item.time);
+    console.log("asdsa", timeNow, reservationeTime);
+    if (reservationDate > today) return true;
+    else if (reservationDate === today) {
+      if (timeNow < item.finish) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   };
+  getTodaysDate() {
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    let year = today.getFullYear();
+    let todayIs = `${year}-${month}-${day}`;
+    console.log("Siandien yra", todayIs);
+    return todayIs;
+  }
+  getYesterdaysDate() {
+    let today = new Date();
+    let day = today.getDate() - 1;
+    let month = today.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    let year = today.getFullYear();
+    let todayIs = `${year}-${month}-${day}`;
+    console.log("Siandien yra", todayIs);
+    return todayIs;
+  }
+
   moreResDetails = item => {
     this.props.navigation.navigate("ReservationDetails", {
-      onGoBack: () => this.deleteReservation(),
+      onGoBack: () => {
+        this.getUserReservations();
+      },
       data: item
     });
-  };
-
-  reservationModalClose = () => {
-    firebase
-      .firestore()
-      .collection("reservations")
-      .doc(this.state.data.reservationId.id)
-      .delete();
-    this.setState({ modalReservationVisible: false });
-  };
-
-  reservationModalClose = () => {
-    this.setState({ modalReservationVisiblee: false });
   };
 
   renderItems = ({ item }) => {
@@ -248,7 +350,7 @@ class ReservationScreen extends React.Component {
           flexDirection: "row",
           width: moderateScale(330),
           flex: 1,
-          height: 80,
+          height: moderateScale(80),
           marginTop: 20,
           borderRadius: 5,
           borderColor: "#90c5df",
@@ -265,9 +367,15 @@ class ReservationScreen extends React.Component {
           }}
         >
           <MCIcons
-            name="calendar-clock"
+            name={
+              item.active
+                ? item.started
+                  ? "alarm-check"
+                  : "alarm"
+                : "alarm-off"
+            }
             size={moderateScale(32)}
-            color="#55A6CE"
+            color={item.active ? (item.started ? "#11D411" : "#2F89E4") : "red"}
           />
         </View>
 
@@ -289,29 +397,93 @@ class ReservationScreen extends React.Component {
             {item.reservationDate}
           </Text>
           <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-            {item.reservationTime}
+            Pradžia {item.reservationStart}
           </Text>
           <Text style={{ color: "black", fontSize: moderateScale(14) }}>
             {item.stadiumName}
           </Text>
         </View>
 
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
             flex: 1
           }}
+          onPressIn={() => {
+            this.moreResDetails(item);
+          }}
         >
+          <Ionicons name="ios-more" size={moderateScale(30)} color="#09549F" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  renderEmptyList = () => {
+    const { navigate } = this.props.navigation;
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            width: moderateScale(330),
+            height: moderateScale(330)
+          }
+        ]}
+      >
+        <View style={styles.all}>
+          <Ionicons
+            name="md-information-circle-outline"
+            size={45}
+            color="#555"
+          />
+          <Text style={{ fontSize: 25, color: "lightgrey" }}>
+            Nėra rezervacijų istorijos
+          </Text>
           <TouchableOpacity
-            style={{ flexDirection: "row" }}
-            onPressIn={() => {
-              this.moreResDetails(item);
-            }}
+            onPress={() => navigate("Main")}
+            style={[styles.button1, { marginTop: 100 }]}
           >
-            <Ionicons name="ios-more" size={25} color="hsl(126, 62%, 40%)" />
+            <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
+              Ieškoti aikštelės
+            </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigate("Events")}
+            style={[
+              styles.button1,
+              { backgroundColor: "lightgrey", marginTop: 15 }
+            ]}
+          >
+            <Text style={{ fontSize: moderateScale(17), color: "black" }}>
+              Ieškoti žaidejų
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+  renderEmptyHistoryList = () => {
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            width: moderateScale(330),
+            height: moderateScale(300)
+          }
+        ]}
+      >
+        <View style={styles.all}>
+          <Ionicons
+            name="md-information-circle-outline"
+            size={45}
+            color="#555"
+          />
+          <Text style={{ fontSize: 25, color: "lightgrey" }}>
+            Nėra istorijos
+          </Text>
         </View>
       </View>
     );
@@ -337,7 +509,7 @@ const styles = StyleSheet.create({
   button1: {
     width: moderateScale(200),
     height: 40,
-    backgroundColor: "red",
+    backgroundColor: "lightblue",
     alignItems: "center",
     justifyContent: "center",
 

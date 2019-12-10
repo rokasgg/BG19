@@ -21,7 +21,7 @@ import ModalFilter from "../components/modalFilter";
 import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";
 import Icon from "react-native-vector-icons/AntDesign";
-
+import { getTodaysTime } from "../components/getTodaysTime";
 import firebase from "firebase";
 import "firebase/firestore";
 
@@ -196,6 +196,7 @@ class Main extends React.Component {
           data={this.state.markersData}
           closeModal={this.detailsModalClose}
           createEvent={this.createEvent}
+          navigation={this.compareDates}
         />
         {/* ________________________________________---STADIUM DETAILS MODAL---________________________________________ */}
 
@@ -401,6 +402,61 @@ class Main extends React.Component {
     );
     console.log(stadiumArray);
     this.setState({ markers: stadiumArray, markersOfficial: stadiumArray });
+  };
+
+  getTodaysDate() {
+    let today = new Date();
+
+    let day = today.getDate();
+    let month = today.getMonth() + 1;
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+    let year = today.getFullYear();
+    let todayIs = `${year}-${month}-${day}`;
+
+    return todayIs;
+  }
+
+  getingResTime = () => {
+    let nowtime = Date.now();
+    let today = new Date();
+    let time = {
+      mil: today.getMilliseconds(),
+      sec: today.getSeconds(),
+      min: today.getMinutes(),
+      hr: today.getHours()
+    };
+    let get = today.getTime();
+    if (time.sec < 10) time.sec = "0" + time.sec;
+    if (time.min < 10) time.min = "0" + time.min;
+    if (time.hr < 10) time.hr = "0" + time.hr;
+
+    let formmedtTime = `${time.hr}:${time.min}:${time.sec}:${
+      time.mil
+    }, Dar priedo ${Date.now()}`;
+    return formmedtTime;
+  };
+
+  compareDates = () => {
+    let timeNow = getTodaysTime();
+    let mili = this.getingResTime();
+    let mili2 = this.getingResTime();
+    let mili3 = this.getingResTime();
+    let mili4 = this.getingResTime();
+    let mili5 = this.getingResTime();
+    console.log(
+      "KIEK VALANDU SENI ?",
+      "-Dabar yra ",
+      timeNow,
+      "ir jei rezervuotume laikas yra:",
+      mili,
+      mili2
+    );
+    console.log("Time", mili);
+    console.log("Time", mili2);
+    console.log("Time", mili3);
+    console.log("Time", mili4);
+    console.log("Time", mili5);
   };
 
   componentDidMount() {

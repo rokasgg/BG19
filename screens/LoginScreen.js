@@ -67,7 +67,10 @@ class LoginScreen extends React.Component {
         if (typeof isLogginSuccess !== "object" && isLogginSuccess === true) {
           this.finishSpinner();
         } else {
-          this.setState({ signInErrorMessage: isLogginSuccess.message });
+          this.setState({
+            signInErrorMessage: isLogginSuccess.message,
+            spinner: false
+          });
         }
       });
     }
@@ -188,6 +191,7 @@ class LoginScreen extends React.Component {
           visible={this.state.spinner}
           textContent={"Vykdoma..."}
           textStyle={{ color: "#fff" }}
+          overlayColor="rgba(0, 0, 0, 0.5)"
         />
       </ImageBackground>
     );

@@ -182,15 +182,11 @@ export default class modalFilter extends React.Component {
   render() {
     return (
       <Modal
-        visible={this.props.visible}
+        isVisible={this.props.visible}
+        animationIn="slideInUp"
         onSwipeComplete={this.props.closeModal}
-        hasBackdrop={true}
         backdropColor="black"
-        backdropOpacity={0.8}
-        animationInTiming={10000}
-        animationOutTiming={10000}
-        backdropTransitionInTiming={2000}
-        backdropTransitionOutTiming={2000}
+        backdropOpacity={0.3}
         style={{
           justifyContent: "center",
           alignItems: "center",
@@ -213,18 +209,22 @@ export default class modalFilter extends React.Component {
               borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-          <View style={{marginLeft: moderateScale(15),
-            flex: 1,
-            marginBottom:moderateScale(5),
-            justifyContent:'flex-end',
-            alignItems:'flex-end',
-            borderBottomWidth: 1,
-            borderColor: "hsl(126, 62%, 40%)",}}>
+            <View
+              style={{
+                marginLeft: moderateScale(15),
+                flex: 1,
+                marginBottom: moderateScale(5),
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)"
+              }}
+            >
               <Text
                 style={{
                   color: "black",
-                  fontSize: moderateScale(11),             
-                  paddingBottom:moderateScale(1)
+                  fontSize: moderateScale(11),
+                  paddingBottom: moderateScale(1)
                 }}
               >
                 Dangos tipas
@@ -249,9 +249,9 @@ export default class modalFilter extends React.Component {
                   style={{
                     flex: 1,
                     flexDirection: "row",
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    paddingLeft:moderateScale(20)
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    paddingLeft: moderateScale(20)
                   }}
                 >
                   <TouchableOpacity
@@ -283,9 +283,9 @@ export default class modalFilter extends React.Component {
                 <View
                   style={{
                     flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    paddingLeft: moderateScale(20)
                   }}
                 >
                   <TouchableOpacity
@@ -363,18 +363,22 @@ export default class modalFilter extends React.Component {
               borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <View style={{marginLeft: moderateScale(15),
-              flex: 1,
-              paddingTop:moderateScale(3),
-              justifyContent:'flex-end',
-              alignItems:'flex-end',
-              borderBottomWidth: 1,
-              borderColor: "hsl(126, 62%, 40%)",}}>
+            <View
+              style={{
+                marginLeft: moderateScale(15),
+                flex: 1,
+                paddingTop: moderateScale(3),
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)"
+              }}
+            >
               <Text
                 style={{
                   color: "black",
-                  fontSize: moderateScale(11),             
-                  paddingBottom:moderateScale(1)
+                  fontSize: moderateScale(11),
+                  paddingBottom: moderateScale(1)
                 }}
               >
                 Stadiono tipas
@@ -392,8 +396,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                  alignItems: "flex-start",
+                  paddingLeft: moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -426,8 +430,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                  alignItems: "flex-start",
+                  paddingLeft: moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -469,18 +473,22 @@ export default class modalFilter extends React.Component {
               borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <View style={{marginLeft: moderateScale(15),
-              flex: 1,
-              paddingTop:moderateScale(3),
-              justifyContent:'flex-end',
-              alignItems:'flex-end',
-              borderBottomWidth: 1,
-              borderColor: "hsl(126, 62%, 40%)",}}>
+            <View
+              style={{
+                marginLeft: moderateScale(15),
+                flex: 1,
+                paddingTop: moderateScale(3),
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                borderBottomWidth: 1,
+                borderColor: "hsl(126, 62%, 40%)"
+              }}
+            >
               <Text
                 style={{
                   color: "black",
-                  fontSize: moderateScale(11),             
-                  paddingBottom:moderateScale(1)
+                  fontSize: moderateScale(11),
+                  paddingBottom: moderateScale(1)
                 }}
               >
                 Kaina
@@ -498,8 +506,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                  alignItems: "flex-start",
+                  paddingLeft: moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -532,8 +540,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                  alignItems: "flex-start",
+                  paddingLeft: moderateScale(20)
                 }}
               >
                 <TouchableOpacity
@@ -660,8 +668,8 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: 'flex-start',
-                  paddingLeft:moderateScale(20)
+                  alignItems: "flex-start",
+                  paddingLeft: moderateScale(20)
                 }}
               >
                 <TouchableOpacity

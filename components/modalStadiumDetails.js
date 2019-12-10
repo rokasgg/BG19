@@ -167,7 +167,7 @@ export default class modalStadiumDetails extends React.Component {
                 styles.button,
                 { flexDirection: "row", justifyContent: "space-around" }
               ]}
-              onPress={this.props.createEvent}
+              onPress={this.props.navigation}
             >
               <IconFeather
                 name="navigation"

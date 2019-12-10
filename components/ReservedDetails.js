@@ -7,7 +7,8 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  Picker
+  Picker,
+  Alert
 } from "react-native";
 import { moderateScale } from "./ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -17,13 +18,15 @@ import FlashMessage from "react-native-flash-message";
 import Spinner from "react-native-loading-spinner-overlay";
 import firebase, { firestore } from "firebase";
 import "firebase/firestore";
+import AskPerm from "../components/askPerm";
 
 export default class ReservedDetails extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
     super(props);
     this.state = {
-      spinner: false
+      spinner: false,
+      askPermVisible: false
     };
   }
 
@@ -89,6 +92,7 @@ export default class ReservedDetails extends React.Component {
                 <Text style={styles.textRight}>{data.stadiumName}</Text>
               ) : null}
             </View>
+
             <View
               style={{
                 flexDirection: "row",
@@ -114,9 +118,9 @@ export default class ReservedDetails extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Rezervacijos ID:</Text>
+              <Text style={styles.textLeft}>Rezervacijos pradžia:</Text>
               {data ? (
-                <Text style={styles.textRight}>{data.reservationId}</Text>
+                <Text style={styles.textRight}>{data.reservationStart}</Text>
               ) : null}
             </View>
             <View
@@ -129,9 +133,9 @@ export default class ReservedDetails extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Rezervacijos laikas:</Text>
+              <Text style={styles.textLeft}>Rezervacijos pabaiga:</Text>
               {data ? (
-                <Text style={styles.textRight}>{data.reservationTime}</Text>
+                <Text style={styles.textRight}>{data.reservationFinish}</Text>
               ) : null}
             </View>
           </View>
@@ -163,21 +167,38 @@ export default class ReservedDetails extends React.Component {
                 Grižti
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button1}
-              onPress={() => this.cancelReservation(data.reservationId)}
-            >
-              <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
-                Atšaukti rezervaciją
-              </Text>
-            </TouchableOpacity>
+            {data.active ? (
+              data.started ? null : (
+                <TouchableOpacity
+                  style={styles.button1}
+                  onPress={() => this.askPermToDelete()}
+                >
+                  <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
+                    Atšaukti rezervaciją
+                  </Text>
+                </TouchableOpacity>
+              )
+            ) : null}
           </View>
           <Spinner
             visible={this.state.spinner}
-            textContent={"Vykdoma..."}
+            textContent={"Atšaukiama rezervacija..."}
             textStyle={styles.spinnerTextStyle}
+            overlayColor="rgba(0,0,0,0.5)"
           />
         </View>
+        <AskPerm
+          visible={this.state.askPermVisible}
+          acceptBtnText="Atšaukti"
+          declineBtnText="Grįžti"
+          message="Ar tikrai norite atšaukti rezervaciją ?"
+          accept={() => {
+            this.cancelReservation(data.reservationId);
+          }}
+          decline={() => {
+            this.setState({ askPermVisible: false });
+          }}
+        />
         {/* //</Modal>  */}
         {/* <FlashMessage ref="war" position="top" /> */}
       </View>
@@ -216,8 +237,13 @@ export default class ReservedDetails extends React.Component {
 
     this.finishSpinner();
   };
+
+  askPermToDelete = () => {
+    this.setState({ askPermVisible: true });
+  };
+
   componentDidMount() {
-    console.log("PROPSAI", this.props.data, this.props.navigation);
+    console.log("PROPSAI", this.props, this.props.navigation);
   }
 }
 const styles = StyleSheet.create({
@@ -269,6 +295,6 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   spinnerTextStyle: {
-    color: "grey"
+    color: "#fff"
   }
 });
