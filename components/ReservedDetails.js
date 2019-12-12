@@ -14,19 +14,25 @@ import { moderateScale } from "./ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import MapView, { Marker } from "react-native-maps";
 import { Dimensions } from "react-native";
-import FlashMessage from "react-native-flash-message";
+import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
 import firebase, { firestore } from "firebase";
 import "firebase/firestore";
 import AskPerm from "../components/askPerm";
+import ModalCreateSearch from "../components/modalCreateSearch";
+import { getTodaysTime } from "../components/getTodaysTime";
+import { getTimeSeconds } from "../components/getTimeSeconds";
+import FlashMessage from "react-native-flash-message";
 
-export default class ReservedDetails extends React.Component {
+class ReservedDetails extends React.Component {
   static navigationOptions = { header: null };
   constructor(props) {
     super(props);
     this.state = {
       spinner: false,
-      askPermVisible: false
+      spinnerText: "",
+      askPermVisible: false,
+      modalCreateSearch: false
     };
   }
 
@@ -138,7 +144,46 @@ export default class ReservedDetails extends React.Component {
                 <Text style={styles.textRight}>{data.reservationFinish}</Text>
               ) : null}
             </View>
+            {data.active ? (
+              data.started ? null : (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: moderateScale(375),
+                    borderColor: "hsl(186, 62%, 40%)",
+                    borderBottomWidth: 1,
+                    marginTop: moderateScale(5)
+                  }}
+                >
+                  <Text
+                    style={[styles.textLeft, { fontSize: moderateScale(13) }]}
+                  >
+                    Trūksta treniruotėje žaidėjų?
+                  </Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.button1,
+                      {
+                        width: moderateScale(120),
+                        height: 35,
+                        backgroundColor: "purple"
+                      }
+                    ]}
+                    onPress={this.navToEvents}
+                  >
+                    <Text
+                      style={{ fontSize: moderateScale(13), color: "#fff" }}
+                    >
+                      Sukurti paiešką
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )
+            ) : null}
           </View>
+
           <View
             style={{
               justifyContent: "space-around",
@@ -182,7 +227,7 @@ export default class ReservedDetails extends React.Component {
           </View>
           <Spinner
             visible={this.state.spinner}
-            textContent={"Atšaukiama rezervacija..."}
+            textContent={this.state.spinnerText}
             textStyle={styles.spinnerTextStyle}
             overlayColor="rgba(0,0,0,0.5)"
           />
@@ -192,15 +237,13 @@ export default class ReservedDetails extends React.Component {
           acceptBtnText="Atšaukti"
           declineBtnText="Grįžti"
           message="Ar tikrai norite atšaukti rezervaciją ?"
-          accept={() => {
-            this.cancelReservation(data.reservationId);
-          }}
+          accept={this.cancelReservation}
           decline={() => {
             this.setState({ askPermVisible: false });
           }}
         />
-        {/* //</Modal>  */}
-        {/* <FlashMessage ref="war" position="top" /> */}
+
+        <FlashMessage ref="warnning" position="top" />
       </View>
     );
   }
@@ -213,15 +256,17 @@ export default class ReservedDetails extends React.Component {
       hideOnPress: true
     });
   };
-  deleteItem = async reservationId => {
+  deleteItem = async () => {
+    let data = this.props.navigation.state.params.data;
+    console.log(data.reservationId, "blabalbal");
     await firebase
       .firestore()
       .collection("reservations")
-      .doc(reservationId)
+      .doc(data.reservationId)
       .delete();
   };
-  startSpinner = () => {
-    this.setState({ spinner: true });
+  startSpinner = text => {
+    this.setState({ spinnerText: text, spinner: true, askPermVisible: false });
   };
   finishSpinner = () => {
     setTimeout(() => {
@@ -231,11 +276,22 @@ export default class ReservedDetails extends React.Component {
     }, 5000);
   };
   cancelReservation = async reservationId => {
-    this.startSpinner();
+    this.startSpinner("Atšaukiama rezervacija...");
     this.props.navigation.state.params.onGoBack(reservationId);
     this.deleteItem(reservationId);
 
     this.finishSpinner();
+  };
+  navToEvents = () => {
+    let data = this.props.navigation.state.params.data;
+
+    console.log("navToEvents", data, getTodaysTime());
+    this.props.navigation.navigate("Events", {
+      success: true,
+      reservationData: data,
+      dateTime: getTimeSeconds(),
+      resId: data.reservationId
+    });
   };
 
   askPermToDelete = () => {
@@ -298,3 +354,7 @@ const styles = StyleSheet.create({
     color: "#fff"
   }
 });
+const mapStateToProps = state => ({
+  userId: state.auth.userUid
+});
+export default connect(mapStateToProps)(ReservedDetails);

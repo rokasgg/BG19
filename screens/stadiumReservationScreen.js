@@ -26,6 +26,7 @@ import firebase from "firebase";
 import "firebase/firestore";
 import { formateTime } from "../components/timeConverte";
 import { getTodaysTime } from "../components/getTodaysTime";
+import { getTodaysDate } from "../components/getTodaysDate";
 
 class stadiumReservationScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -106,19 +107,9 @@ class stadiumReservationScreen extends React.Component {
       console.log(this.state.markersInfo.adress)
     );
   }
-  getTodaysDate() {
-    let today = new Date();
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-    let year = today.getFullYear();
-    let todayIs = `${year}-${month}-${day}`;
-    console.log("Siandien yra", todayIs);
-    return todayIs;
-  }
+
   currentDateInfo = day => {
-    const selectedDay = this.getTodaysDate();
+    const selectedDay = getTodaysDate();
     const selected = { [selectedDay]: { selected: true, marked: true } };
     this.setState(
       { selectedDays: selected, selectedDay, downloadingData: true },
@@ -162,7 +153,7 @@ class stadiumReservationScreen extends React.Component {
   };
 
   async getActiveRservationsNumb() {
-    let today = this.getTodaysDate();
+    let today = getTodaysDate();
     let list = [];
     let qwery = firebase
       .firestore()
@@ -190,7 +181,7 @@ class stadiumReservationScreen extends React.Component {
     });
   }
   checkIfResActive = item => {
-    let today = this.getTodaysDate();
+    let today = getTodaysDate();
     let timeNow = getTodaysTime();
     let reservationDate = item.date;
     let reservationeTime = formateTime(item.time);
@@ -208,7 +199,7 @@ class stadiumReservationScreen extends React.Component {
   };
 
   onFinish = async () => {
-    let today = this.getTodaysDate();
+    let today = getTodaysDate();
     console.log(
       "Tikrinam ar pasirinkta data yra didesnė už šiandiene",
       this.state.selectedDay,
@@ -225,8 +216,13 @@ class stadiumReservationScreen extends React.Component {
             longitude: propsData.longitude,
             latitude: propsData.latitude,
             reservationTime: this.state.selectedTime.time,
+            reservationStart: this.state.selectedTime.startTime,
+            reservationFinish: this.state.selectedTime.finishTime,
             reservationDate: this.state.selectedDay,
-            reservationId: ""
+            stadiumId: propsData.stadiumId,
+            reservationId: "",
+            active: true,
+            started: false
           };
           let saveToFirebase = {
             stadiumName: propsData.stadiumName,

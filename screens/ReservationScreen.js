@@ -20,10 +20,10 @@ import ReservedDetails from "../components/ReservedDetails";
 import ReservationList from "../components/reservationList";
 import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { getTodaysTime } from "../components/getTodaysTime";
+import { getTodaysDate } from "../components/getTodaysDate";
 import { formateTime } from "../components/timeConverte";
 import firebase, { firestore } from "firebase";
 import "firebase/firestore";
-import undefined from "firebase/firestore";
 
 class ReservationScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -171,17 +171,14 @@ class ReservationScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount", ifPropsComing, reservationSuccess);
+    console.log("componentDidMount", reservationSuccess);
     let reservationSuccess = this.props.navigation.getParam("success");
 
-    let ifPropsComing = this.props.navigation.getParam("data");
+    let propsFromReservation = this.props.navigation.getParam("data");
     this.getUserReservations();
     if (reservationSuccess) {
       this.showWarn();
-      this.getUserReservations();
-    }
-    if (ifPropsComing !== undefined) {
-      console.log(ifPropsComing, "whateva ifas");
+      this.moreResDetails(propsFromReservation);
     }
   }
 
@@ -216,7 +213,7 @@ class ReservationScreen extends React.Component {
   };
 
   getUserReservations = async () => {
-    console.log("BLABLABLA", this.props.userId, this.getTodaysDate());
+    console.log("BLABLABLA", this.props.userId, getTodaysDate());
     this.startSpinner();
     let activeReservations = [];
     let inactiveReservations = [];
@@ -255,7 +252,8 @@ class ReservationScreen extends React.Component {
                 reservationId: data.id,
                 active: true,
                 started: this.checkIfResStarted({
-                  start: propsData.reservationStart.stringValue
+                  start: propsData.reservationStart.stringValue,
+                  date: propsData.date.stringValue
                 })
               };
               activeReservations.push(activeResDetails);
@@ -289,13 +287,16 @@ class ReservationScreen extends React.Component {
   };
   checkIfResStarted = res => {
     let timeNow = getTodaysTime();
-    if (res.start < timeNow) {
-      return true;
-    } else return false;
+    let today = getTodaysDate();
+    if (today === res.date)
+      if (res.start < timeNow) {
+        return true;
+      } else return false;
+    else return false;
   };
 
   checkIfResActive = item => {
-    let today = this.getTodaysDate();
+    let today = getTodaysDate();
     let timeNow = getTodaysTime();
     let reservationDate = item.date;
     let reservationeTime = formateTime(item.time);
@@ -311,17 +312,7 @@ class ReservationScreen extends React.Component {
       return false;
     }
   };
-  getTodaysDate() {
-    let today = new Date();
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-    let year = today.getFullYear();
-    let todayIs = `${year}-${month}-${day}`;
-    console.log("Siandien yra", todayIs);
-    return todayIs;
-  }
+
   getYesterdaysDate() {
     let today = new Date();
     let day = today.getDate() - 1;
@@ -524,7 +515,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column"
   },
-
   textLeft: {
     color: "black",
     fontSize: moderateScale(15),

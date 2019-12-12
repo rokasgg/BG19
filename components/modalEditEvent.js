@@ -12,8 +12,9 @@ import { moderateScale } from "./ScaleElements";
 import DateTimePicker from "react-native-datepicker";
 import NumberCounter from "./numberCounter";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-export default class modalReservation extends React.Component {
+export default class modalEditEvent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +22,8 @@ export default class modalReservation extends React.Component {
       peopleNeeded: null,
       stadiumName: "",
       stadiumAddress: "",
-      time: null
+      time: null,
+      eventId: null
     };
   }
   showDateTimePicker = () => {
@@ -48,14 +50,16 @@ export default class modalReservation extends React.Component {
     if (prevProps.data !== this.props.data) {
       this.setState({
         stadiumName: this.props.data.stadiumName,
-        dateTime: this.props.data.reservationDate,
-        time: this.props.data.reservationStart,
-        stadiumAddress: this.props.data.reservationStart
+        dateTime: this.props.data.eventDate,
+        time: this.props.data.eventStart,
+        stadiumAddress: this.props.data.id,
+        peopleNeeded: parseInt(this.props.data.peopleNeed),
+        eventId: this.props.data.id
       });
       console.log("cozinam rerender", this.props.data);
     } else return false;
   }
-  onCreateEvent = () => {
+  editEvent = () => {
     console.log(
       this.state.stadiumName,
       this.state.stadiumAddress,
@@ -68,9 +72,13 @@ export default class modalReservation extends React.Component {
       peopleNeeded: this.state.peopleNeeded,
       eventDate: this.state.dateTime,
       eventStart: this.state.time,
-      stadiumId: this.props.data.stadiumId
+      id: this.props.data.id
     };
-    this.props.createEvent(searchDetails);
+    console.log(searchDetails);
+    this.props.editEvent(searchDetails);
+  };
+  deleteEvent = () => {
+    this.props.deleteEvent(this.props.data.id);
   };
 
   componentDidMount() {
@@ -82,8 +90,8 @@ export default class modalReservation extends React.Component {
     return (
       <Modal
         isVisible={this.props.visible}
-        onSwipeComplete={this.props.closeModal}
         onBackdropPress={this.props.closeModal}
+        onSwipeComplete={this.props.closeModal}
         hasBackdrop={true}
         backdropColor="black"
         backdropOpacity={0.4}
@@ -91,15 +99,14 @@ export default class modalReservation extends React.Component {
           justifyContent: "center",
           alignItems: "center"
         }}
-        backdropColor="black"
-        backdropOpacity={0.3}
       >
         <View
           style={{
             backgroundColor: "#f2f2f2",
             height: moderateScale(350),
             width: moderateScale(375),
-            borderRadius: 15
+            borderRadius: 15,
+            justifyContent: "center"
           }}
         >
           <View
@@ -241,12 +248,14 @@ export default class modalReservation extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: moderateScale(340),
+                height: moderateScale(45),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
               <Text style={styles.textLeft}>Ieškomų žmonių skaičius:</Text>
               <NumberCounter
+                data={parseInt(this.state.peopleNeeded)}
                 finishCount={count => this.onCounterChange(count)}
               />
             </View>
@@ -257,30 +266,43 @@ export default class modalReservation extends React.Component {
               flex: 1,
               flexDirection: "row",
               justifyContent: "space-around",
-              alignItems: "flex-start",
-              width: moderateScale(350),
-              alignSelf: "center"
+              alignItems: "center",
+              alignContent: "center",
+              alignSelf: "center",
+              width: moderateScale(350)
             }}
           >
             <TouchableOpacity
               style={[
                 styles.button,
-                { flexDirection: "row", justifyContent: "space-around" }
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  backgroundColor: "red"
+                }
               ]}
-              onPress={this.props.closeModal}
+              onPress={this.deleteEvent}
             >
-              <Icon name="times" size={18} color="#fff" />
-              <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
+              <Icon name="times" size={20} color="#fff" />
+              <Text style={{ color: "#fff", fontSize: moderateScale(17) }}>
+                Ištrinti
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.button,
-                { flexDirection: "row", justifyContent: "space-around" }
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  backgroundColor: "orange"
+                }
               ]}
-              onPress={this.onCreateEvent}
+              onPress={this.editEvent}
             >
-              <Icon name="search-plus" size={18} color="#fff" />
-              <Text style={{ color: "#fff", fontSize: 22 }}>Kurti paiešką</Text>
+              <Ionicons name="md-save" size={20} color="#fff" />
+              <Text style={{ color: "#fff", fontSize: moderateScale(17) }}>
+                Redaguoti
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -325,8 +347,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   button: {
-    width: moderateScale(120),
-    height: moderateScale(35),
+    width: moderateScale(100),
+    height: moderateScale(30),
     backgroundColor: "hsl(186, 62%, 40%)",
     alignItems: "center",
     marginBottom: 15,

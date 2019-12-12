@@ -404,19 +404,6 @@ class Main extends React.Component {
     this.setState({ markers: stadiumArray, markersOfficial: stadiumArray });
   };
 
-  getTodaysDate() {
-    let today = new Date();
-
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    if (month < 10) month = "0" + month;
-    if (day < 10) day = "0" + day;
-    let year = today.getFullYear();
-    let todayIs = `${year}-${month}-${day}`;
-
-    return todayIs;
-  }
-
   getingResTime = () => {
     let nowtime = Date.now();
     let today = new Date();
