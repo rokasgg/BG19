@@ -10,6 +10,7 @@ import {
   const initialState = {
     user: null,
     userUid: null,
+    userName:null,
     isLoading: false,
     isLoggedIn: false,
     error: null
@@ -31,6 +32,7 @@ import {
                 ...state,
                 user: action.payload.user,
                 userUid: action.payload.uid,
+                userName:action.payload.name,
                 isLoading: false,
                 isLoggedIn: true
             };
@@ -50,6 +52,7 @@ import {
                 ...state,
                 user: action.payload.user,
                 userUid: action.payload.uid,
+                userName:null,
                 isLoading: false,
                 isLoggedIn: false
             };

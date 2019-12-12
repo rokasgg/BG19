@@ -13,10 +13,11 @@ import Ionicons from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase";
 import "firebase/firestore";
 import Modal from "react-native-modalbox";
+import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default class EventDetails extends React.Component {
+class EventDetails extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -51,6 +52,7 @@ export default class EventDetails extends React.Component {
 
   getConnectedPeople = async () => {
     const propsData = this.props.navigation.state.params.item1;
+    let joinedPeople = [];
     await firebase
       .firestore()
       .collection("events")
@@ -60,9 +62,14 @@ export default class EventDetails extends React.Component {
       .then(res => {
         console.log("playeriai", res.docs.length, res);
         let total = this.state.peopleNeed - res.docs.length;
+        res.forEach(data=>{
+
+          joinedPeople.push({name:data._document.proto.fields.name.stringValue})
+        })
         this.setState({
           joinedPeopleCount: res.docs.length,
-          peopleNeed: total
+          peopleNeed: total,
+          connectedPlayers:joinedPeople
         });
       });
   };
@@ -94,11 +101,11 @@ export default class EventDetails extends React.Component {
       .collection("events")
       .doc(propsData.id)
       .collection("playersList")
-      .add({ name: "rokas" })
-      .then(res => {
-        console.log("id colekcijos", res.id);
-      });
+      .doc(this.props.userId)
+      .set({name:this.props.userName})
+      this.getConnectedPeople();
   };
+
   render() {
     const { navigate } = this.props.navigation;
     console.log(this.state.connectedPlayers, "prisijunge zaidejai");
@@ -382,3 +389,9 @@ const styles = StyleSheet.create({
     paddingRight: 5
   }
 });
+const mapStateToProps = state => ({
+  userId: state.auth.userUid,
+  userName:state.auth.userName,
+  redData:state.auth
+});
+export default connect(mapStateToProps)(EventDetails);

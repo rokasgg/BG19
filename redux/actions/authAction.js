@@ -19,6 +19,7 @@ const saveUserInfo = async (username, password) => {
 };
 
 export default function login(userName, password, isRemembered) {
+
   console.log("FIRE!");
   return dispatch => {
     dispatch({ type: AUTHENTICATE });
@@ -26,15 +27,19 @@ export default function login(userName, password, isRemembered) {
       .auth()
       .signInWithEmailAndPassword(userName, password)
       .then(response => {
+        console.log(response, 'LOGINO RES')
         const user = response.user.email;
         const uid = response.user.uid;
+        firebase.firestore().collection('users').doc(uid).get().then((snap)=>{
+          let name=snap._document.proto.fields.name.stringValue;
+          let position=snap._document.proto.fields.position.stringValue;
         if (isRemembered) {
           saveUserInfo(userName, password, isRemembered).then(() => {
-            dispatch({ type: AUTHENTICATE_SUCCESS, payload: { user, uid } });
+            dispatch({ type: AUTHENTICATE_SUCCESS, payload: { user, uid, name,position } });
           });
         } else {
-          dispatch({ type: AUTHENTICATE_SUCCESS, payload: { user, uid } });
-        }
+          dispatch({ type: AUTHENTICATE_SUCCESS, payload: { user, uid, name,position } });
+        }})
         return true;
       })
       .catch(err => {
