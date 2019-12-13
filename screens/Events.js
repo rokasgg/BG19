@@ -243,34 +243,22 @@ class Events extends React.Component {
     });
   };
 
-  createEvent = eventsInfo => {
-    console.log("Yoooo", eventsInfo);
-    let peopleNeed = parseInt(eventsInfo.peopleNeeded);
-    let eventDetails = {
-      stadiumName: eventsInfo.stadiumName,
-      eventDate: eventsInfo.dateTime,
-      stadiumAdress: eventsInfo.stadiumAddress,
-      peopleNeed: peopleNeed,
-      eventStart: eventsInfo.time,
-      id: "1"
-    };
-    // var newStateArray = this.state.ok;
-    // newStateArray.push(eventDetails);
-    console.log(this.state.allEvents);
-    let eventList = Array.from(this.state.allEvents);
-    eventList.push(eventDetails);
-    this.setState(
-      { allEvents: eventList, modalCreateEventVisible: false },
-      () => console.log("Ir cia visi eventai:", this.state.allEvents)
-    );
-  };
-
   //-------------------------------------CREATING AN EVENT
+
+  settingState = async data => {
+    console.log("SETINAMAS", data);
+    this.setState({ allEvents: data });
+  };
   newEvenet = async () => {
+    let today = getTodaysDate();
+    let nowTime = getTodaysTime();
     let eventList = [];
     await firebase
       .firestore()
       .collection("events")
+      .where("eventDate", ">=", today)
+      .orderBy("eventDate", "asc")
+      .orderBy("eventStart", "asc")
       .get()
       .then(res =>
         res.forEach(data => {
@@ -281,11 +269,19 @@ class Events extends React.Component {
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
             id: data.id
           };
-          eventList.push(eventDetails);
-          console.log(eventList);
+
+          if (eventDetails.eventDate === today) {
+            if (eventDetails.eventStart > nowTime) {
+              eventList.push(eventDetails);
+              console.log("Eventas", eventList, eventList.length);
+            }
+          } else {
+            eventList.push(eventDetails);
+          }
         })
       );
-    this.setState({ allEvents: eventList });
+
+    await this.settingState(eventList);
   };
 
   onRefreshing = () => {

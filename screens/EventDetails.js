@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Button
+  Button,
+  ActivityIndicator
 } from "react-native";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase";
@@ -16,6 +17,7 @@ import Modal from "react-native-modalbox";
 import { connect } from "react-redux";
 import { moderateScale } from "../components/ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import FlashMessage from "react-native-flash-message";
 
 class EventDetails extends React.Component {
   constructor() {
@@ -30,69 +32,127 @@ class EventDetails extends React.Component {
       buttonText: "Prisijungti",
       buttonIcon: "user-plus",
       buttonColor: "hsl(186, 62%, 40%)",
-      connectedPlayers: [
-        { name: "rokas" },
-        { name: "tomas" },
-        { name: "sonas" },
-        { name: "romas" },
-        { name: "tadas" },
-        { name: "sadat" },
-        { name: "mindaugas" }
-      ],
+      connectedPlayersList: [],
       refresh: false,
-      joinedPeopleCount: 0
+      joinedPeopleCount: 0,
+      numbOfPeopleNeeded: null
     };
   }
   static navigationOption = {
     title: "Where to"
   };
-  componentDidMount() {
-    this.getConnectedPeople();
+  async componentDidMount() {
+    await this.getConnectedPeople();
+    await this.checkIfUserIsJoined();
   }
 
-  getConnectedPeople = async () => {
-    const propsData = this.props.navigation.state.params.item1;
-    let joinedPeople = [];
-    await firebase
-      .firestore()
-      .collection("events")
-      .doc(propsData.id)
-      .collection("playersList")
-      .get()
-      .then(res => {
-        console.log("playeriai", res.docs.length, res);
-        let total = this.state.peopleNeed - res.docs.length;
-        res.forEach(data=>{
+  checkIfUserIsJoined = async () => {
+    console.log("error", this.state.connectedUsers);
+    this.setState({ spin: true });
 
-          joinedPeople.push({name:data._document.proto.fields.name.stringValue})
-        })
+    let connectedUsers = Array.from(this.state.connectedPlayersList);
+    for (let i = 0; i < connectedUsers.length; i++) {
+      if (connectedUsers[i].userId === this.props.userId) {
         this.setState({
-          joinedPeopleCount: res.docs.length,
-          peopleNeed: total,
-          connectedPlayers:joinedPeople
-        });
-      });
-  };
-
-  joinEvent = () => {
-    if (this.state.userJoined === false) {
-      this.setState(
-        {
           buttonIcon: "times",
           buttonText: "Atšaukti",
           buttonColor: "red",
-          userJoined: true
-        },
-        () => this.join()
-      );
-    } else {
+          userJoined: true,
+          spin: false
+        });
+      } else {
+        this.setState({
+          buttonText: "Prisijungti",
+          buttonIcon: "user-plus",
+          buttonColor: "hsl(186, 62%, 40%)",
+          userJoined: false,
+          spin: false
+        });
+      }
+    }
+  };
+
+  excapeEvent = async () => {
+    this.setState({ spin: true });
+
+    const propsDataEvent = this.props.navigation.state.params.item1;
+    if (this.state.userJoined === true) {
+      await firebase
+        .firestore()
+        .collection("events")
+        .doc(propsDataEvent.id)
+        .collection("playersList")
+        .doc(this.props.userId)
+        .delete();
+
       this.setState({
         buttonText: "Prisijungti",
         buttonIcon: "user-plus",
         buttonColor: "hsl(186, 62%, 40%)",
         userJoined: false
       });
+      this.getConnectedPeople();
     }
+  };
+
+  getConnectedPeople = async () => {
+    const propsDataEvent = this.props.navigation.state.params.item1;
+    let peopleNeeded = propsDataEvent.peopleNeed;
+    let joinedPeople = [];
+    await firebase
+      .firestore()
+      .collection("events")
+      .doc(propsDataEvent.id)
+      .collection("playersList")
+      .get()
+      .then(res => {
+        console.log("playeriai", res.docs.length, res, peopleNeeded);
+        let howManyStillNeeded = peopleNeeded - res.docs.length;
+        res.forEach(data => {
+          joinedPeople.push({
+            name: data._document.proto.fields.name.stringValue,
+            userId: data._document.proto.fields.userId.stringValue
+          });
+        });
+        this.setState(
+          {
+            howManyStillNeeded: howManyStillNeeded,
+            numbOfPeopleNeeded: peopleNeeded,
+            connectedPlayersList: joinedPeople,
+            spin: false
+          },
+          () =>
+            console.log(
+              "AFTERMATH",
+              this.state.howManyStillNeeded,
+              this.state.numbOfPeopleNeeded,
+              this.state.connectedPlayersList
+            )
+        );
+      });
+  };
+
+  joinEvent = () => {
+    if (this.state.connectedPlayersList.length < this.state.numbOfPeopleNeeded)
+      if (this.state.userJoined === false) {
+        this.setState(
+          {
+            buttonIcon: "times",
+            buttonText: "Atšaukti",
+            buttonColor: "red",
+            userJoined: true
+          },
+          () => this.join()
+        );
+      } else {
+        this.refs.warnning.showMessage({
+          message: "Nebėra vietos !",
+          type: "warning",
+          duration: 7000,
+          autoHide: true,
+          hideOnPress: true
+        });
+      }
   };
   join = async () => {
     const propsData = this.props.navigation.state.params.item1;
@@ -102,13 +162,11 @@ class EventDetails extends React.Component {
       .doc(propsData.id)
       .collection("playersList")
       .doc(this.props.userId)
-      .set({name:this.props.userName})
-      this.getConnectedPeople();
+      .set({ name: this.props.userName, userId: this.props.userId });
+    this.getConnectedPeople();
   };
 
   render() {
-    const { navigate } = this.props.navigation;
-    console.log(this.state.connectedPlayers, "prisijunge zaidejai");
     return (
       <View style={styles.container}>
         <View style={styles.topHalf}>
@@ -208,24 +266,40 @@ class EventDetails extends React.Component {
           </View>
 
           <View style={styles.half2}>
-            <TouchableOpacity
-              style={[styles.button1, { borderColor: this.state.buttonColor }]}
-              onPress={this.joinEvent}
-            >
-              <Icon
-                name={this.state.buttonIcon}
-                size={20}
-                color={this.state.buttonColor}
-              />
-              <Text
-                style={{
-                  fontSize: moderateScale(15),
-                  color: this.state.buttonColor
-                }}
+            {this.state.spin ? (
+              <TouchableOpacity
+                style={[
+                  styles.button1,
+                  { borderColor: this.state.buttonColor }
+                ]}
               >
-                {this.state.buttonText}
-              </Text>
-            </TouchableOpacity>
+                <ActivityIndicator size="large" color="lightgray" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={[
+                  styles.button1,
+                  { borderColor: this.state.buttonColor }
+                ]}
+                onPress={
+                  this.state.userJoined ? this.excapeEvent : this.joinEvent
+                }
+              >
+                <Icon
+                  name={this.state.buttonIcon}
+                  size={20}
+                  color={this.state.buttonColor}
+                />
+                <Text
+                  style={{
+                    fontSize: moderateScale(15),
+                    color: this.state.buttonColor
+                  }}
+                >
+                  {this.state.buttonText}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View
@@ -242,19 +316,45 @@ class EventDetails extends React.Component {
           ]}
         >
           <View style={styles.all}>
-            <Text style={{ fontSize: 25 }}>Prisijungę žaidėjai:</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "stretch",
+                width: moderateScale(330)
+              }}
+            >
+              <Text style={{ fontSize: 25, alignItems: "flex-start" }}>
+                Prisijungę žaidėjai:
+              </Text>
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderRadius: 90,
+                  width: moderateScale(20),
+                  height: moderateScale(20),
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Text style={{ fontSize: 25, alignItems: "flex-end" }}>
+                  {this.state.connectedPlayersList.length}
+                </Text>
+              </View>
+            </View>
             <FlatList
               style={{ margin: 2 }}
               numColumns={3}
-              data={this.state.connectedPlayers}
+              data={this.state.connectedPlayersList}
               renderItem={this.renderPlayers}
               keyExtractor={(item, index) => index.toString()}
-              extraData={this.state.connectedPlayers}
+              extraData={this.state.connectedPlayersList}
               refreshing={this.state.refresh}
               ListEmptyComponent={this.renderEmptyUserEventList}
             />
           </View>
         </View>
+        <FlashMessage ref="warnning" position="top" />
       </View>
     );
   }
@@ -293,7 +393,8 @@ class EventDetails extends React.Component {
           {
             width: moderateScale(330),
             flex: 1,
-            height: moderateScale(70)
+            height: moderateScale(70),
+            paddingTop: moderateScale(20)
           }
         ]}
       >
@@ -391,7 +492,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,
-  userName:state.auth.userName,
-  redData:state.auth
+  userName: state.auth.userName,
+  redData: state.auth
 });
 export default connect(mapStateToProps)(EventDetails);
