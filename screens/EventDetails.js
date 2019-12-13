@@ -20,13 +20,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import FlashMessage from "react-native-flash-message";
 
 class EventDetails extends React.Component {
+  static navigationOptions = { header: null };
   constructor() {
     super();
     this.state = {
       isOpen: false,
       isDisabled: false,
       swipeToClose: true,
-
+      spin:false,
       isOpen2: true,
       userJoined: false,
       buttonText: "Prisijungti",
@@ -45,31 +46,35 @@ class EventDetails extends React.Component {
     await this.getConnectedPeople();
     await this.checkIfUserIsJoined();
   }
-
+  startSpinner= ()=>{
+    this.setState({ spin: true });
+  }
   checkIfUserIsJoined = async () => {
     console.log("error", this.state.connectedUsers);
-    this.setState({ spin: true });
+     this.startSpinner();
 
     let connectedUsers = Array.from(this.state.connectedPlayersList);
-    for (let i = 0; i < connectedUsers.length; i++) {
-      if (connectedUsers[i].userId === this.props.userId) {
-        this.setState({
-          buttonIcon: "times",
-          buttonText: "Atšaukti",
-          buttonColor: "red",
-          userJoined: true,
-          spin: false
-        });
-      } else {
-        this.setState({
-          buttonText: "Prisijungti",
-          buttonIcon: "user-plus",
-          buttonColor: "hsl(186, 62%, 40%)",
-          userJoined: false,
-          spin: false
-        });
-      }
-    }
+    setTimeout(() => {
+      let index = connectedUsers.findIndex(item => item.userId === this.props.userId)
+      console.log(index,'ka gaunam seni ?')
+       if(index!== -1)
+       return this.setState({
+        buttonIcon: "times",
+        buttonText: "Atšaukti",
+        buttonColor: "red",
+        userJoined: true,
+        spin:false
+      });
+      else
+      this.setState({
+        buttonText: "Prisijungti",
+        buttonIcon: "user-plus",
+        buttonColor: "hsl(186, 62%, 40%)",
+        userJoined: false,
+        spin:false
+      });
+    }, 2000);
+    
   };
 
   excapeEvent = async () => {
@@ -91,7 +96,7 @@ class EventDetails extends React.Component {
         buttonColor: "hsl(186, 62%, 40%)",
         userJoined: false
       });
-      this.getConnectedPeople();
+       this.getConnectedPeople();
     }
   };
 
@@ -119,7 +124,8 @@ class EventDetails extends React.Component {
             howManyStillNeeded: howManyStillNeeded,
             numbOfPeopleNeeded: peopleNeeded,
             connectedPlayersList: joinedPeople,
-            spin: false
+            spin:false
+            
           },
           () =>
             console.log(
@@ -133,17 +139,23 @@ class EventDetails extends React.Component {
   };
 
   joinEvent = () => {
+    const propsData = this.props.navigation.state.params.item1;
+    if(this.props.userId !== propsData.creatorsId)
     if (this.state.connectedPlayersList.length < this.state.numbOfPeopleNeeded)
       if (this.state.userJoined === false) {
-        this.setState(
+        this.startSpinner();
+        setTimeout(() => {
+          this.setState(
           {
             buttonIcon: "times",
             buttonText: "Atšaukti",
             buttonColor: "red",
             userJoined: true
           },
-          () => this.join()
-        );
+          () => this.join());
+        }, 2000);
+        
+        
       } else {
         this.refs.warnning.showMessage({
           message: "Nebėra vietos !",
@@ -153,6 +165,13 @@ class EventDetails extends React.Component {
           hideOnPress: true
         });
       }
+      else{this.refs.warnning.showMessage({
+        message: "Seni cia gi tavo sukurtas eventas :Dd !",
+        type: "warning",
+        duration: 7000,
+        autoHide: true,
+        hideOnPress: true
+      });}
   };
   join = async () => {
     const propsData = this.props.navigation.state.params.item1;
@@ -270,10 +289,10 @@ class EventDetails extends React.Component {
               <TouchableOpacity
                 style={[
                   styles.button1,
-                  { borderColor: this.state.buttonColor }
+                  { borderColor: this.state.buttonColor, justifyContent:'center', alignItems:'center' }
                 ]}
               >
-                <ActivityIndicator size="large" color="lightgray" />
+                <ActivityIndicator size='small' color="lightgray" />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -324,23 +343,31 @@ class EventDetails extends React.Component {
                 width: moderateScale(330)
               }}
             >
-              <Text style={{ fontSize: 25, alignItems: "flex-start" }}>
-                Prisijungę žaidėjai:
-              </Text>
               <View
                 style={{
-                  borderWidth: 1,
-                  borderRadius: 90,
-                  width: moderateScale(20),
-                  height: moderateScale(20),
                   justifyContent: "center",
                   alignItems: "center"
                 }}
               >
-                <Text style={{ fontSize: 25, alignItems: "flex-end" }}>
+              <Text style={{ fontSize: 25, alignItems: 'center',justifyContent:'center' }}>
+                Prisijungę žaidėjai:
+              </Text></View>
+              <View style={{justifyContent:'center', alignItems:'center', height:moderateScale(30)}}>
+                <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 90,
+                  width: moderateScale(24),
+                  height: moderateScale(24),
+                  justifyContent: "center",
+                  alignItems: "center"
+                  ,backgroundColor:'lightgrey'
+                }}
+              >
+                <Text style={{ fontSize: moderateScale(18), color:'black', fontWeight:'700' }}>
                   {this.state.connectedPlayersList.length}
                 </Text>
-              </View>
+              </View></View>
             </View>
             <FlatList
               style={{ margin: 2 }}

@@ -27,7 +27,9 @@ import "firebase/firestore";
 import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
 import FlashMessage from "react-native-flash-message";
+import { Dimensions } from "react-native";
 class Events extends React.Component {
+  static navigationOptions = { header: null };
   constructor() {
     super();
     this.state = {
@@ -37,6 +39,7 @@ class Events extends React.Component {
       eventsDetails: null,
       isOpen2: false,
       activeEventsNumb: null,
+      chosenTab:1,
       //Flatlist Data
       eventDetails: {
         stadiumName: "Name",
@@ -87,7 +90,13 @@ class Events extends React.Component {
           flexDirection: "column"
         }}
       >
-        <View
+        {/*style={[styles.tabStyle,this.state.chosenTab===3?{backgroundColor:'lightblue'}:null]}*/}
+        <View style={{justifyContent:'flex-start',alignItems:'center',backgroundColor:'white',flexDirection:'row', height:moderateScale(35), width:Dimensions.get("window").width}}>
+          <View style={[styles.tabStyle]} ><TouchableOpacity onPress={()=>this.chooseTab(1)}><Text style={[(this.state.chosenTab===1?styles.chosenTabText:null)]}>Žaidėjų paieška</Text></TouchableOpacity></View>
+          <View style={[styles.tabStyle,{ borderLeftWidth:1, borderRightWidth:1, borderColor:'grey',}]}><TouchableOpacity onPress={()=>this.chooseTab(2)}><Text style={[this.state.chosenTab===2?styles.chosenTabText:null]}>Mano paieška</Text></TouchableOpacity></View>
+          <View style={[styles.tabStyle]}><TouchableOpacity onPress={()=>this.chooseTab(3)}><Text style={[this.state.chosenTab===3?styles.chosenTabText:null]}>Treniruotės</Text></TouchableOpacity></View>
+        </View>
+        {this.state.chosenTab===1?<View
           style={{
             flex: 2,
             justifyContent: "center",
@@ -113,9 +122,12 @@ class Events extends React.Component {
                 Žaidėjų paieška
               </Text>
             </View>
-            <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
+            <View style={{ justifyContent: 'space-around', alignItems: "center",alignSelf:'flex-end', flexDirection:'row',width:moderateScale(100) }}>
+              <TouchableOpacity style={{justifyContent:'flex-start', alignSelf:'flex-start'}} onPress={this.openModalCreateEvent}>
+                <FontAwesome5 name="filter" size={moderateScale(20)} color="#90c5df" />
+              </TouchableOpacity>
               <TouchableOpacity onPress={this.openModalCreateEvent}>
-                <FontAwesome5 name="plus" size={25} color="#90c5df" />
+                <FontAwesome5 name="plus" size={moderateScale(21)} color="#90c5df" />
               </TouchableOpacity>
             </View>
           </View>
@@ -130,8 +142,8 @@ class Events extends React.Component {
             refreshing={this.state.refresh}
             ListEmptyComponent={this.renderEmptyEventList}
           />
-        </View>
-        <View
+        </View>:null}
+        {this.state.chosenTab===2?<View
           style={{
             flex: 1,
             justifyContent: "center",
@@ -172,7 +184,49 @@ class Events extends React.Component {
             refreshing={this.state.refresh}
             ListEmptyComponent={this.renderEmptyUserEventList}
           />
-        </View>
+        </View>:null}
+        {this.state.chosenTab===3?<View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#F5FCFF",
+            flexDirection: "column"
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-between",
+              flexDirection: "row",
+              alignItems: "stretch",
+              marginLeft: 10,
+              marginTop: 30,
+              width: moderateScale(330)
+            }}
+          >
+            <View
+              style={{ justifyContent: "flex-start", alignItems: "center" }}
+            >
+              <Text style={{ fontSize: 20, color: "black" }}>
+                Treniruotės
+              </Text>
+            </View>
+            <View
+              style={{ justifyContent: "flex-end", alignItems: "center" }}
+            ></View>
+          </View>
+
+          <FlatList
+            style={{ marginTop: 2, flex: 1 }}
+            data={this.state.usersEvents}
+            renderItem={this.renderUsersEvents}
+            keyExtractor={item => item.id}
+            extraData={this.state.usersEvents}
+            onRefresh={() => this.onRefreshing()}
+            refreshing={this.state.refresh}
+            ListEmptyComponent={this.renderEmptyTrainingList}
+          />
+        </View>:null}
         <ModalCreateEvent
           visible={this.state.modalCreateEventVisible}
           data={this.state.eventsDetails}
@@ -196,6 +250,10 @@ class Events extends React.Component {
       </View>
     );
   }
+  chooseTab = (tab)=>{
+    this.setState({chosenTab:tab})
+  }
+
   //CREATING AN EVENT-------------------------------------
   openModalCreateEvent = data => {
     if (data !== undefined)
@@ -231,6 +289,7 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
+            creatorsId:data._document.proto.fields.userId.stringValue,
             id: data.id
           };
           eventList.push(eventDetails);
@@ -267,6 +326,7 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
+            creatorsId:data._document.proto.fields.userId.stringValue,
             id: data.id
           };
 
@@ -328,7 +388,7 @@ class Events extends React.Component {
           flexDirection: "row",
           width: moderateScale(330),
           flex: 1,
-          height: 80,
+          height: moderateScale(70),
           marginTop: 20,
           borderRadius: 5,
           borderColor: "#90c5df",
@@ -379,7 +439,7 @@ class Events extends React.Component {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: 'center',
             flex: 1
           }}
         >
@@ -502,11 +562,11 @@ class Events extends React.Component {
         <View style={styles.all}>
           <Ionicons
             name="md-information-circle-outline"
-            size={45}
+            size={moderateScale(30)}
             color="#555"
           />
-          <Text style={{ fontSize: 25, color: "lightgrey" }}>
-            Šiuo metu neturite aktyvių paieškų. . .
+          <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
+            Šiuo metu nėra aktyvių paieškų. . .
           </Text>
         </View>
       </View>
@@ -527,15 +587,39 @@ class Events extends React.Component {
         <View style={styles.all}>
           <Ionicons
             name="md-information-circle-outline"
-            size={45}
+            size={moderateScale(30)}
             color="#555"
           />
-          <Text style={{ fontSize: 25, color: "lightgrey" }}>
-            Šiuo metu neturite aktyvių paieškų. . .
+          <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
+            Neturite aktyvių paieškų. . .
           </Text>
         </View>
       </View>
-    );
+    );}
+    renderEmptyTrainingList = () => {
+      return (
+        <View
+          style={[
+            styles.container,
+            {
+              width: moderateScale(330),
+              flex: 1,
+              height: moderateScale(70)
+            }
+          ]}
+        >
+          <View style={styles.all}>
+            <Ionicons
+              name="md-information-circle-outline"
+              size={moderateScale(30)}
+              color="#555"
+            />
+            <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
+              Nesate prisijungęs prie treniruočių. . .
+            </Text>
+          </View>
+        </View>
+      );
   };
   //-------------------------------------EVENT SETTER
 
@@ -718,6 +802,14 @@ const styles = StyleSheet.create({
   },
   modal4: {
     height: 400
+  },
+  tabStyle:{
+    flex:1, justifyContent:'center', alignItems:'center',backgroundColor:'white'
+  },
+  chosenTabText:{
+    fontWeight:'600',
+    color:'black',
+    fontSize:moderateScale(15)
   },
   all: {
     alignItems: "center",
