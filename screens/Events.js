@@ -40,6 +40,7 @@ class Events extends React.Component {
       isOpen2: false,
       activeEventsNumb: null,
       chosenTab:1,
+      eventsUserJoined:[],
       //Flatlist Data
       eventDetails: {
         stadiumName: "Name",
@@ -63,11 +64,9 @@ class Events extends React.Component {
       modalCreateEventVisible: false,
       isDisabled: false,
       swipeToClose: true,
-
       //DataPICKER VALUES
       isDateTimePickerVisible: false,
       dateTime: ["Set time"],
-
       //BlankVALUES
       peopleNumber: "",
       text1: "",
@@ -91,7 +90,7 @@ class Events extends React.Component {
         }}
       >
         {/*style={[styles.tabStyle,this.state.chosenTab===3?{backgroundColor:'lightblue'}:null]}*/}
-        <View style={{justifyContent:'flex-start',alignItems:'center',backgroundColor:'white',flexDirection:'row', height:moderateScale(35), width:Dimensions.get("window").width}}>
+        <View style={{justifyContent:'flex-start',alignItems:'center',flexDirection:'row', height:moderateScale(35), width:Dimensions.get("window").width}}>
           <View style={[styles.tabStyle]} ><TouchableOpacity onPress={()=>this.chooseTab(1)}><Text style={[(this.state.chosenTab===1?styles.chosenTabText:null)]}>Žaidėjų paieška</Text></TouchableOpacity></View>
           <View style={[styles.tabStyle,{ borderLeftWidth:1, borderRightWidth:1, borderColor:'grey',}]}><TouchableOpacity onPress={()=>this.chooseTab(2)}><Text style={[this.state.chosenTab===2?styles.chosenTabText:null]}>Mano paieška</Text></TouchableOpacity></View>
           <View style={[styles.tabStyle]}><TouchableOpacity onPress={()=>this.chooseTab(3)}><Text style={[this.state.chosenTab===3?styles.chosenTabText:null]}>Treniruotės</Text></TouchableOpacity></View>
@@ -115,9 +114,7 @@ class Events extends React.Component {
               width: moderateScale(330)
             }}
           >
-            <View
-              style={{ justifyContent: "flex-start", alignItems: "center" }}
-            >
+            <View style={{ justifyContent: "flex-start", alignItems: "center" }}>
               <Text style={{ fontSize: 20, color: "black" }}>
                 Žaidėjų paieška
               </Text>
@@ -131,7 +128,6 @@ class Events extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-
           <FlatList
             style={{ marginTop: 2, flex: 1 }}
             data={this.state.allEvents}
@@ -144,34 +140,15 @@ class Events extends React.Component {
           />
         </View>:null}
         {this.state.chosenTab===2?<View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#F5FCFF",
-            flexDirection: "column"
-          }}
-        >
+          style={{flex: 1,justifyContent: "center",alignItems: "center",backgroundColor: "#F5FCFF",flexDirection: "column"  }}>
           <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "stretch",
-              marginLeft: 10,
-              marginTop: 30,
-              width: moderateScale(330)
-            }}
-          >
-            <View
-              style={{ justifyContent: "flex-start", alignItems: "center" }}
-            >
+            style={{justifyContent: "space-between",flexDirection: "row",alignItems: "stretch",marginLeft: 10,marginTop: 30,width: moderateScale(330)  }}>
+            <View  style={{ justifyContent: "flex-start", alignItems: "center" }}>
               <Text style={{ fontSize: 20, color: "black" }}>
                 Mano paieškos
               </Text>
             </View>
-            <View
-              style={{ justifyContent: "flex-end", alignItems: "center" }}
-            ></View>
+            <View  style={{ justifyContent: "flex-end", alignItems: "center" }}></View>
           </View>
 
           <FlatList
@@ -186,24 +163,9 @@ class Events extends React.Component {
           />
         </View>:null}
         {this.state.chosenTab===3?<View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#F5FCFF",
-            flexDirection: "column"
-          }}
-        >
+          style={{flex: 1,justifyContent: "center",alignItems: "center",backgroundColor: "#F5FCFF",flexDirection: "column"  }}>
           <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "stretch",
-              marginLeft: 10,
-              marginTop: 30,
-              width: moderateScale(330)
-            }}
-          >
+            style={{justifyContent: "space-between",flexDirection: "row",alignItems: "stretch",marginLeft: 10,marginTop: 30,width: moderateScale(330)   }} >
             <View
               style={{ justifyContent: "flex-start", alignItems: "center" }}
             >
@@ -218,10 +180,10 @@ class Events extends React.Component {
 
           <FlatList
             style={{ marginTop: 2, flex: 1 }}
-            data={this.state.usersEvents}
-            renderItem={this.renderUsersEvents}
+            data={this.state.eventsUserJoined}
+            renderItem={this.renderItems}
             keyExtractor={item => item.id}
-            extraData={this.state.usersEvents}
+            extraData={this.state.eventsUserJoined}
             onRefresh={() => this.onRefreshing()}
             refreshing={this.state.refresh}
             ListEmptyComponent={this.renderEmptyTrainingList}
@@ -308,6 +270,10 @@ class Events extends React.Component {
     console.log("SETINAMAS", data);
     this.setState({ allEvents: data });
   };
+  settingJoinedEventsState = async data => {
+    console.log("SETINAMAS", data);
+    this.setState({ eventsUserJoined: data });
+  };
   newEvenet = async () => {
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
@@ -343,12 +309,47 @@ class Events extends React.Component {
 
     await this.settingState(eventList);
   };
+  getUsersJoinedEvents = async () => {
+    let today = getTodaysDate();
+    let nowTime = getTodaysTime();
+    let eventList = [];
+    await firebase
+      .firestore()
+      .collection("users").doc(this.props.userId).collection('joinedEventsList')
+      .where("eventDate", ">=", today)
+      .orderBy("eventDate", "asc")
+      .orderBy("eventStart", "asc")
+      .get()
+      .then(res =>
+        res.forEach(data => {
+          let eventDetails = {
+            stadiumName: data._document.proto.fields.stadiumName.stringValue,
+            eventDate: data._document.proto.fields.eventDate.stringValue,
+            eventStart: data._document.proto.fields.eventStart.stringValue,
+            peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
+            id: data.id
+          };
+
+          if (eventDetails.eventDate === today) {
+            if (eventDetails.eventStart > nowTime) {
+              eventList.push(eventDetails);
+              console.log("JoinedEvents", eventList, eventList.length);
+            }
+          } else {
+            eventList.push(eventDetails);
+          }
+        })
+      );
+
+    await this.settingJoinedEventsState(eventList);
+  };
 
   onRefreshing = () => {
     this.setState(
       { refresh: true },
       () => this.newEvenet(),
-      this.getUsersEvents()
+      this.getUsersEvents(),
+      this.getUsersJoinedEvents()
     );
     setTimeout(() => {
       this.setState({ refresh: false });
@@ -369,6 +370,7 @@ class Events extends React.Component {
   componentDidMount() {
     this.getUsersEvents();
     this.getActiveEventsNumb();
+    this.getUsersJoinedEvents();
     let propsSuccess = this.props.navigation.getParam("success");
     let dataFromProps = this.props.navigation.getParam("reservationData");
     if (propsSuccess) {
@@ -804,8 +806,7 @@ const styles = StyleSheet.create({
     height: 400
   },
   tabStyle:{
-    flex:1, justifyContent:'center', alignItems:'center',backgroundColor:'white'
-  },
+    flex:1, justifyContent:'center', alignItems:'center'},
   chosenTabText:{
     fontWeight:'600',
     color:'black',

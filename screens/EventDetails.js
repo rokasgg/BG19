@@ -141,8 +141,8 @@ class EventDetails extends React.Component {
   joinEvent = () => {
     const propsData = this.props.navigation.state.params.item1;
     if(this.props.userId !== propsData.creatorsId)
-    if (this.state.connectedPlayersList.length < this.state.numbOfPeopleNeeded)
-      if (this.state.userJoined === false) {
+    {if (this.state.connectedPlayersList.length < this.state.numbOfPeopleNeeded)
+      {if (this.state.userJoined === false) {
         this.startSpinner();
         setTimeout(() => {
           this.setState(
@@ -164,7 +164,7 @@ class EventDetails extends React.Component {
           autoHide: true,
           hideOnPress: true
         });
-      }
+      }}}
       else{this.refs.warnning.showMessage({
         message: "Seni cia gi tavo sukurtas eventas :Dd !",
         type: "warning",
@@ -182,6 +182,13 @@ class EventDetails extends React.Component {
       .collection("playersList")
       .doc(this.props.userId)
       .set({ name: this.props.userName, userId: this.props.userId });
+      await firebase
+      .firestore()
+      .collection("users")
+      .doc(this.props.userId)
+      .collection("joinedEventsList")
+      .doc(propsData.id)
+      .set({ stadiumName: propsData.stadiumName, eventDate:propsData.eventDate, eventStart:propsData.eventStart,peopleNeeded:parseInt(propsData.peopleNeed) });
     this.getConnectedPeople();
   };
 

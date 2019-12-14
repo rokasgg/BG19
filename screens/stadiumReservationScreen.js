@@ -320,6 +320,7 @@ class stadiumReservationScreen extends React.Component {
 
   getStadiumInfo = async date => {
     let currentTime = getTodaysTime();
+    let today = getTodaysDate();
     const data = this.props.navigation.state.params.data;
     let qwery = firebase
       .firestore()
@@ -336,12 +337,16 @@ class stadiumReservationScreen extends React.Component {
               item => data._document.proto.fields.time.stringValue === item.type
             );
             console.log("BUUBSAI", availableTimeItems[index]);
+            // if(today === data._document.proto.fields.date.stringValue) -----------------------------------------PATAISYT SU ATEINANCIU DIENU OKUPACIJA
+            
             availableTimeItems[index].occupied = true;
+            
           })
         : this.resetItemValues();
     });
 
     for (let i = 0; i < 7; i++) {
+      if(today === date)
       if (currentTime > availableTimeItems[i].startTime)
         availableTimeItems[i].occupied = true;
     }
