@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import ModalStadiumDetails from "../components/modalStadiumDetails";
 import ModalReservation from "../components/modalReservation";
 import ModalFilter from "../components/modalFilter";
-
+import gettingActiveRes from "../redux/actions/getActiveResAction";
 import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -214,10 +214,16 @@ class Main extends React.Component {
           data={this.state.markersData}
           closeModal={this.closeFilter}
           onConfirm={this.filterStadiums}
+          searchByTime={this.searchByTime}
         />
       </View>
     );
   }
+
+  searchByTime = () => {
+    this.setState({ modalFilterState: false });
+    this.props.navigation.navigate("FilterByTime");
+  };
 
   filterStadiums = selectedStadiums => {
     let stadiums = Array.from(this.state.markersOfficial);
@@ -558,4 +564,8 @@ const styles = StyleSheet.create({
     marginLeft: 10
   }
 });
-export default connect(({ dispatch }) => ({ dispatch }))(Main);
+const mapStateToProps = state => ({
+  getActiveResNumber: state.active.activeReservationNumber,
+  userId: state.auth.userId
+});
+export default connect(mapStateToProps, { gettingActiveRes })(Main);

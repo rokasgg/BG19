@@ -9,11 +9,13 @@ import {
   AsyncStorage,
   FlatList,
   TextInput,
-  Picker
+  Picker,
+  ActivityIndicator
 } from "react-native";
 
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { connect } from "react-redux";
 import Modal from "react-native-modalbox";
 import moment from "moment";
@@ -21,6 +23,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import Spinner from "react-native-loading-spinner-overlay";
 import ModalCreateEvent from "../components/modalAddEvent";
 import ModalEditEvent from "../components/modalEditEvent";
+import ModalFilter from "../components/modalEventsFilter";
 import { moderateScale } from "../components/ScaleElements";
 import firebase from "firebase";
 import "firebase/firestore";
@@ -28,6 +31,7 @@ import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
 import FlashMessage from "react-native-flash-message";
 import { Dimensions } from "react-native";
+
 class Events extends React.Component {
   static navigationOptions = { header: null };
   constructor() {
@@ -39,8 +43,16 @@ class Events extends React.Component {
       eventsDetails: null,
       isOpen2: false,
       activeEventsNumb: null,
-      chosenTab:1,
-      eventsUserJoined:[],
+      chosenTab: 1,
+      eventsUserJoined: [],
+      tab2clicked: false,
+      tab3clicked: false,
+      spinner1: true,
+      spinner2: false,
+      spinner3: false,
+      modalFilter: false,
+      allEventsCopy: [],
+      filterActive: false,
       //Flatlist Data
       eventDetails: {
         stadiumName: "Name",
@@ -54,6 +66,8 @@ class Events extends React.Component {
       userEventsDetails: [],
       refresh: false,
       spinner: false,
+      refreshTraining: false,
+      refreshMySearch: false,
       usersEvents: [],
       //Flatlist DATA
       eventsArray: [],
@@ -90,105 +104,249 @@ class Events extends React.Component {
         }}
       >
         {/*style={[styles.tabStyle,this.state.chosenTab===3?{backgroundColor:'lightblue'}:null]}*/}
-        <View style={{justifyContent:'flex-start',alignItems:'center',flexDirection:'row', height:moderateScale(35), width:Dimensions.get("window").width}}>
-          <View style={[styles.tabStyle]} ><TouchableOpacity onPress={()=>this.chooseTab(1)}><Text style={[(this.state.chosenTab===1?styles.chosenTabText:null)]}>Žaidėjų paieška</Text></TouchableOpacity></View>
-          <View style={[styles.tabStyle,{ borderLeftWidth:1, borderRightWidth:1, borderColor:'grey',}]}><TouchableOpacity onPress={()=>this.chooseTab(2)}><Text style={[this.state.chosenTab===2?styles.chosenTabText:null]}>Mano paieška</Text></TouchableOpacity></View>
-          <View style={[styles.tabStyle]}><TouchableOpacity onPress={()=>this.chooseTab(3)}><Text style={[this.state.chosenTab===3?styles.chosenTabText:null]}>Treniruotės</Text></TouchableOpacity></View>
-        </View>
-        {this.state.chosenTab===1?<View
+        <View
           style={{
-            flex: 2,
-            justifyContent: "center",
+            justifyContent: "flex-start",
             alignItems: "center",
-            backgroundColor: "#F5FCFF",
-            flexDirection: "column"
+            flexDirection: "row",
+            height: moderateScale(35),
+            width: Dimensions.get("window").width
           }}
         >
-          <View
-            style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "stretch",
-              marginLeft: 10,
-              marginTop: 30,
-              width: moderateScale(330)
-            }}
-          >
-            <View style={{ justifyContent: "flex-start", alignItems: "center" }}>
-              <Text style={{ fontSize: 20, color: "black" }}>
+          <View style={[styles.tabStyle]}>
+            <TouchableOpacity onPress={() => this.chooseTab(1)}>
+              <Text
+                style={[
+                  this.state.chosenTab === 1 ? styles.chosenTabText : null
+                ]}
+              >
                 Žaidėjų paieška
               </Text>
-            </View>
-            <View style={{ justifyContent: 'space-around', alignItems: "center",alignSelf:'flex-end', flexDirection:'row',width:moderateScale(100) }}>
-              <TouchableOpacity style={{justifyContent:'flex-start', alignSelf:'flex-start'}} onPress={this.openModalCreateEvent}>
-                <FontAwesome5 name="filter" size={moderateScale(20)} color="#90c5df" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.openModalCreateEvent}>
-                <FontAwesome5 name="plus" size={moderateScale(21)} color="#90c5df" />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           </View>
-          <FlatList
-            style={{ marginTop: 2, flex: 1 }}
-            data={this.state.allEvents}
-            renderItem={this.renderItems}
-            keyExtractor={item => item.id}
-            extraData={this.state.allEvents}
-            onRefresh={() => this.onRefreshing()}
-            refreshing={this.state.refresh}
-            ListEmptyComponent={this.renderEmptyEventList}
-          />
-        </View>:null}
-        {this.state.chosenTab===2?<View
-          style={{flex: 1,justifyContent: "center",alignItems: "center",backgroundColor: "#F5FCFF",flexDirection: "column"  }}>
           <View
-            style={{justifyContent: "space-between",flexDirection: "row",alignItems: "stretch",marginLeft: 10,marginTop: 30,width: moderateScale(330)  }}>
-            <View  style={{ justifyContent: "flex-start", alignItems: "center" }}>
-              <Text style={{ fontSize: 20, color: "black" }}>
-                Mano paieškos
+            style={[
+              styles.tabStyle,
+              { borderLeftWidth: 1, borderRightWidth: 1, borderColor: "grey" }
+            ]}
+          >
+            <TouchableOpacity onPress={() => this.chooseTab(2)}>
+              <Text
+                style={[
+                  this.state.chosenTab === 2 ? styles.chosenTabText : null
+                ]}
+              >
+                Mano paieška
               </Text>
-            </View>
-            <View  style={{ justifyContent: "flex-end", alignItems: "center" }}></View>
+            </TouchableOpacity>
           </View>
-
-          <FlatList
-            style={{ marginTop: 2, flex: 1 }}
-            data={this.state.usersEvents}
-            renderItem={this.renderUsersEvents}
-            keyExtractor={item => item.id}
-            extraData={this.state.usersEvents}
-            onRefresh={() => this.onRefreshing()}
-            refreshing={this.state.refresh}
-            ListEmptyComponent={this.renderEmptyUserEventList}
-          />
-        </View>:null}
-        {this.state.chosenTab===3?<View
-          style={{flex: 1,justifyContent: "center",alignItems: "center",backgroundColor: "#F5FCFF",flexDirection: "column"  }}>
-          <View
-            style={{justifyContent: "space-between",flexDirection: "row",alignItems: "stretch",marginLeft: 10,marginTop: 30,width: moderateScale(330)   }} >
-            <View
-              style={{ justifyContent: "flex-start", alignItems: "center" }}
-            >
-              <Text style={{ fontSize: 20, color: "black" }}>
+          <View style={[styles.tabStyle]}>
+            <TouchableOpacity onPress={() => this.chooseTab(3)}>
+              <Text
+                style={[
+                  this.state.chosenTab === 3 ? styles.chosenTabText : null
+                ]}
+              >
                 Treniruotės
               </Text>
-            </View>
-            <View
-              style={{ justifyContent: "flex-end", alignItems: "center" }}
-            ></View>
+            </TouchableOpacity>
           </View>
-
-          <FlatList
-            style={{ marginTop: 2, flex: 1 }}
-            data={this.state.eventsUserJoined}
-            renderItem={this.renderItems}
-            keyExtractor={item => item.id}
-            extraData={this.state.eventsUserJoined}
-            onRefresh={() => this.onRefreshing()}
-            refreshing={this.state.refresh}
-            ListEmptyComponent={this.renderEmptyTrainingList}
-          />
-        </View>:null}
+        </View>
+        {this.state.chosenTab === 1 ? (
+          <View
+            style={{
+              flex: 2,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F5FCFF",
+              flexDirection: "column"
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "stretch",
+                marginLeft: 10,
+                marginTop: 30,
+                width: moderateScale(330)
+              }}
+            >
+              <View
+                style={{ justifyContent: "flex-start", alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 20, color: "black" }}>
+                  Žaidėjų paieška
+                </Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  alignSelf: "flex-end",
+                  flexDirection: "row",
+                  width: moderateScale(100)
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    justifyContent: "flex-start",
+                    alignSelf: "flex-start"
+                  }}
+                  onPress={this.openFilter}
+                >
+                  <FontAwesome5
+                    name="filter"
+                    size={moderateScale(20)}
+                    color={this.state.filterActive ? "#FA7979" : "#90c5df"}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.openModalCreateEvent}>
+                  <FontAwesome5
+                    name="plus"
+                    size={moderateScale(21)}
+                    color="#90c5df"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            {this.state.spinner1 ? (
+              <ActivityIndicator
+                style={{
+                  marginTop: 10,
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  alignSelf: "center"
+                }}
+                size="large"
+                color="lightgrey"
+              />
+            ) : (
+              <FlatList
+                style={{ marginTop: 2, flex: 1 }}
+                data={this.state.allEvents}
+                renderItem={this.renderItems}
+                keyExtractor={item => item.id}
+                extraData={this.state.allEvents}
+                onRefresh={() => this.onRefreshing()}
+                refreshing={this.state.refresh}
+                ListEmptyComponent={this.renderEmptyEventList}
+              />
+            )}
+          </View>
+        ) : null}
+        {this.state.chosenTab === 2 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F5FCFF",
+              flexDirection: "column"
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "stretch",
+                marginLeft: 10,
+                marginTop: 30,
+                width: moderateScale(330)
+              }}
+            >
+              <View
+                style={{ justifyContent: "flex-start", alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 20, color: "black" }}>
+                  Mano paieškos
+                </Text>
+              </View>
+              <View
+                style={{ justifyContent: "flex-end", alignItems: "center" }}
+              ></View>
+            </View>
+            {this.state.spinner2 ? (
+              <ActivityIndicator
+                style={{
+                  marginTop: 10,
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  alignSelf: "center"
+                }}
+                size="large"
+                color="lightgrey"
+              />
+            ) : (
+              <FlatList
+                style={{ marginTop: 2, flex: 1 }}
+                data={this.state.usersEvents}
+                renderItem={this.renderUsersEvents}
+                keyExtractor={item => item.id}
+                extraData={this.state.usersEvents}
+                onRefresh={() => this.onRefreshingMyEvents()}
+                refreshing={this.state.refreshMySearch}
+                ListEmptyComponent={this.renderEmptyUserEventList}
+              />
+            )}
+          </View>
+        ) : null}
+        {this.state.chosenTab === 3 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F5FCFF",
+              flexDirection: "column"
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "space-between",
+                flexDirection: "row",
+                alignItems: "stretch",
+                marginLeft: 10,
+                marginTop: 30,
+                width: moderateScale(330)
+              }}
+            >
+              <View
+                style={{ justifyContent: "flex-start", alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 20, color: "black" }}>
+                  Treniruotės
+                </Text>
+              </View>
+              <View
+                style={{ justifyContent: "flex-end", alignItems: "center" }}
+              ></View>
+            </View>
+            {this.state.spinner3 ? (
+              <ActivityIndicator
+                style={{
+                  marginTop: 10,
+                  flex: 1,
+                  justifyContent: "flex-start",
+                  alignSelf: "center"
+                }}
+                size="large"
+                color="lightgrey"
+              />
+            ) : (
+              <FlatList
+                style={{ marginTop: 2, flex: 1 }}
+                data={this.state.eventsUserJoined}
+                renderItem={this.renderItems}
+                keyExtractor={item => item.id}
+                extraData={this.state.eventsUserJoined}
+                onRefresh={() => this.onRefreshingTraining()}
+                refreshing={this.state.refreshTraining}
+                ListEmptyComponent={this.renderEmptyTrainingList}
+              />
+            )}
+          </View>
+        ) : null}
         <ModalCreateEvent
           visible={this.state.modalCreateEventVisible}
           data={this.state.eventsDetails}
@@ -209,12 +367,49 @@ class Events extends React.Component {
           textStyle={{ color: "#fff" }}
           overlayColor="rgba(0,0,0,0.5)"
         />
+        <ModalFilter
+          closeModal={this.closeFilter}
+          visible={this.state.modalFilter}
+          onConfirm={this.onFiltering}
+          clearFilter={this.clearFilter}
+        />
       </View>
     );
   }
-  chooseTab = (tab)=>{
-    this.setState({chosenTab:tab})
-  }
+  chooseTab = tab => {
+    this.setState({
+      chosenTab: tab,
+      spinner1: true,
+      spinner2: true,
+      spinner3: true
+    });
+    switch (tab) {
+      case 1:
+        this.getAllEvents();
+        break;
+      case 2:
+        this.getUsersEvents();
+
+        break;
+      case 3:
+        this.getUsersJoinedEvents();
+        break;
+      default:
+        break;
+    }
+  };
+
+  //FILTER
+  openFilter = () => {
+    this.setState({ modalFilter: true });
+  };
+  closeFilter = () => {
+    this.setState({
+      modalFilter: false,
+      allEvents: this.state.allEventsCopy,
+      filterActive: false
+    });
+  };
 
   //CREATING AN EVENT-------------------------------------
   openModalCreateEvent = data => {
@@ -251,7 +446,7 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
-            creatorsId:data._document.proto.fields.userId.stringValue,
+            creatorsId: data._document.proto.fields.userId.stringValue,
             id: data.id
           };
           eventList.push(eventDetails);
@@ -260,7 +455,27 @@ class Events extends React.Component {
       );
     this.setState({
       usersEvents: eventList,
-      activeEventsNumb: eventList.length
+      activeEventsNumb: eventList.length,
+      spinner2: false
+    });
+  };
+
+  clearFilter = () => {
+    this.setState({
+      filterActive: false,
+      modalFilter: false,
+      allEvents: this.state.allEventsCopy
+    });
+  };
+
+  onFiltering = date => {
+    let allEvents = Array.from(this.state.allEventsCopy);
+    let filtered = allEvents.filter(item => item.eventDate === date);
+    console.log("filtruojam", filtered, date);
+    this.setState({
+      modalFilter: false,
+      allEvents: filtered,
+      filterActive: true
     });
   };
 
@@ -268,13 +483,13 @@ class Events extends React.Component {
 
   settingState = async data => {
     console.log("SETINAMAS", data);
-    this.setState({ allEvents: data });
+    this.setState({ allEvents: data, allEventsCopy: data, spinner1: false });
   };
   settingJoinedEventsState = async data => {
     console.log("SETINAMAS", data);
-    this.setState({ eventsUserJoined: data });
+    this.setState({ eventsUserJoined: data, spinner3: false });
   };
-  newEvenet = async () => {
+  getAllEvents = async () => {
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
     let eventList = [];
@@ -292,7 +507,7 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
-            creatorsId:data._document.proto.fields.userId.stringValue,
+            creatorsId: data._document.proto.fields.userId.stringValue,
             id: data.id
           };
 
@@ -315,7 +530,9 @@ class Events extends React.Component {
     let eventList = [];
     await firebase
       .firestore()
-      .collection("users").doc(this.props.userId).collection('joinedEventsList')
+      .collection("users")
+      .doc(this.props.userId)
+      .collection("joinedEventsList")
       .where("eventDate", ">=", today)
       .orderBy("eventDate", "asc")
       .orderBy("eventStart", "asc")
@@ -347,7 +564,7 @@ class Events extends React.Component {
   onRefreshing = () => {
     this.setState(
       { refresh: true },
-      () => this.newEvenet(),
+      () => this.getAllEvents(),
       this.getUsersEvents(),
       this.getUsersJoinedEvents()
     );
@@ -355,6 +572,19 @@ class Events extends React.Component {
       this.setState({ refresh: false });
     }, 2000);
   };
+  onRefreshingTraining = () => {
+    this.setState({ refreshTraining: true }, () => this.getUsersJoinedEvents());
+    setTimeout(() => {
+      this.setState({ refreshTraining: false });
+    }, 2000);
+  };
+  onRefreshingMyEvents = () => {
+    this.setState({ refreshMySearch: true }, () => this.getUsersJoinedEvents());
+    setTimeout(() => {
+      this.setState({ refreshMySearch: false });
+    }, 2000);
+  };
+
   componentDidUpdate(prevProps) {
     let dataFromProps = this.props.navigation.getParam("reservationData");
     let propsData = this.props.navigation.getParam("dateTime");
@@ -368,16 +598,17 @@ class Events extends React.Component {
     }
   }
   componentDidMount() {
-    this.getUsersEvents();
+    // this.getUsersEvents();
+
     this.getActiveEventsNumb();
-    this.getUsersJoinedEvents();
+    // this.getUsersJoinedEvents();
     let propsSuccess = this.props.navigation.getParam("success");
     let dataFromProps = this.props.navigation.getParam("reservationData");
     if (propsSuccess) {
       console.log("(. )( .)", propsSuccess);
       this.openModalCreateEvent(dataFromProps);
     }
-    this.newEvenet();
+    this.getAllEvents();
   }
 
   //EVENT SETTER-------------------------------------
@@ -385,169 +616,169 @@ class Events extends React.Component {
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          width: moderateScale(330),
-          flex: 1,
-          height: moderateScale(70),
-          marginTop: 20,
-          borderRadius: 5,
-          borderColor: "#90c5df",
-          borderBottomWidth: 2,
-          justifyContent: "space-evenly"
-        }}
+      <TouchableOpacity
+        onPress={() => navigate("EventsDetails", { item1: item })}
       >
         <View
           style={{
+            flexDirection: "row",
+            width: moderateScale(330),
+            flex: 1,
+            height: moderateScale(70),
+            marginTop: 20,
+            borderRadius: 5,
             borderColor: "#90c5df",
-            justifyContent: "center",
-            alignItems: "center",
-            flex: 2
+            borderBottomWidth: 2,
+            justifyContent: "space-evenly"
           }}
         >
-          <Image
-            style={{ width: 100, height: 60, resizeMode: "contain" }}
-            source={require("../pictures/new.jpg")}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            flex: 3
-          }}
-        >
-          <Text
+          <View
             style={{
-              color: "black",
-              fontSize: moderateScale(14),
-              fontWeight: "600"
+              borderColor: "#90c5df",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 2
             }}
           >
-            {item.eventDate}
-          </Text>
-          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-            {item.eventStart}
-          </Text>
-          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-            {item.stadiumName}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: 'center',
-            flex: 1
-          }}
-        >
-          <TouchableOpacity
-            style={{ flexDirection: "row" }}
-            onPress={() => navigate("EventsDetails", { item1: item })}
-          >
-            <FontAwesome5
-              name="user-plus"
-              size={25}
-              color="hsl(126, 62%, 40%)"
+            <Image
+              style={{ width: 100, height: 60, resizeMode: "contain" }}
+              source={require("../pictures/new.jpg")}
             />
-            <Text style={{ fontSize: 17, color: "black", marginLeft: 5 }}>
-              {item.peopleNeed}
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              flex: 3
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(14),
+                fontWeight: "600"
+              }}
+            >
+              {item.eventDate}
             </Text>
-          </TouchableOpacity>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.eventStart}
+            </Text>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.stadiumName}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-around" }}
+              onPress={() => navigate("EventsDetails", { item1: item })}
+            >
+              <Text style={{ fontSize: 17, color: "black" }}>
+                {item.peopleNeed}
+              </Text>
+              <MCIcons
+                name="account-multiple-plus"
+                size={moderateScale(22)}
+                color="hsl(126, 62%, 40%)"
+                style={{ marginBottom: 3, marginLeft: 5 }}
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   renderUsersEvents = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          width: moderateScale(330),
-          flex: 1,
-          height: moderateScale(70),
-          marginTop: 20,
-          borderRadius: 5,
-          borderColor: "#90c5df",
-          borderBottomWidth: 2,
-          justifyContent: "space-evenly"
-        }}
-      >
-        <View
-          style={{
-            borderColor: "#90c5df",
-            justifyContent: "center",
-            alignItems: "center",
-            flex: 2
-          }}
-        >
-          <Image
-            style={{ width: 100, height: 60, resizeMode: "contain" }}
-            source={require("../pictures/new.jpg")}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            flex: 3
-          }}
-        >
-          <Text
-            style={{
-              color: "black",
-              fontSize: moderateScale(14),
-              fontWeight: "600"
-            }}
-          >
-            {item.eventDate}
-          </Text>
-          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-            {item.eventStart}
-          </Text>
-          <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-            {item.stadiumName}
-          </Text>
-        </View>
-
+      <TouchableOpacity onPress={() => this.navigateToMyEventDetails(item)}>
         <View
           style={{
             flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-around",
-            flex: 1
+            width: moderateScale(330),
+            flex: 1,
+            height: moderateScale(70),
+            marginTop: 20,
+            borderRadius: 5,
+            borderColor: "#90c5df",
+            borderBottomWidth: 2,
+            justifyContent: "space-evenly"
           }}
         >
-          <TouchableOpacity style={{ flexDirection: "row" }}>
-            <FontAwesome5
-              name="user-plus"
-              size={25}
-              color="hsl(126, 62%, 40%)"
-            />
-            <Text style={{ fontSize: 17, color: "black", marginLeft: 5 }}>
-              {item.peopleNeed}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ flexDirection: "row" }}
-            onPress={() => this.openModalEditEvent(item)}
+          <View
+            style={{
+              borderColor: "#90c5df",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 2
+            }}
           >
-            <Ionicons
-              name="ios-options"
-              size={moderateScale(23)}
-              color="orange"
+            <Image
+              style={{ width: 100, height: 60, resizeMode: "contain" }}
+              source={require("../pictures/new.jpg")}
             />
-          </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              flex: 3
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(14),
+                fontWeight: "600"
+              }}
+            >
+              {item.eventDate}
+            </Text>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.eventStart}
+            </Text>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.stadiumName}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-around",
+              flex: 1
+            }}
+          >
+            <TouchableOpacity
+              style={{ flexDirection: "row" }}
+              onPress={() => this.openModalEditEvent(item)}
+            >
+              <Ionicons
+                name="ios-options"
+                size={moderateScale(25)}
+                color="orange"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
+  };
+  navigateToMyEventDetails = data => {
+    this.props.navigation.navigate("MyEventsDetails", { item1: data });
   };
   renderEmptyEventList = () => {
     return (
@@ -597,31 +828,32 @@ class Events extends React.Component {
           </Text>
         </View>
       </View>
-    );}
-    renderEmptyTrainingList = () => {
-      return (
-        <View
-          style={[
-            styles.container,
-            {
-              width: moderateScale(330),
-              flex: 1,
-              height: moderateScale(70)
-            }
-          ]}
-        >
-          <View style={styles.all}>
-            <Ionicons
-              name="md-information-circle-outline"
-              size={moderateScale(30)}
-              color="#555"
-            />
-            <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
-              Nesate prisijungęs prie treniruočių. . .
-            </Text>
-          </View>
+    );
+  };
+  renderEmptyTrainingList = () => {
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            width: moderateScale(330),
+            flex: 1,
+            height: moderateScale(70)
+          }
+        ]}
+      >
+        <View style={styles.all}>
+          <Ionicons
+            name="md-information-circle-outline"
+            size={moderateScale(30)}
+            color="#555"
+          />
+          <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
+            Nesate prisijungęs prie treniruočių. . .
+          </Text>
         </View>
-      );
+      </View>
+    );
   };
   //-------------------------------------EVENT SETTER
 
@@ -703,7 +935,7 @@ class Events extends React.Component {
       setTimeout(() => {
         this.setState({ spinner: false }, () => {
           this.getUsersEvents();
-          this.newEvenet();
+          this.getAllEvents();
           this.refs.warnning.showMessage({
             message: "Sėkmingai pridėta paieška!",
             type: "success",
@@ -761,6 +993,25 @@ class Events extends React.Component {
       console.log("Aktyvios paieškos!:", this.state.activeEventsNumb, list);
     });
   }
+  amIbanned = () => {
+    let today = getTodaysDate();
+    let nowTime = getTodaysTime();
+    firebase
+      .firestore()
+      .collection("bannedUsers")
+      .where("userId", "==", this.props.userId)
+      .where("banDate", ">=", today)
+      .orderBy("banDate")
+      .get()
+      .then(res => {
+        let banDate = res.docs[0]._document.proto.fields.banDate.stringValue;
+        let banTime = res.docs[0]._document.proto.fields.banTime.stringValue;
+        if (nowTime <= banTime) {
+          this.setState({ banned: true, banTime, banDate });
+        }
+      });
+  };
+
   checkIfResActive = item => {
     let today = getTodaysDate();
     let timeNow = getTodaysTime();
@@ -776,23 +1027,6 @@ class Events extends React.Component {
       return false;
     }
   };
-
-  //DATA PICKER-------------------------------------
-  showDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: true });
-  };
-
-  hideDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: false });
-  };
-
-  handleDatePicked = date => {
-    this.setState({ dateTime: moment(date).format("YYYY Do MMMM, HH:mm") });
-    console.log(this.state.dateTime);
-    this.hideDateTimePicker();
-  };
-
-  ////-------------------------------------DATA PICKER
 }
 
 const styles = StyleSheet.create({
@@ -805,12 +1039,15 @@ const styles = StyleSheet.create({
   modal4: {
     height: 400
   },
-  tabStyle:{
-    flex:1, justifyContent:'center', alignItems:'center'},
-  chosenTabText:{
-    fontWeight:'600',
-    color:'black',
-    fontSize:moderateScale(15)
+  tabStyle: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  chosenTabText: {
+    fontWeight: "600",
+    color: "black",
+    fontSize: moderateScale(15)
   },
   all: {
     alignItems: "center",

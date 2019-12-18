@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { moderateScale } from "../components/ScaleElements";
 import login from "../redux/actions/authAction";
+import checkIfBanned from "../redux/actions/checkIfBannedAuth";
 import { connect } from "react-redux";
 import firebase from "firebase";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -236,6 +237,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   isLoading: state.auth.isLoading,
-  isLoggedIn: state.auth.isLoggedIn
+  isLoggedIn: state.auth.isLoggedIn,
+  userId: state.auth.userId
 });
-export default connect(mapStateToProps, { login })(LoginScreen);
+export default connect(mapStateToProps, { login, checkIfBanned })(LoginScreen);

@@ -18,12 +18,14 @@ export default function register(email, password, userName, position) {
         const usersData = {
           name: userName,
           email: email,
-          position: position
+          position: position,
+          admin: false
         };
+        const admin = false;
         const userId = response.user.uid;
         dispatch({
           type: REGISTRATION_SUCCESS,
-          payload: { email, userName, position, userId }
+          payload: { email, userName, position, userId, admin }
         });
         firebase
           .firestore()

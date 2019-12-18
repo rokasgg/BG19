@@ -215,16 +215,15 @@ export default class modalFilter extends React.Component {
                 flex: 1,
                 marginBottom: moderateScale(5),
                 justifyContent: "flex-end",
-                alignItems: "flex-end",
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)"
+                alignItems: "flex-end"
               }}
             >
               <Text
                 style={{
                   color: "black",
                   fontSize: moderateScale(11),
-                  paddingBottom: moderateScale(1)
+                  paddingBottom: moderateScale(1),
+                  fontWeight: "800"
                 }}
               >
                 Dangos tipas
@@ -369,16 +368,15 @@ export default class modalFilter extends React.Component {
                 flex: 1,
                 paddingTop: moderateScale(3),
                 justifyContent: "flex-end",
-                alignItems: "flex-end",
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)"
+                alignItems: "flex-end"
               }}
             >
               <Text
                 style={{
                   color: "black",
                   fontSize: moderateScale(11),
-                  paddingBottom: moderateScale(1)
+                  paddingBottom: moderateScale(1),
+                  fontWeight: "800"
                 }}
               >
                 Stadiono tipas
@@ -479,16 +477,15 @@ export default class modalFilter extends React.Component {
                 flex: 1,
                 paddingTop: moderateScale(3),
                 justifyContent: "flex-end",
-                alignItems: "flex-end",
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)"
+                alignItems: "flex-end"
               }}
             >
               <Text
                 style={{
                   color: "black",
                   fontSize: moderateScale(11),
-                  paddingBottom: moderateScale(1)
+                  paddingBottom: moderateScale(1),
+                  fontWeight: "800"
                 }}
               >
                 Kaina
@@ -603,9 +600,9 @@ export default class modalFilter extends React.Component {
                   style={{
                     color: "black",
                     fontSize: moderateScale(11),
-                    borderBottomWidth: 1,
-                    borderColor: "hsl(126, 62%, 40%)",
-                    marginLeft: moderateScale(15)
+
+                    marginLeft: moderateScale(15),
+                    fontWeight: "800"
                   }}
                 >
                   Suteikia invenorių
@@ -644,21 +641,9 @@ export default class modalFilter extends React.Component {
               borderColor: "hsl(186, 62%, 40%)"
             }}
           >
-            <Text
-              style={{
-                color: "black",
-                fontSize: moderateScale(11),
-                borderBottomWidth: 1,
-                borderColor: "hsl(126, 62%, 40%)",
-                marginLeft: moderateScale(15),
-                flex: 1
-              }}
-            >
-              Ieškoti pagal laiką
-            </Text>
             <View
               style={{
-                flex: 2,
+                flex: 1,
                 justifyContent: "center",
                 flexDirection: "row",
                 width: moderateScale(240)
@@ -668,35 +653,20 @@ export default class modalFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "flex-start",
-                  paddingLeft: moderateScale(20)
+                  alignItems: "flex-start"
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onStadiumTypeClick(this.state.stadiumType[0]);
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: moderateScale(11),
+
+                    marginLeft: moderateScale(15),
+                    fontWeight: "800"
                   }}
-                  style={{ flexDirection: "row" }}
                 >
-                  <IconFeather
-                    name={
-                      this.state.stadiumType[0].selected === true
-                        ? "disc"
-                        : "circle"
-                    }
-                    color="black"
-                    size={moderateScale(13)}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      fontSize: moderateScale(10),
-                      color: "black"
-                    }}
-                  >
-                    {this.state.stadiumType[0].text}
-                  </Text>
-                </TouchableOpacity>
+                  Ieškoti pagal laiką
+                </Text>
               </View>
               <View
                 style={{
@@ -705,30 +675,12 @@ export default class modalFilter extends React.Component {
                   alignItems: "center"
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onStadiumTypeClick(this.state.stadiumType[1]);
-                  }}
-                  style={{ flexDirection: "row" }}
-                >
-                  <IconFeather
-                    name={
-                      this.state.stadiumType[1].selected === true
-                        ? "disc"
-                        : "circle"
-                    }
+                <TouchableOpacity onPress={this.props.searchByTime}>
+                  <Ionicons
+                    name="md-time"
                     color="black"
-                    size={moderateScale(13)}
+                    size={moderateScale(18)}
                   />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      fontSize: moderateScale(10),
-                      color: "black"
-                    }}
-                  >
-                    {this.state.stadiumType[1].text}
-                  </Text>
                 </TouchableOpacity>
               </View>
             </View>

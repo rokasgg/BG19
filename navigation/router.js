@@ -17,11 +17,13 @@ import Reg from "../screens/RegistrationScreen";
 import ReservationScreen from "../screens/stadiumReservationScreen";
 import ReservationDetails from "../components/ReservedDetails";
 import Ionicons from "react-native-vector-icons/Entypo";
-
+import MyEventsDetails from "../screens/MyEventDetails";
+import FilterByTime from "../screens/FilterByTime";
 const MainTab = createStackNavigator(
   {
     Main: Main,
-    StadiumRes: ReservationScreen
+    StadiumRes: ReservationScreen,
+    FilterByTime: FilterByTime
   },
   {
     defaultNavigationOptions: {
@@ -37,7 +39,8 @@ const MainTab = createStackNavigator(
 const EventsTab = createStackNavigator(
   {
     Events: Events,
-    EventsDetails: { screen: EventsDetails }
+    EventsDetails: { screen: EventsDetails },
+    MyEventsDetails: { screen: MyEventsDetails }
   },
   {
     defaultNavigationOptions: {

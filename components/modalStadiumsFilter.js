@@ -19,25 +19,45 @@ import DateTimePicker from "react-native-datepicker";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 import { getTodaysDate } from "../components/getTodaysDate";
-export default class modalFilter extends React.Component {
+import { getTodaysTime } from "../components/getTodaysTime";
+import ModalChooseTime from "../components/ModalChooseTime";
+export default class modalStadiumsFilter extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      dateTime: ""
+      dateTime: "",
+      time: "",
+      chooseTimeModal: false
     };
   }
 
   confirmFilters = () => {
     let today = getTodaysDate();
+    let time = getTodaysTime();
+    let details = {
+      date: this.state.dateTime,
+      time: this.state.time
+    };
     if (this.state.dateTime !== "")
       if (today <= this.state.dateTime)
-        this.props.onConfirm(this.state.dateTime);
+        if (today === this.state.dateTime) {
+          if (time <= this.state.time.startTime) this.props.onConfirm(details);
+        } else this.props.onConfirm(details);
   };
   clearFilters = () => {
     this.setState({}, () => {
       this.props.clearFilter();
     });
+  };
+  onTimePress = time => {
+    this.setState({ time, chooseTimeModal: false });
+  };
+  closeModal = () => {
+    this.setState({ chooseTimeModal: false });
+  };
+  openTimeModal = () => {
+    this.setState({ chooseTimeModal: true });
   };
 
   render() {
@@ -97,7 +117,7 @@ export default class modalFilter extends React.Component {
                     marginLeft: moderateScale(15)
                   }}
                 >
-                  Pagal data
+                  Pasirinkite dieną
                 </Text>
               </View>
               <View
@@ -137,6 +157,82 @@ export default class modalFilter extends React.Component {
                   confirmBtnText="Pick"
                   cancelBtnText="Cancel"
                 />
+              </View>
+            </View>
+          </View>
+          {/* --------------------------------------------------------------- */}
+          <View
+            style={{
+              flex: 2,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+              width: moderateScale(240),
+              flexDirection: "column",
+              borderTopWidth: 1,
+              borderColor: "hsl(186, 62%, 40%)"
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                flexDirection: "row",
+                width: moderateScale(240)
+              }}
+            >
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "flex-start"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: moderateScale(11),
+                    borderBottomWidth: 1,
+                    borderColor: "hsl(126, 62%, 40%)",
+                    marginLeft: moderateScale(15)
+                  }}
+                >
+                  Pasirinkite laiką
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <TouchableOpacity
+                  onPressIn={this.openTimeModal}
+                  style={[
+                    {
+                      alignItems: "flex-end",
+                      borderWidth: 0,
+                      paddingLeft: 4,
+                      flex: 1,
+                      justifyContent: "center",
+                      width: moderateScale(80),
+                      height: moderateScale(20)
+                    },
+                    this.state.time === "" ? { alignItems: "center" } : null
+                  ]}
+                >
+                  <Text style={{ fontSize: moderateScale(13), color: "black" }}>
+                    {this.state.time !== "" ? (
+                      this.state.time.time
+                    ) : (
+                      <Ionicons
+                        color="black"
+                        name="md-clock"
+                        size={moderateScale(13)}
+                      />
+                    )}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -200,6 +296,11 @@ export default class modalFilter extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
+        <ModalChooseTime
+          visible={this.state.chooseTimeModal}
+          finish={this.onTimePress}
+          closeModal={this.closeModal}
+        />
       </Modal>
     );
   }

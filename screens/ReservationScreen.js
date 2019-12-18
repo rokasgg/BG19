@@ -175,10 +175,13 @@ class ReservationScreen extends React.Component {
     let reservationSuccess = this.props.navigation.getParam("success");
 
     let propsFromReservation = this.props.navigation.getParam("data");
-    this.getUserReservations();
+
     if (reservationSuccess) {
       this.showWarn();
       this.moreResDetails(propsFromReservation);
+    } else {
+      this.startSpinner();
+      this.getUserReservations();
     }
   }
 
@@ -202,7 +205,9 @@ class ReservationScreen extends React.Component {
   };
 
   onRefreshing = () => {
-    this.setState({ refresh: true }, () => this.getUserReservations());
+    this.setState({ refresh: true }, () => {
+      this.startSpinner(), this.getUserReservations();
+    });
     setTimeout(() => {
       this.setState({ refresh: false });
     }, 2000);
@@ -214,7 +219,6 @@ class ReservationScreen extends React.Component {
 
   getUserReservations = async () => {
     console.log("BLABLABLA", this.props.userId, getTodaysDate());
-    this.startSpinner();
     let activeReservations = [];
     let inactiveReservations = [];
     let yesterday = this.getYesterdaysDate();

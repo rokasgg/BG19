@@ -19,6 +19,7 @@ import {
   LocaleConfig
 } from "react-native-calendars";
 import { connect } from "react-redux";
+import gettingActiveRes from "../redux/actions/getActiveResAction";
 import { moderateScale } from "../components/ScaleElements";
 import FlashMessage from "react-native-flash-message";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -101,7 +102,7 @@ class stadiumReservationScreen extends React.Component {
   };
   componentDidMount() {
     this.currentDateInfo();
-    this.getActiveRservationsNumb();
+    this.props.gettingActiveRes(this.props.userId);
     let data = this.props.navigation.state.params.data;
     this.setState({ markersInfo: data }, () =>
       console.log(this.state.markersInfo.adress)
@@ -202,13 +203,14 @@ class stadiumReservationScreen extends React.Component {
     let today = getTodaysDate();
     console.log(
       "Tikrinam ar pasirinkta data yra didesnė už šiandiene",
+      this.state.selectedTime,
       this.state.selectedDay,
       today,
-      this.state.activeReservationsNumber
+      this.props.activeResNumber
     );
     if (this.state.selectedTime !== "" && this.state.selectedDay !== "")
       if (this.state.selectedDay >= today)
-        if (this.state.activeReservationsNumber < 3) {
+        if (this.props.activeResNumber < 3) {
           this.startSpinner();
           const propsData = this.props.navigation.state.params.data;
           let data = {
@@ -338,17 +340,16 @@ class stadiumReservationScreen extends React.Component {
             );
             console.log("BUUBSAI", availableTimeItems[index]);
             // if(today === data._document.proto.fields.date.stringValue) -----------------------------------------PATAISYT SU ATEINANCIU DIENU OKUPACIJA
-            
+
             availableTimeItems[index].occupied = true;
-            
           })
         : this.resetItemValues();
     });
 
     for (let i = 0; i < 7; i++) {
-      if(today === date)
-      if (currentTime > availableTimeItems[i].startTime)
-        availableTimeItems[i].occupied = true;
+      if (today === date)
+        if (currentTime > availableTimeItems[i].startTime)
+          availableTimeItems[i].occupied = true;
     }
 
     this.setState({ form: availableTimeItems, downloadingData: false }, () =>
@@ -713,6 +714,9 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => ({
-  userId: state.auth.userUid
+  userId: state.auth.userUid,
+  activeResNumber: state.active.activeReservationNumber
 });
-export default connect(mapStateToProps)(stadiumReservationScreen);
+export default connect(mapStateToProps, { gettingActiveRes })(
+  stadiumReservationScreen
+);

@@ -20,8 +20,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import FlashMessage from "react-native-flash-message";
 import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
+import ModalPlayersReview from "../components/modalReview";
 
-class EventDetails extends React.Component {
+class MyEventDetails extends React.Component {
   static navigationOptions = { header: null };
   constructor() {
     super();
@@ -39,7 +40,8 @@ class EventDetails extends React.Component {
       refresh: false,
       joinedPeopleCount: 0,
       numbOfPeopleNeeded: null,
-      banned: false
+      banned: false,
+      playersReviewModal: false
     };
   }
   static navigationOption = {
@@ -81,7 +83,7 @@ class EventDetails extends React.Component {
         });
     }, 2000);
   };
-
+  openPlayerInfo = () => {};
   amIbanned = () => {
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
@@ -361,7 +363,7 @@ class EventDetails extends React.Component {
             </View>
           </View>
 
-          <View style={styles.half2}>
+          {/* <View style={styles.half2}>
             {this.state.spin ? (
               <TouchableOpacity
                 style={[
@@ -400,7 +402,7 @@ class EventDetails extends React.Component {
                 </Text>
               </TouchableOpacity>
             )}
-          </View>
+          </View> */}
         </View>
         <View
           style={[
@@ -482,10 +484,25 @@ class EventDetails extends React.Component {
             />
           </View>
         </View>
+        <ModalPlayersReview
+          closeModal={this.finishModal}
+          finish={this.finishModal}
+          visible={this.state.playersReviewModal}
+          data={this.state.playersData}
+          option1="Atsiliepimai"
+          option2="Įvertinti"
+        />
         <FlashMessage ref="warnning" position="top" />
       </View>
     );
   }
+  openReviewModal = player => {
+    console.log("pleijerio info", player);
+    this.setState({ playersData: player, playersReviewModal: true });
+  };
+  finishModal = () => {
+    this.setState({ playersReviewModal: false });
+  };
   renderPlayers = item => {
     return (
       <TouchableOpacity
@@ -500,6 +517,7 @@ class EventDetails extends React.Component {
           borderWidth: 2,
           margin: 3
         }}
+        onPress={() => this.openReviewModal(item.item)}
       >
         <Text
           style={{
@@ -623,4 +641,4 @@ const mapStateToProps = state => ({
   userName: state.auth.userName,
   redData: state.auth
 });
-export default connect(mapStateToProps)(EventDetails);
+export default connect(mapStateToProps)(MyEventDetails);

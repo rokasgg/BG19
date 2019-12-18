@@ -201,7 +201,7 @@ class ReservedDetails extends React.Component {
                   borderColor: "hsl(186, 62%, 40%)"
                 }
               ]}
-              onPress={() => this.props.navigation.goBack()}
+              onPress={this.goingBack}
             >
               <Text
                 style={{
@@ -247,6 +247,11 @@ class ReservedDetails extends React.Component {
       </View>
     );
   }
+  goingBack = () => {
+    this.props.navigation.state.params.onGoBack();
+    this.props.navigation.goBack();
+  };
+
   showWarn = () => {
     this.refs.war.showMessage({
       message: "Rezervacija atlitka sėkmingai!",
