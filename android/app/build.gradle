@@ -101,6 +101,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    signingConfigs {
+    release {
+      storeFile file('project.keystore')
+      storePassword 'qazwsx'
+      keyAlias 'project'
+      keyPassword 'qazwsx'
+    }
+  }
+
     defaultConfig {
         applicationId "com.project"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -123,6 +132,8 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+
         }
     }
     // applicationVariants are e.g. debug, release

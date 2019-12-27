@@ -48,7 +48,7 @@ class EventDetails extends React.Component {
   async componentDidMount() {
     await this.getConnectedPeople();
     await this.checkIfUserIsJoined();
-    this.amIbanned();
+    //this.amIbanned();
   }
   startSpinner = () => {
     this.setState({ spin: true });
@@ -56,7 +56,6 @@ class EventDetails extends React.Component {
   checkIfUserIsJoined = async () => {
     console.log("error", this.state.connectedUsers);
     this.startSpinner();
-
     let connectedUsers = Array.from(this.state.connectedPlayersList);
     setTimeout(() => {
       let index = connectedUsers.findIndex(
@@ -130,10 +129,12 @@ class EventDetails extends React.Component {
         userJoined: false
       });
       this.getConnectedPeople();
+      // this.setState({ spin: false });
     }
   };
 
   getConnectedPeople = async () => {
+    this.startSpinner();
     const propsDataEvent = this.props.navigation.state.params.item1;
     let peopleNeeded = propsDataEvent.peopleNeed;
     let joinedPeople = [];
@@ -152,21 +153,12 @@ class EventDetails extends React.Component {
             userId: data._document.proto.fields.userId.stringValue
           });
         });
-        this.setState(
-          {
-            howManyStillNeeded: howManyStillNeeded,
-            numbOfPeopleNeeded: peopleNeeded,
-            connectedPlayersList: joinedPeople,
-            spin: false
-          },
-          () =>
-            console.log(
-              "AFTERMATH",
-              this.state.howManyStillNeeded,
-              this.state.numbOfPeopleNeeded,
-              this.state.connectedPlayersList
-            )
-        );
+        this.setState({
+          howManyStillNeeded: howManyStillNeeded,
+          numbOfPeopleNeeded: peopleNeeded,
+          connectedPlayersList: joinedPeople,
+          spin: false
+        });
       });
   };
 
@@ -227,7 +219,11 @@ class EventDetails extends React.Component {
       .doc(propsData.id)
       .collection("playersList")
       .doc(this.props.userId)
-      .set({ name: this.props.userName, userId: this.props.userId });
+      .set({
+        name: this.props.userName,
+        userId: this.props.userId,
+        approved: false
+      });
     await firebase
       .firestore()
       .collection("users")
@@ -236,14 +232,17 @@ class EventDetails extends React.Component {
       .doc(propsData.id)
       .set({
         stadiumName: propsData.stadiumName,
+        address: propsData.address,
         eventDate: propsData.eventDate,
         eventStart: propsData.eventStart,
-        peopleNeeded: parseInt(propsData.peopleNeed)
+        peopleNeeded: parseInt(propsData.peopleNeed),
+        approved: false
       });
     this.getConnectedPeople();
   };
 
   render() {
+    let propsData = this.props.navigation.state.params.item1;
     return (
       <View style={styles.container}>
         <TouchableOpacity
@@ -311,7 +310,7 @@ class EventDetails extends React.Component {
             >
               <Text style={styles.textLeft}>Adresas:</Text>
               <Text style={styles.textRight}>
-                {this.props.navigation.state.params.item1.stadiumAdress}
+                {this.props.navigation.state.params.item1.address}
               </Text>
             </View>
             <View
@@ -361,46 +360,48 @@ class EventDetails extends React.Component {
             </View>
           </View>
 
-          <View style={styles.half2}>
-            {this.state.spin ? (
-              <TouchableOpacity
-                style={[
-                  styles.button1,
-                  {
-                    borderColor: this.state.buttonColor,
-                    justifyContent: "center",
-                    alignItems: "center"
-                  }
-                ]}
-              >
-                <ActivityIndicator size="small" color="lightgray" />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={[
-                  styles.button1,
-                  { borderColor: this.state.buttonColor }
-                ]}
-                onPress={
-                  this.state.userJoined ? this.escapeEvent : this.joinEvent
-                }
-              >
-                <Icon
-                  name={this.state.buttonIcon}
-                  size={20}
-                  color={this.state.buttonColor}
-                />
-                <Text
-                  style={{
-                    fontSize: moderateScale(15),
-                    color: this.state.buttonColor
-                  }}
+          {this.props.userId !== propsData.creatorsId ? (
+            <View style={styles.half2}>
+              {this.state.spin ? (
+                <TouchableOpacity
+                  style={[
+                    styles.button1,
+                    {
+                      borderColor: this.state.buttonColor,
+                      justifyContent: "center",
+                      alignItems: "center"
+                    }
+                  ]}
                 >
-                  {this.state.buttonText}
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+                  <ActivityIndicator size="small" color="lightgray" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={[
+                    styles.button1,
+                    { borderColor: this.state.buttonColor }
+                  ]}
+                  onPress={
+                    this.state.userJoined ? this.escapeEvent : this.joinEvent
+                  }
+                >
+                  <Icon
+                    name={this.state.buttonIcon}
+                    size={20}
+                    color={this.state.buttonColor}
+                  />
+                  <Text
+                    style={{
+                      fontSize: moderateScale(15),
+                      color: this.state.buttonColor
+                    }}
+                  >
+                    {this.state.buttonText}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          ) : null}
         </View>
         <View
           style={[
@@ -470,16 +471,20 @@ class EventDetails extends React.Component {
                 </View>
               </View>
             </View>
-            <FlatList
-              style={{ margin: 2 }}
-              numColumns={3}
-              data={this.state.connectedPlayersList}
-              renderItem={this.renderPlayers}
-              keyExtractor={(item, index) => index.toString()}
-              extraData={this.state.connectedPlayersList}
-              refreshing={this.state.refresh}
-              ListEmptyComponent={this.renderEmptyUserEventList}
-            />
+            {this.state.spin ? (
+              <ActivityIndicator size="small" color="lightgray" />
+            ) : (
+              <FlatList
+                style={{ margin: 2 }}
+                numColumns={3}
+                data={this.state.connectedPlayersList}
+                renderItem={this.renderPlayers}
+                keyExtractor={(item, index) => index.toString()}
+                extraData={this.state.connectedPlayersList}
+                refreshing={this.state.refresh}
+                ListEmptyComponent={this.renderEmptyUserEventList}
+              />
+            )}
           </View>
         </View>
         <FlashMessage ref="warnning" position="top" />

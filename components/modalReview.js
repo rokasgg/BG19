@@ -12,7 +12,8 @@ import {
   TouchableOpacity,
   TextInput,
   Picker,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from "react-native";
 import { moderateScale } from "./ScaleElements";
 import IconFeather from "react-native-vector-icons/Feather";
@@ -29,18 +30,22 @@ export default class askPerm extends React.Component {
     this.state = {
       writeReview: false,
       readReview: false,
+      approvePlayer: false,
       chosen: false,
       starCount: 0,
       reviewInput: "",
-      playerReviews: []
+      playerReviews: [],
+      spinner: false,
+      approveText: "Patvirtinti"
     };
   }
-  onPressWriteReview = () => {
-    this.setState({ readReview: false, writeReview: true, chosen: true });
+  onPressApprovePlayer = () => {
+    this.setState({ readReview: false, approvePlayer: true, chosen: true });
   };
   onPressReadReview = () => {
+    this.startSpinner();
     this.getUsersReviews();
-    this.setState({ writeReview: false, readReview: true, chosen: true });
+    this.setState({ approvePlayer: false, readReview: true, chosen: true });
   };
 
   confirmReView = async () => {
@@ -62,7 +67,9 @@ export default class askPerm extends React.Component {
               writeReview: false,
               chosen: false,
               reviewInput: "",
-              starCount: 0
+              starCount: 0,
+              approvePlayer: false,
+              readReview: false
             },
             () => {
               this.refs.complete.showMessage({
@@ -82,6 +89,9 @@ export default class askPerm extends React.Component {
         hideOnPress: true
       });
     }
+  };
+  startSpinner = () => {
+    this.setState({ spinner: true });
   };
 
   getUsersReviews = async () => {
@@ -104,17 +114,36 @@ export default class askPerm extends React.Component {
           allReviews.push(review);
         });
       });
-    this.setState({ playerReviews: allReviews });
+    this.setState({ spinner: false, playerReviews: allReviews });
   };
 
   completelyClose = () => {
     this.setState(
-      { writeReview: false, readReview: false, chosen: false },
+      {
+        writeReview: false,
+        readReview: false,
+        chosen: false,
+        approvePlayer: false
+      },
       () => this.props.closeModal()
     );
   };
   goback = () => {
-    this.setState({ writeReview: false, readReview: false, chosen: false });
+    this.setState({
+      writeReview: false,
+      readReview: false,
+      chosen: false,
+      approvePlayer: false,
+      approveSpinner: false
+    });
+  };
+  goToReviews = () => {
+    this.setState({
+      writeReview: false,
+      readReview: true,
+      chosen: true,
+      approvePlayer: false
+    });
   };
 
   onStarRatingPress(rating) {
@@ -122,6 +151,14 @@ export default class askPerm extends React.Component {
       starCount: rating
     });
   }
+
+  navToApprove = () => {
+    this.setState({
+      approvePlayer: false,
+      readReview: true,
+      writeReview: true
+    });
+  };
 
   render() {
     return (
@@ -191,7 +228,7 @@ export default class askPerm extends React.Component {
                     height: moderateScale(40)
                   }
                 ]}
-                onPress={this.onPressWriteReview}
+                onPress={this.onPressApprovePlayer}
               >
                 <Text
                   style={{
@@ -200,14 +237,14 @@ export default class askPerm extends React.Component {
                     fontWeight: "300"
                   }}
                 >
-                  {this.props.option2}
+                  Patvirtinti
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : null}
-        {this.state.writeReview ? (
-          <View style={[styles.modal, { height: moderateScale(135) }]}>
+        {this.state.approvePlayer ? (
+          <View style={[styles.modal, { height: moderateScale(125) }]}>
             <View
               style={{
                 flex: 1,
@@ -224,130 +261,358 @@ export default class askPerm extends React.Component {
                   flexDirection: "column",
                   flex: 3,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
+                  flexDirection: "row"
                 }}
               >
-                <StarRating
-                  disabled={false}
-                  maxStars={5}
-                  rating={this.state.starCount}
-                  selectedStar={rating => this.onStarRatingPress(rating)}
-                />
-
-                <TextInput
+                <Text
                   style={{
-                    paddingRight: 15,
-                    marginTop: moderateScale(5),
-                    width: moderateScale(120),
-                    height: moderateScale(30),
-                    backgroundColor: "white",
-                    borderWidth: 1,
-                    borderColor: "lightgray",
-                    borderRadius: 15
+                    color: "black",
+                    fontSize: moderateScale(13)
                   }}
-                  value={this.state.reviewInput}
-                  placeholder={"Komentaras"}
-                  onChangeText={text => this.setState({ reviewInput: text })}
-                />
+                >
+                  {this.props.data.approved
+                    ? `Žaidėjo dalyvavimas jau patvirtintas. Norite pašalinti ${this.props.data.name} ? }?`
+                    : "Ar norite patvirtinti šio žaidėjo prašymą prisijungti prie treniruotės?"}
+                </Text>
               </View>
-              <View style={{ flex: 1 }}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  width: moderateScale(200)
+                }}
+              >
                 <TouchableOpacity
                   style={[
                     styles.button,
                     {
                       flexDirection: "row",
                       justifyContent: "space-around",
-                      borderColor: "red"
+                      borderColor: "black"
                     }
                   ]}
-                  onPress={this.confirmReView}
+                  onPress={this.goback}
                 >
-                  <Ionicons
-                    name="ios-trash"
-                    size={moderateScale(15)}
-                    color="red"
-                  />
                   <Text
                     style={{
-                      color: "red",
+                      color: "black",
                       fontSize: moderateScale(13),
                       fontWeight: "300"
                     }}
                   >
-                    {this.props.option2}
+                    Grįžti
                   </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    {
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      borderColor: "black"
+                    }
+                  ]}
+                  onPress={
+                    this.props.data.approved
+                      ? this.cancelPermision
+                      : this.givePermmision
+                  }
+                >
+                  {this.state.approveSpinner ? (
+                    <ActivityIndicator color="grey" size="small" />
+                  ) : (
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      {this.props.data.approved ? "Pašalinti" : "Patvirtinti"}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         ) : null}
         {this.state.readReview ? (
-          <View style={[styles.modal, { height: moderateScale(200) }]}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                justifyContent: "space-around",
-                alignItems: "center",
-                width: moderateScale(220),
-                borderColor: "hsl(186, 62%, 40%)",
-                borderTopWidth: 1
-              }}
-            >
-              <ScrollView
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  justifyContent: "space-between"
+          !this.state.writeReview ? (
+            <View style={[styles.modal, { height: moderateScale(200) }]}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: moderateScale(220),
+                  borderColor: "hsl(186, 62%, 40%)",
+                  borderTopWidth: 1
                 }}
               >
-                <View>
-                  <FlatList
-                    renderItem={this.renderReviews}
-                    data={this.state.playerReviews}
-                    numColumns={1}
-                    style={{ marginTop: 2, flex: 1 }}
-                    keyExtractor={(item, index) => index.toString()}
-                    extraData={this.state.playerReviews}
-                    // onRefresh={() => this.onRefreshing()}
-                    // refreshing={this.state.refresh}
-                    ListEmptyComponent={this.emptyReview}
-                    style={{ margin: moderateScale(2) }}
-                  />
-                </View>
-              </ScrollView>
-              <TouchableOpacity
-                style={[
-                  styles.button,
-                  {
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    borderColor: "black",
-                    marginBottom: moderateScale(10)
-                  }
-                ]}
-                onPress={this.goback}
-              >
-                <Text
+                <View
                   style={{
-                    color: "black",
-                    fontSize: moderateScale(13),
-                    fontWeight: "300"
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    width: moderateScale(230),
+                    flexDirection: "row"
                   }}
                 >
-                  Grįžti
-                </Text>
-              </TouchableOpacity>
+                  <Text style={{ color: "black", fontSize: moderateScale(13) }}>
+                    Įvertinimas
+                  </Text>
+                  <Text style={{ color: "black", fontSize: moderateScale(13) }}>
+                    Komentaras
+                  </Text>
+                </View>
+                <ScrollView
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    justifyContent: "space-between"
+                  }}
+                >
+                  {this.state.spinner ? (
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        height: moderateScale(100)
+                      }}
+                    >
+                      <ActivityIndicator
+                        style={{
+                          justifyContent: "center",
+                          alignSelf: "center"
+                        }}
+                        color="lightgray"
+                        size="small"
+                      />
+                    </View>
+                  ) : (
+                    <View>
+                      <FlatList
+                        renderItem={this.renderReviews}
+                        data={this.state.playerReviews}
+                        numColumns={1}
+                        style={{ marginTop: 2, flex: 1 }}
+                        keyExtractor={(item, index) => index.toString()}
+                        extraData={this.state.playerReviews}
+                        // onRefresh={() => this.onRefreshing()}
+                        // refreshing={this.state.refresh}
+                        ListEmptyComponent={this.emptyReview}
+                        style={{ margin: moderateScale(2) }}
+                      />
+                    </View>
+                  )}
+                </ScrollView>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    width: moderateScale(220)
+                  }}
+                >
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black",
+                        marginBottom: moderateScale(10)
+                      }
+                    ]}
+                    onPress={this.goback}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      Grįžti
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black",
+                        marginBottom: moderateScale(10)
+                      }
+                    ]}
+                    onPress={this.navToApprove}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      Įvertinti
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={[styles.modal, { height: moderateScale(135) }]}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: moderateScale(220),
+                  borderColor: "hsl(186, 62%, 40%)",
+                  borderTopWidth: 1
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "column",
+                    flex: 3,
+                    justifyContent: "center",
+                    alignItems: "center"
+                  }}
+                >
+                  <StarRating
+                    disabled={false}
+                    maxStars={5}
+                    rating={this.state.starCount}
+                    selectedStar={rating => this.onStarRatingPress(rating)}
+                  />
+
+                  <TextInput
+                    style={{
+                      paddingRight: 15,
+                      marginTop: moderateScale(5),
+                      width: moderateScale(120),
+                      height: moderateScale(30),
+                      backgroundColor: "white",
+                      borderWidth: 1,
+                      borderColor: "lightgray",
+                      borderRadius: 15
+                    }}
+                    value={this.state.reviewInput}
+                    placeholder={"Komentaras"}
+                    onChangeText={text => this.setState({ reviewInput: text })}
+                  />
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    width: moderateScale(220)
+                  }}
+                >
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black"
+                      }
+                    ]}
+                    onPress={this.goToReviews}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      Grįžti
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black"
+                      }
+                    ]}
+                    onPress={this.confirmReView}
+                  >
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      {this.props.option2}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )
         ) : null}
         <FlashMessage
           ref="complete"
           position="top"
-          style={{ backgroundColor: "cyan" }}
+          style={{ backgroundColor: "lightgreen" }}
         />
       </Modal>
     );
   }
+
+  cancelPermision = async () => {
+    let propsData = this.props.eventsData;
+    this.setState({ approveSpinner: true });
+    await firebase
+      .firestore()
+      .collection("events")
+      .doc(propsData.id)
+      .collection("playersList")
+      .doc(this.props.data.userId)
+      .delete();
+
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(this.props.data.userId)
+      .collection("joinedEventsList")
+      .doc(propsData.id)
+      .update({ approved: false });
+    this.goback();
+    this.props.cancelApproval(this.props.data.userId);
+  };
+  givePermmision = async () => {
+    let propsData = this.props.eventsData;
+    this.setState({ approveSpinner: true });
+    await firebase
+      .firestore()
+      .collection("events")
+      .doc(propsData.id)
+      .collection("playersList")
+      .doc(this.props.data.userId)
+      .update({
+        approved: true
+      });
+    await firebase
+      .firestore()
+      .collection("users")
+      .doc(this.props.data.userId)
+      .collection("joinedEventsList")
+      .doc(propsData.id)
+      .update({ approved: true });
+    this.goback();
+    this.props.approvedPlayer(this.props.data.userId);
+  };
+
   renderReviews = item => {
     return (
       <View
@@ -358,8 +623,24 @@ export default class askPerm extends React.Component {
           height: moderateScale(35)
         }}
       >
-        <Text>{item.item.rating}</Text>
-        <Text>{item.item.comment}</Text>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: moderateScale(12) }}>
+            {item.item.rating}/5
+          </Text>
+        </View>
+        <View
+          style={{
+            flex: 2,
+            justifyContent: "center",
+            alignItems: "flex-start"
+          }}
+        >
+          <Text style={{ fontSize: moderateScale(12) }}>
+            {item.item.comment}
+          </Text>
+        </View>
       </View>
     );
   };

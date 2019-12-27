@@ -15,6 +15,7 @@ import {
 
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import IconEntypo from "react-native-vector-icons/Entypo";
 import MCIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { connect } from "react-redux";
 import Modal from "react-native-modalbox";
@@ -120,7 +121,7 @@ class Events extends React.Component {
                   this.state.chosenTab === 1 ? styles.chosenTabText : null
                 ]}
               >
-                Žaidėjų paieška
+                Žaidėjų paieškos
               </Text>
             </TouchableOpacity>
           </View>
@@ -136,7 +137,7 @@ class Events extends React.Component {
                   this.state.chosenTab === 2 ? styles.chosenTabText : null
                 ]}
               >
-                Mano paieška
+                Mano įvykiai
               </Text>
             </TouchableOpacity>
           </View>
@@ -176,7 +177,7 @@ class Events extends React.Component {
                 style={{ justifyContent: "flex-start", alignItems: "center" }}
               >
                 <Text style={{ fontSize: 20, color: "black" }}>
-                  Žaidėjų paieška
+                  Žaidėjų paieškos
                 </Text>
               </View>
               <View
@@ -259,7 +260,7 @@ class Events extends React.Component {
                 style={{ justifyContent: "flex-start", alignItems: "center" }}
               >
                 <Text style={{ fontSize: 20, color: "black" }}>
-                  Mano paieškos
+                  Mano įvykiai
                 </Text>
               </View>
               <View
@@ -337,7 +338,7 @@ class Events extends React.Component {
               <FlatList
                 style={{ marginTop: 2, flex: 1 }}
                 data={this.state.eventsUserJoined}
-                renderItem={this.renderItems}
+                renderItem={this.renderTrainingItems}
                 keyExtractor={item => item.id}
                 extraData={this.state.eventsUserJoined}
                 onRefresh={() => this.onRefreshingTraining()}
@@ -352,6 +353,7 @@ class Events extends React.Component {
           data={this.state.eventsDetails}
           closeModal={this.closeModalCreateEvent}
           createEvent={this.createNewSearch}
+          stadiums={this.props.stadiums}
         />
         <ModalEditEvent
           visible={this.state.modalEditEventVis}
@@ -508,6 +510,7 @@ class Events extends React.Component {
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
             creatorsId: data._document.proto.fields.userId.stringValue,
+            address: data._document.proto.fields.address.stringValue,
             id: data.id
           };
 
@@ -544,6 +547,8 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
+            approved: data._document.proto.fields.approved.booleanValue,
+            address: data._document.proto.fields.address.stringValue,
             id: data.id
           };
 
@@ -612,7 +617,6 @@ class Events extends React.Component {
   }
 
   //EVENT SETTER-------------------------------------
-
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
@@ -777,6 +781,101 @@ class Events extends React.Component {
       </TouchableOpacity>
     );
   };
+  renderTrainingItems = ({ item }) => {
+    const { navigate } = this.props.navigation;
+    return (
+      <TouchableOpacity
+        onPress={() => navigate("EventsDetails", { item1: item })}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            width: moderateScale(330),
+            flex: 1,
+            height: moderateScale(70),
+            marginTop: 20,
+            borderRadius: 5,
+            borderColor: "#90c5df",
+            borderBottomWidth: 2,
+            justifyContent: "space-evenly"
+          }}
+        >
+          <View
+            style={{
+              borderColor: "#90c5df",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 2
+            }}
+          >
+            {item.approved ? (
+              <IconEntypo
+                size={moderateScale(40)}
+                name="flash"
+                color="lightgreen"
+              />
+            ) : (
+              <IconEntypo
+                size={moderateScale(40)}
+                name="hour-glass"
+                color="orange"
+              />
+            )}
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              flex: 3
+            }}
+          >
+            <Text
+              style={{
+                color: "black",
+                fontSize: moderateScale(14),
+                fontWeight: "600"
+              }}
+            >
+              {item.eventDate}
+            </Text>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.eventStart}
+            </Text>
+            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              {item.stadiumName}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-around" }}
+              onPress={() => navigate("EventsDetails", { item1: item })}
+            >
+              <Text style={{ fontSize: 17, color: "black" }}>
+                {item.peopleNeed}
+              </Text>
+              <MCIcons
+                name="account-multiple-plus"
+                size={moderateScale(22)}
+                color="hsl(126, 62%, 40%)"
+                style={{ marginBottom: 3, marginLeft: 5 }}
+              />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   navigateToMyEventDetails = data => {
     this.props.navigation.navigate("MyEventsDetails", { item1: data });
   };
@@ -1087,6 +1186,7 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => ({
-  userId: state.auth.userUid
+  userId: state.auth.userUid,
+  stadiums: state.stadiums.stadiumsList
 });
 export default connect(mapStateToProps)(Events);

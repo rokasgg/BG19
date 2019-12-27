@@ -110,101 +110,98 @@ export default class ModalChooseTime extends React.Component {
         onBackdropPress={this.props.closeModal}
       >
         <View style={styles.modal}>
-          <View
-            style={{ flex: 2, justifyContent: "center", alignItems: "center" }}
-          >
-            <FlatList
-              contentContainerStyle={{
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-              numColumns={2}
-              horizontal={false}
-              data={this.state.form}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={item => {
-                if (item.item.occupied === true) {
-                  return (
-                    <TouchableOpacity
+          <FlatList
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center"
+            }}
+            numColumns={2}
+            horizontal={false}
+            data={this.state.form}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={item => {
+              if (item.item.occupied === true) {
+                return (
+                  <TouchableOpacity
+                    style={{
+                      height: moderateScale(25),
+                      width: moderateScale(90),
+                      borderRadius: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      borderColor: "black",
+                      borderWidth: 2,
+                      margin: 5
+                    }}
+                  >
+                    <Text
                       style={{
-                        height: moderateScale(25),
-                        width: moderateScale(90),
-                        borderRadius: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "white",
-                        borderColor: "black",
-                        borderWidth: 2,
-                        margin: 5
+                        color: "black",
+                        fontWeight: "500",
+                        fontSize: moderateScale(13)
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "black",
-                          fontWeight: "500",
-                          fontSize: moderateScale(13)
-                        }}
-                      >
-                        {item.item.time}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                } else {
-                  return this.state.form[item.index].chosenItem === true ? (
-                    <TouchableOpacity
-                      onPress={() => this.chooseTime(item)}
+                      {item.item.time}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              } else {
+                return this.state.form[item.index].chosenItem === true ? (
+                  <TouchableOpacity
+                    onPress={() => this.chooseTime(item)}
+                    style={{
+                      height: moderateScale(20),
+                      width: moderateScale(100),
+                      borderRadius: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "hsl(126, 62%, 40%)",
+                      borderColor: "hsl(126, 62%, 40%)",
+                      borderWidth: 2,
+                      margin: 3
+                    }}
+                  >
+                    <Text
                       style={{
-                        height: moderateScale(20),
-                        width: moderateScale(100),
-                        borderRadius: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "hsl(126, 62%, 40%)",
-                        borderColor: "hsl(126, 62%, 40%)",
-                        borderWidth: 2,
-                        margin: 3
+                        color: "white",
+                        fontWeight: "500",
+                        fontSize: moderateScale(13)
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "white",
-                          fontWeight: "500",
-                          fontSize: moderateScale(13)
-                        }}
-                      >
-                        {item.item.time}
-                      </Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => this.chooseTime(item)}
+                      {item.item.time}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => this.chooseTime(item)}
+                    style={{
+                      height: moderateScale(20),
+                      width: moderateScale(100),
+                      borderRadius: 50,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "white",
+                      borderColor: "black",
+                      borderWidth: 2,
+                      margin: 3
+                    }}
+                  >
+                    <Text
                       style={{
-                        height: moderateScale(20),
-                        width: moderateScale(100),
-                        borderRadius: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: "white",
-                        borderColor: "black",
-                        borderWidth: 2,
-                        margin: 3
+                        color: "black",
+                        fontWeight: "500",
+                        fontSize: moderateScale(13)
                       }}
                     >
-                      <Text
-                        style={{
-                          color: "black",
-                          fontWeight: "500",
-                          fontSize: moderateScale(13)
-                        }}
-                      >
-                        {item.item.time}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                }
-              }}
-            />
-          </View>
+                      {item.item.time}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }
+            }}
+          />
         </View>
       </Modal>
     );
@@ -218,7 +215,8 @@ const styles = StyleSheet.create({
     height: moderateScale(150),
     width: moderateScale(250),
     flexDirection: "column",
-    borderRadius: 15
+    borderRadius: 15,
+    backgroundColor: "yellow"
   },
   text: {
     color: "black",

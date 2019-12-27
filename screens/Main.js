@@ -9,7 +9,8 @@ import {
   Button,
   TouchableOpacity,
   TextInput,
-  Picker
+  Picker,
+  Dimensions
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import Geolocation, { watchPosition } from "react-native-geolocation-service";
@@ -18,32 +19,15 @@ import ModalStadiumDetails from "../components/modalStadiumDetails";
 import ModalReservation from "../components/modalReservation";
 import ModalFilter from "../components/modalFilter";
 import gettingActiveRes from "../redux/actions/getActiveResAction";
+import gettingStadiums from "../redux/actions/getStadiumsAction";
 import { LocaleConfig } from "react-native-calendars";
 import { moderateScale } from "../components/ScaleElements.js";
 import Icon from "react-native-vector-icons/AntDesign";
+import FontIcons from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { getTodaysTime } from "../components/getTodaysTime";
 import firebase from "firebase";
 import "firebase/firestore";
-
-export async function requestLocationPermission() {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: "Example App",
-        message: "Example App access to your location "
-      }
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("You can use the");
-    } else {
-      console.log("location permission denied");
-      alert("Location permission denied");
-    }
-  } catch (err) {
-    console.warn(err);
-  }
-}
 
 class Main extends React.Component {
   static navigationOptions = { header: null };
@@ -167,28 +151,123 @@ class Main extends React.Component {
         <View
           style={{
             justifyContent: "flex-start",
-            alignItems: "flex-end",
-            marginRight: moderateScale(10)
+            flexDirection: "row",
+            paddingTop: moderateScale(5)
           }}
         >
-          <TouchableOpacity
-            onPress={this.openFilter}
+          <View
             style={{
-              height: moderateScale(45),
-              width: moderateScale(45),
-              borderRadius: 90,
-              backgroundColor: "hsla(120, 85%, 30%, 0.79)",
-              justifyContent: "center",
-              alignItems: "center"
+              alignItems: "flex-start",
+              marginLeft: moderateScale(10),
+              flex: 1
             }}
           >
-            <Icon
-              name="filter"
-              size={moderateScale(20)}
-              color={this.state.filterColor}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.findCoords}
+              style={{
+                height: moderateScale(35),
+                width: moderateScale(35),
+                borderRadius: 90,
+                backgroundColor: "hsla(240, 50%, 50%, 0.79)",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <FontIcons
+                name="location-arrow"
+                size={moderateScale(18)}
+                color={this.state.filterColor}
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              alignItems: "flex-end",
+              marginRight: moderateScale(10),
+              flex: 1
+            }}
+          >
+            <TouchableOpacity
+              onPress={this.openFilter}
+              style={{
+                height: moderateScale(45),
+                width: moderateScale(45),
+                borderRadius: 90,
+                backgroundColor: "hsla(120, 85%, 30%, 0.79)",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Icon
+                name="filter"
+                size={moderateScale(20)}
+                color={this.state.filterColor}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+        {this.props.isAdmin ? (
+          <View
+            style={{
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              flexDirection: "row",
+              paddingBottom: moderateScale(20)
+            }}
+          >
+            <View
+              style={{
+                alignItems: "flex-start",
+                marginLeft: moderateScale(10),
+                flex: 1
+              }}
+            >
+              <TouchableOpacity
+                onPress={this.findCoords}
+                style={{
+                  height: moderateScale(35),
+                  width: moderateScale(35),
+                  borderRadius: 90,
+                  backgroundColor: "hsla(240, 50%, 50%, 0.79)",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <MaterialIcons
+                  name="note-add"
+                  size={moderateScale(18)}
+                  color={this.state.filterColor}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* <View
+              style={{
+                alignItems: "flex-end",
+                marginRight: moderateScale(10),
+                flex: 1
+              }}
+            >
+              <TouchableOpacity
+                onPress={this.openFilter}
+                style={{
+                  height: moderateScale(45),
+                  width: moderateScale(45),
+                  borderRadius: 90,
+                  backgroundColor: "hsla(120, 85%, 30%, 0.79)",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Icon
+                  name="filter"
+                  size={moderateScale(20)}
+                  color={this.state.filterColor}
+                />
+              </TouchableOpacity>
+            </View> */}
+          </View>
+        ) : null}
+
         {/* ////////////////////////////////////////---STADIUM DETAILS MODAL---//////////////////////////////////////// */}
 
         <ModalStadiumDetails
@@ -220,105 +299,204 @@ class Main extends React.Component {
     );
   }
 
+  findMyLocation = () => {
+    this.setState({});
+  };
+
   searchByTime = () => {
     this.setState({ modalFilterState: false });
     this.props.navigation.navigate("FilterByTime");
   };
-
+  filterStadiumsByTime = selectedStadiums => {
+    console.log("objetkas", typeof selectedStadiums);
+    let filteredStadiums = Array.from(this.state.markersOfficial);
+    selectedStadiums.filterBy.forEach(element => {
+      switch (element.type) {
+        case "inventor":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.inventor === true
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "paid":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.isPaid === true
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "free":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.isPaid === false
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "grass":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.floorType === "grass"
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "futsal":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.floorType === "futsal"
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "indoor":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.stadiumType === "indoor"
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "outdoor":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.stadiumType === "outdoor"
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        case "synthetic":
+          filteredStadiums = filteredStadiums.filter(
+            item => item.floorType === "synthetic"
+          );
+          this.setState({
+            markers: filteredStadiums,
+            modalFilterState: false
+          });
+          break;
+        default:
+          this.setState({
+            markers: this.state.markersOfficial,
+            modalFilterState: false
+          });
+      }
+    });
+    let data = {
+      filteredStadiums,
+      date: selectedStadiums.chosenTime
+    };
+    this.props.navigation.navigate("FilterByTime", { data });
+  };
+  selectedStadium;
   filterStadiums = selectedStadiums => {
+    console.log("koks tipas", typeof selectedStadiums);
     let stadiums = Array.from(this.state.markersOfficial);
     let slength = selectedStadiums.length;
     const data33 = stadiums.filter(item => item.paid === true);
     console.log(data33, stadiums, selectedStadiums, "YO", slength);
-
-    if (selectedStadiums.length > 0) {
-      let filteredStadiums = Array.from(this.state.markersOfficial);
-      selectedStadiums.forEach(element => {
-        switch (element.type) {
-          case "inventor":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.inventor === true
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "paid":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.isPaid === true
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "free":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.isPaid === false
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "grass":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.floorType === "grass"
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "futsal":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.floorType === "futsal"
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "indoor":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.stadiumType === "indoor"
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "outdoor":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.stadiumType === "outdoor"
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          case "synthetic":
-            filteredStadiums = filteredStadiums.filter(
-              item => item.floorType === "synthetic"
-            );
-            this.setState({
-              markers: filteredStadiums,
-              modalFilterState: false
-            });
-            break;
-          default:
-            this.setState({
-              markers: this.state.markersOfficial,
-              modalFilterState: false
-            });
-        }
-      });
-    } else
-      this.setState(
-        { markers: this.state.markersOfficial, modalFilterState: false },
-        () => console.log("Nieko nepasirinkote")
-      );
+    console.log("ka gaunam?", selectedStadiums);
+    if (selectedStadiums.chosenTime !== undefined) {
+      this.filterStadiumsByTime(selectedStadiums);
+    } else {
+      if (selectedStadiums.length > 0) {
+        let filteredStadiums = Array.from(this.state.markersOfficial);
+        selectedStadiums.forEach(element => {
+          switch (element.type) {
+            case "inventor":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.inventor === true
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "paid":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.isPaid === true
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "free":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.isPaid === false
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "grass":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.floorType === "grass"
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "futsal":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.floorType === "futsal"
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "indoor":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.stadiumType === "indoor"
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "outdoor":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.stadiumType === "outdoor"
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            case "synthetic":
+              filteredStadiums = filteredStadiums.filter(
+                item => item.floorType === "synthetic"
+              );
+              this.setState({
+                markers: filteredStadiums,
+                modalFilterState: false
+              });
+              break;
+            default:
+              this.setState({
+                markers: this.state.markersOfficial,
+                modalFilterState: false
+              });
+          }
+        });
+      } else
+        this.setState(
+          { markers: this.state.markersOfficial, modalFilterState: false },
+          () => console.log("Nieko nepasirinkote")
+        );
+    }
   };
 
   reservationModalClose = () => {
@@ -352,38 +530,9 @@ class Main extends React.Component {
     );
   };
 
-  filterStadiumsBy = async filter => {
-    let stadiumArray = [];
-    let qe = firebase.firestore().collection("stadiums");
-
-    await qe.get().then(res =>
-      res.forEach(data => {
-        let stadium = {
-          stadiumName: data._document.proto.fields.stadiumName.stringValue,
-          address: data._document.proto.fields.address.stringValue,
-          longitude:
-            data._document.proto.fields.coordinates.geoPointValue.longitude,
-          latitude:
-            data._document.proto.fields.coordinates.geoPointValue.latitude,
-          isPaid: data._document.proto.fields.paid.booleanValue,
-          phone: data._document.proto.fields.phone.integerValue,
-          floorType: data._document.proto.fields.floorType.stringValue,
-          stadiumType: data._document.proto.fields.stadiumType.stringValue,
-          inventor: data._document.proto.fields.providesInventor.booleanValue,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
-        };
-        stadiumArray.push(stadium);
-        console.log("STADIONAI IS FIREBASE", data, stadium);
-      })
-    );
-    console.log(stadiumArray);
-    this.setState({ markers: stadiumArray });
-  };
   getStadiumsData = async () => {
     let stadiumArray = [];
     let qe = firebase.firestore().collection("stadiums");
-
     await qe.get().then(res =>
       res.forEach(data => {
         let stadium = {
@@ -407,7 +556,11 @@ class Main extends React.Component {
       })
     );
     console.log(stadiumArray);
-    this.setState({ markers: stadiumArray, markersOfficial: stadiumArray });
+
+    this.setState(
+      { markers: stadiumArray, markersOfficial: stadiumArray },
+      () => this.props.gettingStadiums(stadiumArray)
+    );
   };
 
   getingResTime = () => {
@@ -501,9 +654,6 @@ class Main extends React.Component {
 
     LocaleConfig.defaultLocale = "lt";
   }
-  async componentWillMount() {
-    await requestLocationPermission();
-  }
 }
 
 const styles = StyleSheet.create({
@@ -566,6 +716,9 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   getActiveResNumber: state.active.activeReservationNumber,
-  userId: state.auth.userId
+  userId: state.auth.userId,
+  isAdmin: state.auth.admin
 });
-export default connect(mapStateToProps, { gettingActiveRes })(Main);
+export default connect(mapStateToProps, { gettingActiveRes, gettingStadiums })(
+  Main
+);

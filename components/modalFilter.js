@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { moderateScale } from "./ScaleElements";
 import IconFeather from "react-native-vector-icons/Feather";
-
+import ModalTimeFilter from "../components/modalStadiumsFilter";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -35,7 +35,7 @@ export default class modalFilter extends React.Component {
         {
           id: 0,
           type: "grass",
-          text: "Tikra žolė",
+          text: "Naturali žolė",
           selected: false
         },
         {
@@ -47,7 +47,7 @@ export default class modalFilter extends React.Component {
         {
           id: 2,
           type: "futsal",
-          text: "Salinė danga",
+          text: "Parketas",
           selected: false
         }
       ],
@@ -56,7 +56,6 @@ export default class modalFilter extends React.Component {
           id: 0,
           type: "indoor",
           text: "Vidus",
-
           selected: false
         },
         {
@@ -76,7 +75,7 @@ export default class modalFilter extends React.Component {
         {
           id: 1,
           type: "free",
-          text: "Nemomkamas",
+          text: "Nemokamas",
           selected: false
         }
       ],
@@ -84,7 +83,9 @@ export default class modalFilter extends React.Component {
         id: 0,
         type: "inventor",
         selected: false
-      }
+      },
+      modalTimeFilter: false,
+      chosenTime: null
     };
   }
 
@@ -103,12 +104,21 @@ export default class modalFilter extends React.Component {
       selectedPriceType,
       selectedStadiumType
     );
+
     if (inventor.selected === true) {
       filterBy.push(inventor);
       console.log("(.)( .)", filterBy);
     }
+    if (this.state.chosenTime !== null) {
+      let data = {
+        chosenTime: this.state.chosenTime,
+        filterBy
+      };
+      this.props.onConfirm(data);
+    } else {
+      this.props.onConfirm(filterBy);
+    }
     console.log(filterBy, "AR GAVOS KAZKAS PONAS ROKAI ?");
-    this.props.onConfirm(filterBy);
   };
   clearFilters = () => {
     const emptyArray = [];
@@ -124,7 +134,7 @@ export default class modalFilter extends React.Component {
     for (let i = 0; i < lengthStad; i++) stadiumTypeUpdate[i].selected = false;
     for (let i = 0; i < lengthPrice; i++)
       stadiumPriceUpdate[i].selected = false;
-    this.setState({}, () => {
+    this.setState({ chosenTime: null }, () => {
       this.props.onConfirm(emptyArray);
     });
   };
@@ -142,12 +152,17 @@ export default class modalFilter extends React.Component {
     }
     this.setState({ floorType: floorTypeUpdate });
   };
+
   onStadiumTypeClick = selectedItem => {
     let stadiumTypeUpdate = Array.from(this.state.stadiumType);
     let listLenght = stadiumTypeUpdate.length;
     let index = stadiumTypeUpdate.findIndex(
       item => item.id === selectedItem.id
     );
+    let floorTypeUpdate = Array.from(this.state.floorType);
+    for (let i = 0; i < floorTypeUpdate.length; i++) {
+      floorTypeUpdate[i].selected = false;
+    }
     for (let i = 0; i < listLenght; i++) {
       if (i === index) {
         stadiumTypeUpdate[i].selected = true;
@@ -155,7 +170,10 @@ export default class modalFilter extends React.Component {
         stadiumTypeUpdate[i].selected = false;
       }
     }
-    this.setState({ stadiumType: stadiumTypeUpdate });
+    this.setState({
+      stadiumType: stadiumTypeUpdate,
+      floorType: floorTypeUpdate
+    });
   };
   onStadiumPriceClick = selectedItem => {
     let stadiumPriceUpdate = Array.from(this.state.priceType);
@@ -179,6 +197,16 @@ export default class modalFilter extends React.Component {
     this.setState({ inventor: inventorUpdate });
   };
 
+  closeTimeFilter = () => {
+    this.setState({ modalTimeFilter: false });
+  };
+  selectTime = () => {
+    this.setState({ modalTimeFilter: true });
+  };
+  onConfirm = chosenTime => {
+    this.setState({ modalTimeFilter: false, chosenTime });
+  };
+
   render() {
     return (
       <Modal
@@ -198,159 +226,6 @@ export default class modalFilter extends React.Component {
           <Text style={{ color: "black", fontSize: moderateScale(16) }}>
             Filtracija
           </Text>
-          <View
-            style={{
-              flex: 3,
-              justifyContent: "flex-start",
-              alignItems: "flex-start",
-              width: moderateScale(240),
-              flexDirection: "column",
-              borderTopWidth: 1,
-              borderColor: "hsl(186, 62%, 40%)"
-            }}
-          >
-            <View
-              style={{
-                marginLeft: moderateScale(15),
-                flex: 1,
-                marginBottom: moderateScale(5),
-                justifyContent: "flex-end",
-                alignItems: "flex-end"
-              }}
-            >
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: moderateScale(11),
-                  paddingBottom: moderateScale(1),
-                  fontWeight: "800"
-                }}
-              >
-                Dangos tipas
-              </Text>
-            </View>
-            <View
-              style={{
-                flex: 2,
-                justifyContent: "center",
-                flexDirection: "column",
-                width: moderateScale(240)
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "center"
-                }}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    paddingLeft: moderateScale(20)
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.onFloorTypeClick(this.state.floorType[0]);
-                    }}
-                    style={{ flexDirection: "row" }}
-                  >
-                    <IconFeather
-                      name={
-                        this.state.floorType[0].selected === true
-                          ? "disc"
-                          : "circle"
-                      }
-                      color="black"
-                      size={moderateScale(12)}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 5,
-                        fontSize: moderateScale(10),
-                        color: "black"
-                      }}
-                    >
-                      {this.state.floorType[0].text}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    paddingLeft: moderateScale(20)
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.onFloorTypeClick(this.state.floorType[1]);
-                    }}
-                    style={{ flexDirection: "row" }}
-                  >
-                    <IconFeather
-                      name={
-                        this.state.floorType[1].selected === true
-                          ? "disc"
-                          : "circle"
-                      }
-                      color="black"
-                      size={moderateScale(12)}
-                    />
-                    <Text
-                      style={{
-                        marginLeft: 5,
-                        fontSize: moderateScale(10),
-                        color: "black"
-                      }}
-                    >
-                      {this.state.floorType[1].text}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.onFloorTypeClick(this.state.floorType[2]);
-                  }}
-                  style={{ flexDirection: "row" }}
-                >
-                  <IconFeather
-                    name={
-                      this.state.floorType[2].selected === true
-                        ? "disc"
-                        : "circle"
-                    }
-                    color="black"
-                    size={moderateScale(13)}
-                  />
-                  <Text
-                    style={{
-                      marginLeft: 5,
-                      fontSize: moderateScale(10),
-                      color: "black"
-                    }}
-                  >
-                    {this.state.floorType[2].text}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-          {/* --------------------------FLOORTYPE/\-------------------------------- */}
           <View
             style={{
               flex: 2,
@@ -460,6 +335,281 @@ export default class modalFilter extends React.Component {
               </View>
             </View>
           </View>
+          {this.state.stadiumType[0].selected === true ? (
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                width: moderateScale(240),
+                flexDirection: "column",
+                borderTopWidth: 1,
+                borderColor: "hsl(186, 62%, 40%)"
+              }}
+            >
+              <View
+                style={{
+                  marginLeft: moderateScale(15),
+                  flex: 1,
+                  marginBottom: moderateScale(5),
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: moderateScale(11),
+                    paddingBottom: moderateScale(1),
+                    fontWeight: "800"
+                  }}
+                >
+                  Dangos tipas
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  width: moderateScale(240)
+                }}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "center"
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      paddingLeft: moderateScale(20)
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.onFloorTypeClick(this.state.floorType[2]);
+                      }}
+                      style={{ flexDirection: "row" }}
+                    >
+                      <IconFeather
+                        name={
+                          this.state.floorType[2].selected === true
+                            ? "disc"
+                            : "circle"
+                        }
+                        color="black"
+                        size={moderateScale(13)}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          fontSize: moderateScale(10),
+                          color: "black"
+                        }}
+                      >
+                        {this.state.floorType[2].text}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      paddingLeft: moderateScale(20)
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.onFloorTypeClick(this.state.floorType[1]);
+                      }}
+                      style={{ flexDirection: "row" }}
+                    >
+                      <IconFeather
+                        name={
+                          this.state.floorType[1].selected === true
+                            ? "disc"
+                            : "circle"
+                        }
+                        color="black"
+                        size={moderateScale(12)}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          fontSize: moderateScale(10),
+                          color: "black"
+                        }}
+                      >
+                        {this.state.floorType[1].text}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ) : this.state.stadiumType[1].selected === true ? (
+            <View
+              style={{
+                flex: 2,
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                width: moderateScale(240),
+                flexDirection: "column",
+                borderTopWidth: 1,
+                borderColor: "hsl(186, 62%, 40%)"
+              }}
+            >
+              <View
+                style={{
+                  marginLeft: moderateScale(15),
+                  flex: 1,
+                  marginBottom: moderateScale(5),
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end"
+                }}
+              >
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: moderateScale(11),
+                    paddingBottom: moderateScale(1),
+                    fontWeight: "800"
+                  }}
+                >
+                  Dangos tipas
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 2,
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  width: moderateScale(240)
+                }}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "center"
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      paddingLeft: moderateScale(20)
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.onFloorTypeClick(this.state.floorType[0]);
+                      }}
+                      style={{ flexDirection: "row" }}
+                    >
+                      <IconFeather
+                        name={
+                          this.state.floorType[0].selected === true
+                            ? "disc"
+                            : "circle"
+                        }
+                        color="black"
+                        size={moderateScale(12)}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          fontSize: moderateScale(10),
+                          color: "black"
+                        }}
+                      >
+                        {this.state.floorType[0].text}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "flex-start",
+                      paddingLeft: moderateScale(20)
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.onFloorTypeClick(this.state.floorType[1]);
+                      }}
+                      style={{ flexDirection: "row" }}
+                    >
+                      <IconFeather
+                        name={
+                          this.state.floorType[1].selected === true
+                            ? "disc"
+                            : "circle"
+                        }
+                        color="black"
+                        size={moderateScale(12)}
+                      />
+                      <Text
+                        style={{
+                          marginLeft: 5,
+                          fontSize: moderateScale(10),
+                          color: "black"
+                        }}
+                      >
+                        {this.state.floorType[1].text}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ) : null}
+          {/* <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.onFloorTypeClick(this.state.floorType[2]);
+                  }}
+                  style={{ flexDirection: "row" }}
+                >
+                  <IconFeather
+                    name={
+                      this.state.floorType[2].selected === true
+                        ? "disc"
+                        : "circle"
+                    }
+                    color="black"
+                    size={moderateScale(13)}
+                  />
+                  <Text
+                    style={{
+                      marginLeft: 5,
+                      fontSize: moderateScale(10),
+                      color: "black"
+                    }}
+                  >
+                    {this.state.floorType[2].text}
+                  </Text>
+                </TouchableOpacity>
+              </View> */}
+          {/* --------------------------FLOORTYPE/\-------------------------------- */}
+
           <View
             style={{
               flex: 2,
@@ -675,12 +825,19 @@ export default class modalFilter extends React.Component {
                   alignItems: "center"
                 }}
               >
-                <TouchableOpacity onPress={this.props.searchByTime}>
-                  <Ionicons
-                    name="md-time"
-                    color="black"
-                    size={moderateScale(18)}
-                  />
+                <TouchableOpacity onPress={this.selectTime}>
+                  {this.state.chosenTime === null ? (
+                    <Ionicons
+                      name="md-time"
+                      color="black"
+                      size={moderateScale(18)}
+                    />
+                  ) : (
+                    <Text>
+                      {this.state.chosenTime.date},
+                      {this.state.chosenTime.time.startTime}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
@@ -744,6 +901,12 @@ export default class modalFilter extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
+        <ModalTimeFilter
+          closeModal={this.closeTimeFilter}
+          visible={this.state.modalTimeFilter}
+          onConfirm={this.onConfirm}
+          clearFilter={this.clearFilter}
+        />
       </Modal>
     );
   }

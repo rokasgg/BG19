@@ -213,50 +213,54 @@ class FilterByTime extends React.Component {
   };
   onFiltering = data => {
     let searchDetails = {
-      date: data.date,
-      time: data.time
+      date: data.date.date,
+      time: data.date.time,
+      filteredStadiums: data.filteredStadiums
     };
+
+    console.log("kokie duomenys cia?", searchDetails);
     this.startSpinner();
     this.getFreeStadiums(searchDetails);
   };
 
   componentDidMount() {
     this.props.gettingActiveRes(this.props.userId);
+    let data = this.props.navigation.getParam("data");
+    console.log("Ka gaunam is filtro?", data);
+    this.onFiltering(data);
   }
   startSpinner = () => {
     this.setState({ spinnerIndicator: true, modalFilter: false });
   };
-  getFreeStadiums = async parameters => {
+  getFreeStadiums = async data => {
+    let parameters = data;
+    let filteredStadiums = data.filteredStadiums;
     this.startSpinner();
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
     let stadiumsArray = [];
-    await firebase
-      .firestore()
-      .collection("stadiums")
-      .get()
-      .then(res =>
-        res.forEach(data => {
-          let details = {
-            id: data.id,
-            date: parameters.date,
-            time: parameters.time.type,
-            start: parameters.time.startTime,
-            address: data._document.proto.fields.address.stringValue,
-            stadiumType: data._document.proto.fields.stadiumType.stringValue,
-            floorType: data._document.proto.fields.floorType.stringValue,
-            phone: data._document.proto.fields.phone.integerValue,
-            stadiumName: data._document.proto.fields.stadiumName.stringValue,
-            reservationStart: parameters.time.startTime,
-            reservationFinish: parameters.time.finishTime,
-            userId: this.props.userId,
-            stadiumId: data.id,
-            reservationConfirmTime: Date.now()
-          };
-          console.log("dsadas", details);
-          stadiumsArray.push(details);
-        })
-      );
+
+    filteredStadiums.forEach(stadium => {
+      let details = {
+        id: stadium.stadiumId,
+        date: parameters.date,
+        time: parameters.time.type,
+        start: parameters.time.startTime,
+        address: stadium.address,
+        stadiumType: stadium.stadiumType,
+        floorType: stadium.floorType,
+        phone: stadium.phone,
+        stadiumName: stadium.stadiumName,
+        reservationStart: parameters.time.startTime,
+        reservationFinish: parameters.time.finishTime,
+        userId: this.props.userId,
+        stadiumId: stadium.stadiumId,
+        reservationConfirmTime: Date.now()
+      };
+      console.log("dsadas", details);
+      stadiumsArray.push(details);
+    });
+    console.log("isfiltruotos rezervacijos", stadiumsArray);
 
     let allStadiums = await this.getStadiumsByDate(stadiumsArray);
     await this.stateSetting(allStadiums);

@@ -31,6 +31,7 @@
     "react-native-maps": "^0.24.2",
     "react-native-modal": "^11.5.1",
     "react-native-modal-datetime-picker": "^7.4.2",
+    "react-native-modal-dropdown": "^0.7.0",
     "react-native-modalbox": "^1.7.1",
     "react-native-pose": "^0.9.1",
     "react-native-slider": "^0.11.0",

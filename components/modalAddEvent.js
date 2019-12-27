@@ -12,16 +12,19 @@ import { moderateScale } from "./ScaleElements";
 import DateTimePicker from "react-native-datepicker";
 import NumberCounter from "./numberCounter";
 import Icon from "react-native-vector-icons/FontAwesome";
+import ModalDropdown from "react-native-modal-dropdown";
 
 export default class modalReservation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       dateTime: null,
-      peopleNeeded: null,
+      peopleNeeded: 1,
       stadiumName: "",
       stadiumAddress: "",
-      time: null
+      time: null,
+      selectedStadium: null,
+      defaultIndex: -1
     };
   }
   showDateTimePicker = () => {
@@ -44,17 +47,23 @@ export default class modalReservation extends React.Component {
   onCounterChange = counter => {
     this.setState({ peopleNeeded: counter });
   };
+
   componentDidUpdate(prevProps) {
     if (prevProps.data !== this.props.data) {
+      let index = this.state.dropDownOptions.findIndex(
+        item => item === this.props.data.stadiumName
+      );
       this.setState({
-        stadiumName: this.props.data.stadiumName,
+        selectedStadium: this.props.data.stadiumName,
         dateTime: this.props.data.reservationDate,
         time: this.props.data.reservationStart,
-        stadiumAddress: this.props.data.reservationStart
+        stadiumAddress: this.props.data.reservationStart,
+        defaultIndex: index
       });
-      console.log("cozinam rerender", this.props.data);
+      console.log("cozinam rerender", this.props.data, index);
     } else return false;
   }
+
   onCreateEvent = () => {
     console.log(
       this.state.stadiumName,
@@ -63,7 +72,7 @@ export default class modalReservation extends React.Component {
       this.state.dateTime
     );
     let searchDetails = {
-      stadiumName: this.state.stadiumName,
+      stadiumName: this.state.selectedStadium,
       stadiumAddress: this.state.stadiumAddress,
       peopleNeeded: this.state.peopleNeeded,
       eventDate: this.state.dateTime,
@@ -73,11 +82,24 @@ export default class modalReservation extends React.Component {
     this.props.createEvent(searchDetails);
   };
 
+  getStadiumsOptions = () => {
+    let stadiums = this.props.stadiums;
+    let dropDownOptions = [];
+    stadiums.forEach(stadium => {
+      dropDownOptions.push(stadium.stadiumName);
+    });
+    this.setState({
+      dropDownOptions
+    });
+  };
+
   componentDidMount() {
     if (this.props.data !== null) {
       console.log("GAVOME DATA I MODALA !!!!", this.props.data);
     } else console.log("BYBI NK NEGAUSI xD", this.props.data);
+    this.getStadiumsOptions();
   }
+
   render() {
     return (
       <Modal
@@ -97,11 +119,22 @@ export default class modalReservation extends React.Component {
         <View
           style={{
             backgroundColor: "#f2f2f2",
-            height: moderateScale(350),
+            height: moderateScale(310),
             width: moderateScale(375),
             borderRadius: 15
           }}
         >
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "flex-start",
+              height: moderateScale(45),
+              width: moderateScale(340),
+              marginLeft: moderateScale(7)
+            }}
+          >
+            <Text style={styles.textLeft}>Naujas įvykis</Text>
+          </View>
           <View
             style={{
               flex: 4,
@@ -121,33 +154,26 @@ export default class modalReservation extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Stadiono pavadinimas:</Text>
-              <TextInput
-                placeholder={"Stadium Name"}
-                style={styles.textRight}
-                onChangeText={text => this.setState({ stadiumName: text })}
-                value={this.state.stadiumName}
-              />
+              <Text style={styles.textLeft}>Stadionas:</Text>
+              <View style={styles.textRight}>
+                <ModalDropdown
+                  options={this.state.dropDownOptions}
+                  textStyle={{ fontSize: moderateScale(15) }}
+                  dropdownTextStyle={{ fontSize: moderateScale(15) }}
+                  defaultValue={
+                    this.state.selectedStadium
+                      ? this.state.selectedStadium
+                      : "Pasirinkite"
+                  }
+                  onPress={val => {
+                    this.setState({ selectedStadium: val }, () =>
+                      console.log("pasirinkimas", val)
+                    );
+                  }}
+                />
+              </View>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                height: moderateScale(45),
-                width: moderateScale(340),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={styles.textLeft}>Adresas:</Text>
-              <TextInput
-                placeholder={"Adress"}
-                style={styles.textRight}
-                onChangeText={text => this.setState({ stadiumAddress: text })}
-                value={this.state.stadiumAddress}
-              />
-            </View>
+
             <View
               style={{
                 flexDirection: "row",
@@ -251,7 +277,6 @@ export default class modalReservation extends React.Component {
               />
             </View>
           </View>
-
           <View
             style={{
               flex: 1,
@@ -265,22 +290,21 @@ export default class modalReservation extends React.Component {
             <TouchableOpacity
               style={[
                 styles.button,
-                { flexDirection: "row", justifyContent: "space-around" }
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  backgroundColor: "orange"
+                }
               ]}
               onPress={this.props.closeModal}
             >
-              <Icon name="times" size={18} color="#fff" />
               <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.button,
-                { flexDirection: "row", justifyContent: "space-around" }
-              ]}
+              style={[styles.button, { justifyContent: "center" }]}
               onPress={this.onCreateEvent}
             >
-              <Icon name="search-plus" size={18} color="#fff" />
-              <Text style={{ color: "#fff", fontSize: 22 }}>Kurti paiešką</Text>
+              <Text style={{ color: "#fff", fontSize: 22 }}>Sukurti</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -288,7 +312,7 @@ export default class modalReservation extends React.Component {
     );
   }
 }
-// } <TouchableOpacity style={styles.button} onPress={this.confirmData}>
+
 const styles = StyleSheet.create({
   modal: {
     justifyContent: "center",

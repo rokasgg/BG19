@@ -4,10 +4,12 @@ import dummyReducer from "../reducers/dummyReducer";
 import regReducer from "../reducers/regReducer";
 import checkIfBanned from "../reducers/checkIfBannedRed";
 import getActiveRes from "../reducers/getActiveResReducer";
+import getStadiumsReducer from "./getStadiumsReducer";
 export default combineReducers({
   auth: authReducer,
   dummyReducer: dummyReducer,
   reg: regReducer,
   check: checkIfBanned,
-  active: getActiveRes
+  active: getActiveRes,
+  stadiums: getStadiumsReducer
 });

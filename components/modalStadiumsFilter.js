@@ -47,7 +47,7 @@ export default class modalStadiumsFilter extends React.Component {
   };
   clearFilters = () => {
     this.setState({}, () => {
-      this.props.clearFilter();
+      this.props.closeModal();
     });
   };
   onTimePress = time => {
@@ -59,6 +59,9 @@ export default class modalStadiumsFilter extends React.Component {
   openTimeModal = () => {
     this.setState({ chooseTimeModal: true });
   };
+  componendDidMount() {
+    this.setState({ dateTime: getTodaysDate });
+  }
 
   render() {
     return (
@@ -269,7 +272,7 @@ export default class modalStadiumsFilter extends React.Component {
                   fontWeight: "300"
                 }}
               >
-                Išvalyti
+                Grįžti
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

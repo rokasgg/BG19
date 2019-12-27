@@ -49,8 +49,8 @@ class MyEventDetails extends React.Component {
   };
   async componentDidMount() {
     await this.getConnectedPeople();
-    await this.checkIfUserIsJoined();
-    this.amIbanned();
+    //await this.checkIfUserIsJoined();
+    //this.amIbanned();
   }
   startSpinner = () => {
     this.setState({ spin: true });
@@ -136,6 +136,7 @@ class MyEventDetails extends React.Component {
   };
 
   getConnectedPeople = async () => {
+    this.startSpinner();
     const propsDataEvent = this.props.navigation.state.params.item1;
     let peopleNeeded = propsDataEvent.peopleNeed;
     let joinedPeople = [];
@@ -151,7 +152,8 @@ class MyEventDetails extends React.Component {
         res.forEach(data => {
           joinedPeople.push({
             name: data._document.proto.fields.name.stringValue,
-            userId: data._document.proto.fields.userId.stringValue
+            userId: data._document.proto.fields.userId.stringValue,
+            approved: data._document.proto.fields.approved.booleanValue
           });
         });
         this.setState(
@@ -472,23 +474,29 @@ class MyEventDetails extends React.Component {
                 </View>
               </View>
             </View>
-            <FlatList
-              style={{ margin: 2 }}
-              numColumns={3}
-              data={this.state.connectedPlayersList}
-              renderItem={this.renderPlayers}
-              keyExtractor={(item, index) => index.toString()}
-              extraData={this.state.connectedPlayersList}
-              refreshing={this.state.refresh}
-              ListEmptyComponent={this.renderEmptyUserEventList}
-            />
+            {this.state.spin ? (
+              <ActivityIndicator size="large" color="lightgray" />
+            ) : (
+              <FlatList
+                style={{ margin: 2 }}
+                numColumns={3}
+                data={this.state.connectedPlayersList}
+                renderItem={this.renderPlayers}
+                keyExtractor={(item, index) => index.toString()}
+                extraData={this.state.connectedPlayersList}
+                refreshing={this.state.refresh}
+                ListEmptyComponent={this.renderEmptyUserEventList}
+              />
+            )}
           </View>
         </View>
         <ModalPlayersReview
-          closeModal={this.finishModal}
-          finish={this.finishModal}
+          closeModal={this.closeModal}
+          cancelApproval={this.cancelApproval}
+          approvedPlayer={this.finishModal}
           visible={this.state.playersReviewModal}
           data={this.state.playersData}
+          eventsData={this.props.navigation.state.params.item1}
           option1="Atsiliepimai"
           option2="Įvertinti"
         />
@@ -500,8 +508,28 @@ class MyEventDetails extends React.Component {
     console.log("pleijerio info", player);
     this.setState({ playersData: player, playersReviewModal: true });
   };
-  finishModal = () => {
-    this.setState({ playersReviewModal: false });
+  closeModal = () => {
+    this.setState({
+      playersReviewModal: false
+    });
+  };
+  cancelApproval = approvedPlayerId => {
+    let playersList = this.state.connectedPlayersList;
+    let index = playersList.findIndex(item => item.userId === approvedPlayerId);
+    playersList.splice(index, 1);
+    this.setState({
+      playersReviewModal: false,
+      connectedPlayersList: playersList
+    });
+  };
+  finishModal = approvedPlayerId => {
+    let playersList = this.state.connectedPlayersList;
+    let index = playersList.findIndex(item => item.userId === approvedPlayerId);
+    playersList[index].approved = true;
+    this.setState({
+      playersReviewModal: false,
+      connectedPlayersList: playersList
+    });
   };
   renderPlayers = item => {
     return (
@@ -513,7 +541,9 @@ class MyEventDetails extends React.Component {
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "white",
-          borderColor: "hsla(126, 62%, 40%, 0.44)",
+          borderColor: item.item.approved
+            ? "hsla(216, 100%, 50%, 0.86)"
+            : "hsla(216, 100%, 50%, 0.3)",
           borderWidth: 2,
           margin: 3
         }}
@@ -521,7 +551,9 @@ class MyEventDetails extends React.Component {
       >
         <Text
           style={{
-            color: "lightblue",
+            color: item.item.approved
+              ? "hsla(216, 100%, 50%, 0.86)"
+              : "hsla(216, 100%, 50%, 0.3)",
             fontWeight: "500",
             fontSize: moderateScale(13)
           }}

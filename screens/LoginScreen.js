@@ -1,16 +1,11 @@
 import React from "react";
 import {
-  Platform,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  Image,
-  FlatList,
   TextInput,
-  ImageBackground,
-  ActivityIndicator,
-  CheckBox
+  PermissionsAndroid,
+  ImageBackground
 } from "react-native";
 import { moderateScale } from "../components/ScaleElements";
 import login from "../redux/actions/authAction";
@@ -19,6 +14,28 @@ import { connect } from "react-redux";
 import firebase from "firebase";
 import AsyncStorage from "@react-native-community/async-storage";
 import Spinner from "react-native-loading-spinner-overlay";
+import FlashMessage from "react-native-flash-message";
+import { CheckBox } from "native-base";
+
+export async function requestLocationPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: "Example App",
+        message: "Example App access to your location "
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log("You can use the");
+    } else {
+      console.log("location permission denied");
+      alert("Location permission denied");
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
 
 class LoginScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -33,7 +50,9 @@ class LoginScreen extends React.Component {
       spinner: false
     };
   }
-
+  async componentWillMount() {
+    await requestLocationPermission();
+  }
   componentDidMount() {
     if (!firebase.apps.length) {
       const firebaseConfig = {
@@ -68,13 +87,26 @@ class LoginScreen extends React.Component {
         if (typeof isLogginSuccess !== "object" && isLogginSuccess === true) {
           this.finishSpinner();
         } else {
-          this.setState({
-            signInErrorMessage: isLogginSuccess.message,
-            spinner: false
-          });
+          this.setState(
+            {
+              signInErrorMessage: isLogginSuccess.message,
+              spinner: false
+            },
+            () => this.showWarn(isLogginSuccess.message)
+          );
         }
       });
     }
+  };
+
+  showWarn = message => {
+    this.refs.loginMessage.showMessage({
+      message: message,
+      type: "warning",
+      duration: 8000,
+      autoHide: true,
+      hideOnPress: true
+    });
   };
 
   navigateToRegForm = () => {
@@ -82,24 +114,22 @@ class LoginScreen extends React.Component {
   };
 
   signInUser = () => {
+    this.startSpinner();
     this.props
       .login(this.state.username, this.state.password, this.state.isRemembered)
       .then(isLogginSuccess => {
         console.log("Asd", isLogginSuccess);
         if (typeof isLogginSuccess !== "object" && isLogginSuccess === true) {
-          this.setState({ signInErrorMessage: "bhy" });
+          this.setState({ signInErrorMessage: "bhy", spinner: false });
           this.props.navigation.navigate("App");
         } else {
-          this.setState({ signInErrorMessage: isLogginSuccess.message });
+          this.setState({ signInErrorMessage: isLogginSuccess.message }, () =>
+            this.showWarn(isLogginSuccess.message)
+          );
         }
       });
-
-    // firebase
-    //   .auth()
-    //   .signInWithEmailAndPassword(this.state.username, this.state.password)
-    //   .then(res => this.setState({ signInErrorMessage: res.user.email }))
-    //   .catch(error => this.setState({ signInErrorMessage: error.message }));
   };
+
   onIsRememberedChange = () => {
     this.setState({ isRemembered: !this.state.isRemembered });
   };
@@ -133,30 +163,28 @@ class LoginScreen extends React.Component {
           placeholder="Slaptažodis"
           onChangeText={text => this.setState({ password: text })}
           value={this.state.password}
+          secureTextEntry={true}
         />
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
+            paddingLeft: moderateScale(100)
           }}
+          onPress={this.onIsRememberedChange}
         >
           <Text
             style={{
               color: "white",
               fontSize: moderateScale(12),
-              fontWeight: "600",
-              justifyContent: "flex-end"
+              fontWeight: "600"
             }}
           >
             Prisiminti
           </Text>
-          <CheckBox
-            style={{ color: "white" }}
-            onChange={this.onIsRememberedChange}
-            value={this.state.isRemembered}
-          />
-        </View>
+          <CheckBox color="gray" checked={this.state.isRemembered} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={this.signInUser} style={styles.okButton}>
           <Text
             style={{
@@ -170,30 +198,26 @@ class LoginScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this.navigateToRegForm}
-          style={{ justifyContent: "flex-end", alignItems: "flex-end" }}
+          style={[styles.okButton, { marginTop: moderateScale(5) }]}
         >
           <Text
             style={{
               color: "white",
               fontSize: moderateScale(12),
-              fontWeight: "300"
+              fontWeight: "600"
             }}
           >
-            Neturite paskyros?
+            Dar neturite paskyros ?
           </Text>
         </TouchableOpacity>
         <Text style={{ color: "white" }}>{this.state.signInErrorMessage}</Text>
-        {/* <ActivityIndicator style={styles.activityIndicator}
-            animating={this.props.isLoading}
-            color = 'white'
-            size = "large"
-            /> */}
         <Spinner
           visible={this.state.spinner}
           textContent={"Vykdoma..."}
           textStyle={{ color: "#fff" }}
           overlayColor="rgba(0, 0, 0, 0.5)"
         />
+        <FlashMessage ref="loginMessage" position="top" />
       </ImageBackground>
     );
   }
