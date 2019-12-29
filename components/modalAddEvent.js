@@ -57,7 +57,7 @@ export default class modalReservation extends React.Component {
         selectedStadium: this.props.data.stadiumName,
         dateTime: this.props.data.reservationDate,
         time: this.props.data.reservationStart,
-        stadiumAddress: this.props.data.reservationStart,
+        stadiumAddress: this.props.data.address,
         defaultIndex: index
       });
       console.log("cozinam rerender", this.props.data, index);
@@ -73,7 +73,7 @@ export default class modalReservation extends React.Component {
     );
     let searchDetails = {
       stadiumName: this.state.selectedStadium,
-      stadiumAddress: this.state.stadiumAddress,
+      address: this.state.stadiumAddress,
       peopleNeeded: this.state.peopleNeeded,
       eventDate: this.state.dateTime,
       eventStart: this.state.time,

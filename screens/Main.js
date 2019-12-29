@@ -18,6 +18,8 @@ import { connect } from "react-redux";
 import ModalStadiumDetails from "../components/modalStadiumDetails";
 import ModalReservation from "../components/modalReservation";
 import ModalFilter from "../components/modalFilter";
+import ModalAddStadiums from "../components/modalAddStadiums";
+import ModalRegisterAdmin from "../components/modalRegisterAdmin";
 import gettingActiveRes from "../redux/actions/getActiveResAction";
 import gettingStadiums from "../redux/actions/getStadiumsAction";
 import { LocaleConfig } from "react-native-calendars";
@@ -26,6 +28,8 @@ import Icon from "react-native-vector-icons/AntDesign";
 import FontIcons from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { getTodaysTime } from "../components/getTodaysTime";
+import FlashMessage from "react-native-flash-message";
+import ModalEditStadium from "../components/editStadium";
 import firebase from "firebase";
 import "firebase/firestore";
 
@@ -45,8 +49,8 @@ class Main extends React.Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421
     },
-    mapLatitude: 0,
-    mapLongitude: 0,
+    mapLatitude: 54.6891594,
+    mapLongitude: 25.2798004,
     location: "Your location is set!",
     clicked: false,
     //Passing data to modal(markers)
@@ -57,6 +61,8 @@ class Main extends React.Component {
       longitude: "",
       latitude: ""
     },
+    modalRegisterAdmin: false,
+    stadiumAdminData: null,
 
     //Markers of all stadiums.
     markers: require("../database/data.json"),
@@ -64,14 +70,14 @@ class Main extends React.Component {
     setModalVisible: false,
     //Reservation modal
     modalReservationVisible: false,
-
+    modalAddStadiums: false,
+    modalEditStadium: false,
     //Modal values
     modalStadiumDetailVisiable: false,
     isDisabled: false,
     swipeToClose: true,
-
     modalFilterState: false,
-
+    lastMarkersData: [],
     //EVENTS Modal Values
     isOpenEvent: false,
     isDisabled: false,
@@ -101,10 +107,10 @@ class Main extends React.Component {
         <MapView
           style={styles.map}
           region={{
-            longitude: this.state.mapLongitude,
             latitude: this.state.mapLatitude,
-            longitudeDelta: 0.0421,
-            latitudeDelta: 0.0922
+            longitude: this.state.mapLongitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
           }}
           showsUserLocation={true}
         >
@@ -136,10 +142,11 @@ class Main extends React.Component {
                           phone: marker.phone
                         },
                         mapLongitude: marker.longitude,
-                        mapLatitude: marker.latitude
+                        mapLatitude: marker.latitude,
+                        lastMarkersData: marker
                       },
                       () => {
-                        console.log(marker);
+                        console.log("pute", marker);
                       }
                     )
                   }
@@ -209,21 +216,24 @@ class Main extends React.Component {
         {this.props.isAdmin ? (
           <View
             style={{
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
               flexDirection: "row",
-              paddingBottom: moderateScale(20)
+              paddingBottom: moderateScale(20),
+              width: Dimensions.get("window").width,
+              height: Dimensions.get("window").height - moderateScale(100)
             }}
           >
             <View
               style={{
+                justifyContent: "flex-end",
+
+                marginTop: moderateScale(10),
                 alignItems: "flex-start",
                 marginLeft: moderateScale(10),
                 flex: 1
               }}
             >
               <TouchableOpacity
-                onPress={this.findCoords}
+                onPress={this.openAddStadium}
                 style={{
                   height: moderateScale(35),
                   width: moderateScale(35),
@@ -267,7 +277,44 @@ class Main extends React.Component {
             </View> */}
           </View>
         ) : null}
-
+        {this.props.isAdministrator ? (
+          <View
+            style={{
+              flexDirection: "row",
+              paddingBottom: moderateScale(20),
+              width: Dimensions.get("window").width
+            }}
+          >
+            <View
+              style={{
+                alignItems: "flex-end",
+                justifyContent: "flex-end",
+                marginRight: moderateScale(10),
+                marginTop: moderateScale(10),
+                flex: 1
+              }}
+            >
+              <TouchableOpacity
+                onPress={this.checkReservations}
+                style={{
+                  height: moderateScale(35),
+                  width: moderateScale(35),
+                  borderRadius: 90,
+                  backgroundColor: "hsla(300, 45%, 35%, 0.75)",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <MaterialIcons
+                  name="note-add"
+                  size={moderateScale(18)}
+                  color={this.state.filterColor}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
+        <FlashMessage ref="stadiumAdd" position="top" />
         {/* ////////////////////////////////////////---STADIUM DETAILS MODAL---//////////////////////////////////////// */}
 
         <ModalStadiumDetails
@@ -276,6 +323,7 @@ class Main extends React.Component {
           closeModal={this.detailsModalClose}
           createEvent={this.createEvent}
           navigation={this.compareDates}
+          editStadium={this.editStadium}
         />
         {/* ________________________________________---STADIUM DETAILS MODAL---________________________________________ */}
 
@@ -295,10 +343,94 @@ class Main extends React.Component {
           onConfirm={this.filterStadiums}
           searchByTime={this.searchByTime}
         />
+        {/*________________________________________---ADMIN ADDING STADIUMS---__________________________________________*/}
+        <ModalAddStadiums
+          visible={this.state.modalAddStadiums}
+          data={this.state.markersData}
+          closeModal={this.closeAddStadium}
+          finish={this.addedStadium}
+        />
+        <ModalRegisterAdmin
+          visible={this.state.modalRegisterAdmin}
+          data={this.state.stadiumAdminData}
+          closeModal={this.closeAddStadium}
+          finish={this.finishRegistration}
+        />
+
+        <ModalEditStadium
+          data={this.state.lastMarkersData}
+          closeModal={this.closeFilter}
+          visible={this.state.modalEditStadium}
+          finish={this.onEditOrDeleteStadium}
+        />
       </View>
     );
   }
-
+  addedStadium = data => {
+    this.setState(
+      {
+        modalAddStadiums: false,
+        modalRegisterAdmin: true,
+        stadiumAdminData: data
+      },
+      () => {
+        this.getStadiumsData(),
+          this.refs.stadiumAdd.showMessage({
+            message: "Stadiona pridėtas sėkmingai!",
+            type: "success",
+            duration: 7000,
+            autoHide: true,
+            hideOnPress: true
+          });
+      }
+    );
+  };
+  finishRegistration = () => {
+    this.setState(
+      { modalAddStadiums: false, modalRegisterAdmin: false },
+      () => {
+        this.getStadiumsData(),
+          this.refs.stadiumAdd.showMessage({
+            message: "Stadiono administratorius sėkmingai pridėtas!",
+            type: "success",
+            duration: 7000,
+            autoHide: true,
+            hideOnPress: true
+          });
+      }
+    );
+  };
+  onEditOrDeleteStadium = type => {
+    this.setState({ modalEditStadium: false }, () => {
+      if (type === "delete") {
+        this.getStadiumsData(),
+          this.refs.stadiumAdd.showMessage({
+            message: "Stadiono sėkmingai pašalintas iš sistemos!",
+            type: "success",
+            duration: 7000,
+            autoHide: true,
+            hideOnPress: true
+          });
+      } else if (type === "edit") {
+        this.getStadiumsData(),
+          this.refs.stadiumAdd.showMessage({
+            message: "Stadiono informacija sėkmingai išsaugota!",
+            type: "success",
+            duration: 7000,
+            autoHide: true,
+            hideOnPress: true
+          });
+      } else {
+        this.refs.stadiumAdd.showMessage({
+          message: "Įvyko klaida!",
+          type: "danger",
+          duration: 7000,
+          autoHide: true,
+          hideOnPress: true
+        });
+      }
+    });
+  };
   findMyLocation = () => {
     this.setState({});
   };
@@ -513,7 +645,16 @@ class Main extends React.Component {
     this.setState({ modalFilterState: true });
   };
   closeFilter = () => {
-    this.setState({ modalFilterState: false });
+    this.setState({ modalFilterState: false, modalEditStadium: false });
+  };
+  closeAddStadium = () => {
+    this.setState({ modalAddStadiums: false, modalRegisterAdmin: false });
+  };
+  openAddStadium = () => {
+    this.setState({ modalAddStadiums: true });
+  };
+  checkReservations = () => {
+    this.props.navigation.push("WatchReservations");
   };
 
   findCoords = async () => {
@@ -525,7 +666,10 @@ class Main extends React.Component {
           error: null
         });
       },
-      error => this.setState({ location: error.message }),
+      error =>
+        this.setState({ location: error.message }, () =>
+          console.log("negaunu lokacijos", error.message, pos)
+        ),
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   };
@@ -590,26 +734,15 @@ class Main extends React.Component {
     let mili3 = this.getingResTime();
     let mili4 = this.getingResTime();
     let mili5 = this.getingResTime();
-    console.log(
-      "KIEK VALANDU SENI ?",
-      "-Dabar yra ",
-      timeNow,
-      "ir jei rezervuotume laikas yra:",
-      mili,
-      mili2
-    );
-    console.log("Time", mili);
-    console.log("Time", mili2);
-    console.log("Time", mili3);
-    console.log("Time", mili4);
-    console.log("Time", mili5);
+  };
+
+  editStadium = () => {
+    this.detailsModalClose();
+    this.setState({ modalEditStadium: true });
   };
 
   componentDidMount() {
-    // const res = db.collection('stadiums')
-    // console.log(res)
-
-    this.findCoords();
+    //this.findCoords();
     this.getStadiumsData();
     LocaleConfig.locales["lt"] = {
       monthNames: [
@@ -717,7 +850,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
   getActiveResNumber: state.active.activeReservationNumber,
   userId: state.auth.userId,
-  isAdmin: state.auth.admin
+  isAdmin: state.auth.admin,
+  isAdministrator: state.auth.administrator
 });
 export default connect(mapStateToProps, { gettingActiveRes, gettingStadiums })(
   Main

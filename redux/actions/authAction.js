@@ -39,46 +39,21 @@ export default function login(userName, password, isRemembered) {
           .doc(uid)
           .get()
           .then(snap => {
-            console.log("id", snap.id);
+            console.log("id", snap);
             const name = snap._document.proto.fields.name.stringValue;
-            const position = snap._document.proto.fields.position.stringValue;
+            const position = "puolejas";
             const admin = snap._document.proto.fields.admin.booleanValue;
-            firebase
-              .firestore()
-              .collection("bannedUsers")
-              .where("userId", "==", snap.id)
-              .where("banDate", ">=", today)
-              .orderBy("banDate")
-              .get()
-              .then(res => {
-                let banDate = null;
-                let banTime = null;
-                if (res.docs.length > 0) {
-                  banDate =
-                    res.docs[0]._document.proto.fields.banDate.stringValue;
-                  banTime =
-                    res.docs[0]._document.proto.fields.banTime.stringValue;
-                  if (nowTime >= banTime) {
-                    (banDate = null), (banTime = null);
-                  }
-                }
-
-                if (isRemembered) {
-                  saveUserInfo(userName, password, isRemembered).then(() => {
-                    dispatch({
-                      type: AUTHENTICATE_SUCCESS,
-                      payload: {
-                        user,
-                        uid,
-                        name,
-                        position,
-                        banDate,
-                        banTime,
-                        admin
-                      }
-                    });
-                  });
-                } else {
+            const administrator =
+              snap._document.proto.fields.administrator.booleanValue;
+            if (administrator !== undefined && administrator === true) {
+              const administrator =
+                snap._document.proto.fields.administrator.booleanValue;
+              const stadiumId =
+                snap._document.proto.fields.stadiumId.stringValue;
+              const stadiumName =
+                snap._document.proto.fields.stadiumName.stringValue;
+              if (isRemembered) {
+                saveUserInfo(userName, password, isRemembered).then(() => {
                   dispatch({
                     type: AUTHENTICATE_SUCCESS,
                     payload: {
@@ -86,13 +61,64 @@ export default function login(userName, password, isRemembered) {
                       uid,
                       name,
                       position,
-                      banDate,
-                      banTime,
-                      admin
+                      admin,
+                      administrator,
+                      stadiumId,
+                      stadiumName
                     }
                   });
-                }
-              });
+                });
+              } else {
+                dispatch({
+                  type: AUTHENTICATE_SUCCESS,
+                  payload: {
+                    user,
+                    uid,
+                    name,
+                    position,
+                    admin,
+                    administrator,
+                    stadiumId,
+                    stadiumName
+                  }
+                });
+              }
+            } else {
+              let administrator = false;
+              let stadiumId = null;
+              let stadiumName = null;
+              if (isRemembered) {
+                saveUserInfo(userName, password, isRemembered).then(() => {
+                  dispatch({
+                    type: AUTHENTICATE_SUCCESS,
+                    payload: {
+                      user,
+                      uid,
+                      name,
+                      position,
+                      admin,
+                      administrator,
+                      stadiumId,
+                      stadiumName
+                    }
+                  });
+                });
+              } else {
+                dispatch({
+                  type: AUTHENTICATE_SUCCESS,
+                  payload: {
+                    user,
+                    uid,
+                    name,
+                    position,
+                    admin,
+                    administrator,
+                    stadiumId,
+                    stadiumName
+                  }
+                });
+              }
+            }
           });
         return true;
       })

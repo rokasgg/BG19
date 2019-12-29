@@ -34,6 +34,7 @@ export default function(state = initialState, action) {
         email: action.payload.email,
         position: action.payload.position,
         admin: false,
+        administrator: false,
         isLoading: false,
         isLoggedIn: true
       };

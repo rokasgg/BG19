@@ -206,7 +206,8 @@ class stadiumReservationScreen extends React.Component {
       this.state.selectedTime,
       this.state.selectedDay,
       today,
-      this.props.activeResNumber
+      this.props.activeResNumber,
+      this.props.navigation.state.params.data
     );
     if (this.state.selectedTime !== "" && this.state.selectedDay !== "")
       if (this.state.selectedDay >= today)
@@ -217,6 +218,7 @@ class stadiumReservationScreen extends React.Component {
             stadiumName: propsData.stadiumName,
             longitude: propsData.longitude,
             latitude: propsData.latitude,
+            address: propsData.adress,
             reservationTime: this.state.selectedTime.time,
             reservationStart: this.state.selectedTime.startTime,
             reservationFinish: this.state.selectedTime.finishTime,
@@ -234,7 +236,8 @@ class stadiumReservationScreen extends React.Component {
             userId: this.props.userId,
             reservationStart: this.state.selectedTime.startTime,
             reservationFinish: this.state.selectedTime.finishTime,
-            reservationConfirmTime: Date.now()
+            reservationConfirmTime: Date.now(),
+            address: propsData.adress
           };
 
           let qwery = firebase

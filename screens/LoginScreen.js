@@ -123,8 +123,9 @@ class LoginScreen extends React.Component {
           this.setState({ signInErrorMessage: "bhy", spinner: false });
           this.props.navigation.navigate("App");
         } else {
-          this.setState({ signInErrorMessage: isLogginSuccess.message }, () =>
-            this.showWarn(isLogginSuccess.message)
+          this.setState(
+            { signInErrorMessage: isLogginSuccess.message, spinner: false },
+            () => this.showWarn(isLogginSuccess.message)
           );
         }
       });

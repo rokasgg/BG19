@@ -16,7 +16,10 @@ const initialState = {
   admin: false,
   banTime: null,
   banDate: null,
-  error: null
+  error: null,
+  administrator: null,
+  stadiumId: null,
+  stadiumName: null
 };
 
 export default function(state = initialState, action) {
@@ -35,6 +38,9 @@ export default function(state = initialState, action) {
         userUid: action.payload.uid,
         userName: action.payload.name,
         admin: action.payload.admin,
+        administrator: action.payload.administrator,
+        stadiumId: action.payload.stadiumId,
+        stadiumName: action.payload.stadiumName,
         isLoading: false,
         isLoggedIn: true
       };
@@ -55,6 +61,9 @@ export default function(state = initialState, action) {
         user: action.payload.user,
         userUid: action.payload.uid,
         admin: false,
+        administrator: null,
+        stadiumId: null,
+        stadiumName: null,
         userName: null,
         isLoading: false,
         isLoggedIn: false

@@ -16,8 +16,9 @@ import { moderateScale } from "./ScaleElements";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IconFeather from "react-native-vector-icons/Feather";
 import IconMaterial from "react-native-vector-icons/MaterialCommunityIcons";
+import { connect } from "react-redux";
 
-export default class modalStadiumDetails extends React.Component {
+class modalStadiumDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -167,10 +168,14 @@ export default class modalStadiumDetails extends React.Component {
                 styles.button,
                 { flexDirection: "row", justifyContent: "space-around" }
               ]}
-              onPress={this.props.navigation}
+              onPress={
+                this.props.isAdmin
+                  ? this.props.editStadium
+                  : this.props.navigation
+              }
             >
               <IconFeather
-                name="navigation"
+                name={this.props.isAdmin ? "edit" : "navigation"}
                 size={moderateScale(20)}
                 color="hsl(126, 62%, 40%)"
               />
@@ -181,7 +186,7 @@ export default class modalStadiumDetails extends React.Component {
                   fontWeight: "500"
                 }}
               >
-                Naviguoti
+                {this.props.isAdmin ? "Redaguoti" : "Naviguoti"}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -254,3 +259,9 @@ const styles = StyleSheet.create({
     marginLeft: 10
   }
 });
+const mapStateToProps = state => ({
+  getActiveResNumber: state.active.activeReservationNumber,
+  userId: state.auth.userId,
+  isAdmin: state.auth.admin
+});
+export default connect(mapStateToProps)(modalStadiumDetails);

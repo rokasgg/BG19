@@ -19,11 +19,13 @@ import ReservationDetails from "../components/ReservedDetails";
 import Ionicons from "react-native-vector-icons/Entypo";
 import MyEventsDetails from "../screens/MyEventDetails";
 import FilterByTime from "../screens/FilterByTime";
+import WatchReservations from "../components/WatchReservations";
 const MainTab = createStackNavigator(
   {
     Main: Main,
     StadiumRes: ReservationScreen,
-    FilterByTime: FilterByTime
+    FilterByTime: FilterByTime,
+    WatchReservations: WatchReservations
   },
   {
     defaultNavigationOptions: {

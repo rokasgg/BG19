@@ -19,7 +19,8 @@ export default function register(email, password, userName, position) {
           name: userName,
           email: email,
           position: position,
-          admin: false
+          admin: false,
+          administrator: false
         };
         const admin = false;
         const userId = response.user.uid;

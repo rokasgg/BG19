@@ -248,6 +248,7 @@ class MyEventDetails extends React.Component {
   };
 
   render() {
+    console.log("navtoDeets", this.props.navigation.state.params.item1);
     return (
       <View style={styles.container}>
         <TouchableOpacity
@@ -315,7 +316,7 @@ class MyEventDetails extends React.Component {
             >
               <Text style={styles.textLeft}>Adresas:</Text>
               <Text style={styles.textRight}>
-                {this.props.navigation.state.params.item1.stadiumAdress}
+                {this.props.navigation.state.params.item1.address}
               </Text>
             </View>
             <View

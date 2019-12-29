@@ -157,26 +157,24 @@ class ReservedDetails extends React.Component {
                     marginTop: moderateScale(5)
                   }}
                 >
-                  <Text
-                    style={[styles.textLeft, { fontSize: moderateScale(13) }]}
-                  >
-                    Trūksta treniruotėje žaidėjų?
-                  </Text>
                   <TouchableOpacity
                     style={[
                       styles.button1,
                       {
-                        width: moderateScale(120),
-                        height: 35,
-                        backgroundColor: "purple"
+                        backgroundColor: "white",
+                        borderWidth: 1,
+                        borderColor: "hsl(186, 62%, 40%)"
                       }
                     ]}
                     onPress={this.navToEvents}
                   >
                     <Text
-                      style={{ fontSize: moderateScale(13), color: "#fff" }}
+                      style={{
+                        fontSize: moderateScale(13),
+                        color: "hsl(186, 62%, 40%)"
+                      }}
                     >
-                      Sukurti paiešką
+                      Trūksta žaidėjų?
                     </Text>
                   </TouchableOpacity>
                 </View>

@@ -248,6 +248,7 @@ class ReservationScreen extends React.Component {
               let activeResDetails = {
                 stadiumId: propsData.stadiumId.stringValue,
                 stadiumName: propsData.stadiumName.stringValue,
+                address: propsData.address.stringValue,
                 reservationTime: propsData.time.stringValue,
                 reservationStart: propsData.reservationStart.stringValue,
                 reservationFinish: propsData.reservationFinish.stringValue,
@@ -266,6 +267,7 @@ class ReservationScreen extends React.Component {
               let inactiveResDetails = {
                 stadiumId: propsData.stadiumId.stringValue,
                 stadiumName: propsData.stadiumName.stringValue,
+                address: propsData.address.stringValue,
                 reservationTime: propsData.time.stringValue,
                 reservationStart: propsData.reservationStart.stringValue,
                 reservationFinish: propsData.reservationFinish.stringValue,

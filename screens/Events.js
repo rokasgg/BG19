@@ -448,6 +448,7 @@ class Events extends React.Component {
             eventDate: data._document.proto.fields.eventDate.stringValue,
             eventStart: data._document.proto.fields.eventStart.stringValue,
             peopleNeed: data._document.proto.fields.peopleNeeded.integerValue,
+            address: data._document.proto.fields.address.stringValue,
             creatorsId: data._document.proto.fields.userId.stringValue,
             id: data.id
           };
@@ -805,7 +806,8 @@ class Events extends React.Component {
               borderColor: "#90c5df",
               justifyContent: "center",
               alignItems: "center",
-              flex: 2
+              flex: 2,
+              flexDirection: "column"
             }}
           >
             {item.approved ? (
@@ -821,6 +823,7 @@ class Events extends React.Component {
                 color="orange"
               />
             )}
+            <Text>{item.approved ? "Patvirtinta" : "Nepatvirtinta"}</Text>
           </View>
 
           <View
@@ -1016,6 +1019,7 @@ class Events extends React.Component {
       eventDate: data.eventDate,
       peopleNeeded: data.peopleNeeded,
       stadiumName: data.stadiumName,
+      address: data.address,
       userId: this.props.userId
     };
     console.log(

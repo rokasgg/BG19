@@ -163,6 +163,7 @@ class modalReserve extends React.Component {
   };
 
   onFinish = async () => {
+    console.log("ejopropsai", this.props.data);
     let today = getTodaysDate();
     const propsData = this.props.data;
     if (propsData.reservationDate >= today)
@@ -177,6 +178,7 @@ class modalReserve extends React.Component {
           reservationFinish: propsData.reservationFinish,
           reservationDate: propsData.reservationDate,
           stadiumId: propsData.stadiumId,
+          address: propsData.address,
           reservationId: "",
           active: true,
           started: false
@@ -189,7 +191,8 @@ class modalReserve extends React.Component {
           userId: this.props.userId,
           reservationStart: propsData.reservationStart,
           reservationFinish: propsData.reservationFinish,
-          reservationConfirmTime: Date.now()
+          reservationConfirmTime: Date.now(),
+          address: propsData.address
         };
 
         let qwery = firebase
