@@ -53,18 +53,25 @@ export default class modalReservation extends React.Component {
       let index = this.state.dropDownOptions.findIndex(
         item => item === this.props.data.stadiumName
       );
+      console.log("BOOBS", this.props.data);
+      let stad = this.props.stadiums;
+
       this.setState({
-        selectedStadium: this.props.data.stadiumName,
+        selectedStadium: index,
+        stadiumName: stad[index].stadiumName,
         dateTime: this.props.data.reservationDate,
         time: this.props.data.reservationStart,
         stadiumAddress: this.props.data.address,
         defaultIndex: index
       });
+
       console.log("cozinam rerender", this.props.data, index);
     } else return false;
   }
 
   onCreateEvent = () => {
+    let stadiums = this.props.stadiums;
+
     console.log(
       this.state.stadiumName,
       this.state.stadiumAddress,
@@ -72,8 +79,8 @@ export default class modalReservation extends React.Component {
       this.state.dateTime
     );
     let searchDetails = {
-      stadiumName: this.state.selectedStadium,
-      address: this.state.stadiumAddress,
+      stadiumName: stadiums[this.state.selectedStadium].stadiumName,
+      address: stadiums[this.state.selectedStadium].address,
       peopleNeeded: this.state.peopleNeeded,
       eventDate: this.state.dateTime,
       eventStart: this.state.time,
@@ -91,6 +98,20 @@ export default class modalReservation extends React.Component {
     this.setState({
       dropDownOptions
     });
+  };
+
+  selectStadium = val => {
+    let stadiums = this.props.stadiums;
+    let addressIndex = stadiums.findIndex(item => item.stadiumName === val);
+    this.setState(
+      {
+        selectedStadium: val
+        // stadiumAddress: stadiums[addressIndex].address
+      },
+      () => {
+        console.log(stadiums, addressIndex, val);
+      }
+    );
   };
 
   componentDidMount() {
@@ -161,15 +182,12 @@ export default class modalReservation extends React.Component {
                   textStyle={{ fontSize: moderateScale(15) }}
                   dropdownTextStyle={{ fontSize: moderateScale(15) }}
                   defaultValue={
-                    this.state.selectedStadium
-                      ? this.state.selectedStadium
-                      : "Pasirinkite"
+                    this.state.selectedStadium === -1
+                      ? "Pasirinkite"
+                      : this.state.stadiumName
                   }
-                  onPress={val => {
-                    this.setState({ selectedStadium: val }, () =>
-                      console.log("pasirinkimas", val)
-                    );
-                  }}
+                  defaultIndex={this.state.selectedStadium}
+                  onSelect={this.selectStadium}
                 />
               </View>
             </View>
