@@ -28,6 +28,7 @@ import { gettingActiveRes } from "../redux/actions/getActiveResAction";
 import { formateTime } from "../components/timeConverte";
 import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 class modalReserve extends React.Component {
   static navigationOptions = { header: null };
@@ -317,28 +318,36 @@ class modalReserve extends React.Component {
         onSwipeComplete={this.props.closeModal}
         backdropColor="black"
         backdropOpacity={0.3}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 15
-        }}
+        
         onBackdropPress={this.props.closeModal}
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: "space-between"
+        <ScrollView>
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignSelf: "flex-start",
+            height: moderateScale(30),
+            width: moderateScale(100),
+            alignItems: "center",
+             paddingRight:moderateScale(30)
           }}
+          onPress={this.props.closeModal}
         >
+          <Ionicons
+            name='md-arrow-back'
+            size={moderateScale(20)}
+            color='gray'
+          />
+        </TouchableOpacity>
           <View
             style={[
               styles.modal,
-              { width: moderateScale(350), height: moderateScale(450) }
+              { width: moderateScale(320), height: moderateScale(400),borderRadius:moderateScale(10) }
             ]}
           >
             <Image
               style={{
-                width: moderateScale(345),
+                width: moderateScale(300),
                 height: moderateScale(100),
                 resizeMode: "contain",
                 marginTop: 10,
@@ -359,7 +368,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -372,7 +381,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -388,7 +397,7 @@ class modalReserve extends React.Component {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    width: moderateScale(340),
+                    width: moderateScale(280),
                     borderColor: "hsla(126, 62%, 40%, 0.44)",
                     borderBottomWidth: 1
                   }}
@@ -402,7 +411,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -419,7 +428,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -434,7 +443,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -451,7 +460,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -468,7 +477,7 @@ class modalReserve extends React.Component {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  width: moderateScale(340),
+                  width: moderateScale(280),
                   borderColor: "hsla(126, 62%, 40%, 0.44)",
                   borderBottomWidth: 1
                 }}
@@ -488,7 +497,7 @@ class modalReserve extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-around",
                 alignItems: "center",
-                width: moderateScale(350)
+                width: moderateScale(320)
               }}
             >
               <TouchableOpacity
@@ -579,7 +588,7 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   button: {
-    width: moderateScale(150),
+    width: moderateScale(120),
     height: moderateScale(35),
     backgroundColor: "white",
     borderColor: "hsl(186, 62%, 40%)",

@@ -52,7 +52,7 @@ export default class modalEditEvent extends React.Component {
         stadiumName: this.props.data.stadiumName,
         dateTime: this.props.data.eventDate,
         time: this.props.data.eventStart,
-        stadiumAddress: this.props.data.id,
+        stadiumAddress: this.props.data.address,
         peopleNeeded: parseInt(this.props.data.peopleNeed),
         eventId: this.props.data.id
       });
@@ -103,8 +103,8 @@ export default class modalEditEvent extends React.Component {
         <View
           style={{
             backgroundColor: "#f2f2f2",
-            height: moderateScale(350),
-            width: moderateScale(375),
+            height: moderateScale(330),
+            width: moderateScale(340),
             borderRadius: 15,
             justifyContent: "center"
           }}
@@ -123,12 +123,12 @@ export default class modalEditEvent extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(45),
-                width: moderateScale(340),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Stadiono pavadinimas:</Text>
+              <Text style={styles.textLeft}>Pavadinimas:</Text>
               <TextInput
                 placeholder={"Stadium Name"}
                 style={styles.textRight}
@@ -142,7 +142,7 @@ export default class modalEditEvent extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(45),
-                width: moderateScale(340),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -161,7 +161,7 @@ export default class modalEditEvent extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(45),
-                width: moderateScale(340),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -204,7 +204,7 @@ export default class modalEditEvent extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(45),
-                width: moderateScale(340),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -247,7 +247,7 @@ export default class modalEditEvent extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(305),
                 height: moderateScale(45),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -269,7 +269,7 @@ export default class modalEditEvent extends React.Component {
               alignItems: "center",
               alignContent: "center",
               alignSelf: "center",
-              width: moderateScale(350)
+              width: moderateScale(330)
             }}
           >
             <TouchableOpacity

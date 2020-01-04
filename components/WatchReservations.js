@@ -44,9 +44,6 @@ class WatchReservations extends React.Component {
     };
   }
   componentDidMount() {
-    // if (this.props.data !== null) {
-    //   console.log("GAVOME DATA I MODALA !!!!", this.props.data);
-    // } else console.log("BYBI NK NEGAUSI xD", this.props.data);
     this.getAllRserevations();
     console.log("adsadsadasdasd");
   }
@@ -125,20 +122,18 @@ class WatchReservations extends React.Component {
           style={{
             justifyContent: "center",
             alignSelf: "flex-start",
-            height: moderateScale(20),
+            height: moderateScale(30),
             width: moderateScale(100),
-            alignItems: "center"
+            alignItems: "center",
+             paddingRight:moderateScale(30)
           }}
           onPress={() => this.props.navigation.goBack()}
         >
-          <Text
-            style={{
-              fontWeight: "600",
-              fontSize: moderateScale(27)
-            }}
-          >
-            {"<"}
-          </Text>
+          <Ionicons
+            name='md-arrow-back'
+            size={moderateScale(20)}
+            color='gray'
+          />
         </TouchableOpacity>
         {/*style={[styles.tabStyle,this.state.chosenTab===3?{backgroundColor:'lightblue'}:null]}*/}
         <View
@@ -151,7 +146,8 @@ class WatchReservations extends React.Component {
           }}
         >
           <View style={[styles.tabStyle]}>
-            <Text style={[styles.chosenTabText]}>Būsimos rezervacijos</Text>
+            
+            <Text style={[styles.chosenTabText,{fontSize:moderateScale(18)}]}> {this.props.adminstadiumName ? `${this.props.adminstadiumName}. Būsimos rezervacijos` : ""}</Text>
           </View>
         </View>
 
@@ -175,35 +171,45 @@ class WatchReservations extends React.Component {
             }}
           >
             <View
-              style={{ justifyContent: "flex-start", alignItems: "center" }}
+              style={{ justifyContent: "flex-start", alignItems: "center" ,flexDirection:'row'}}
             >
-              <Text style={{ fontSize: 20, color: "black" }}>
-                {this.props.adminstadiumName ? this.props.adminstadiumName : ""}
+              <MCIcons
+                name="calendar"
+                size={moderateScale(22)}
+                color="hsl(126, 62%, 40%)"
+                style={{ marginBottom: 3, marginLeft: 5 }}
+              />
+              <Text style={{ fontSize: moderateScale(17), color: "black" }}>
+                Data
               </Text>
             </View>
             <View
-              style={{
-                justifyContent: "space-around",
-                alignItems: "center",
-                alignSelf: "flex-end",
-                flexDirection: "row",
-                width: moderateScale(100)
-              }}
+              style={{ justifyContent: 'center', alignItems: "center",flexDirection:'row' }}
             >
-              <TouchableOpacity
-                style={{
-                  justifyContent: "flex-start",
-                  alignSelf: "flex-start"
-                }}
-                onPress={this.openFilter}
-              >
-                <Ionicons
-                  name="md-time"
-                  size={moderateScale(23)}
-                  color="#FA7979"
-                />
-              </TouchableOpacity>
+              <MCIcons
+                name="alarm"
+                size={moderateScale(22)}
+                color="hsl(126, 62%, 40%)"
+                style={{ marginBottom: 3, marginLeft: 5 }}
+              />
+              <Text style={{ fontSize: moderateScale(17), color: "black" }}>
+                Laikas
+              </Text>
             </View>
+            <View
+              style={{ justifyContent: 'flex-end', alignItems: "center",flexDirection:'row' }}
+            >
+              <MCIcons
+                name="account-outline"
+                size={moderateScale(22)}
+                color="hsl(126, 62%, 40%)"
+                style={{ marginBottom: 3, marginLeft: 5 }}
+              />
+              <Text style={{ fontSize: moderateScale(17), color: "black" }}>
+              Nuomininkas
+              </Text>
+            </View>
+            
           </View>
           {this.state.spinner ? (
             <ActivityIndicator
@@ -301,89 +307,7 @@ class WatchReservations extends React.Component {
     // this.getFreeStadiums(searchDetails);
   };
 
-  //   componentDidMount() {
-  //     this.props.gettingActiveRes(this.props.userId);
-  //     let data = this.props.navigation.getParam("data");
-  //     console.log("Ka gaunam is filtro?", data);
-  //     this.onFiltering(data);
-  //   }
-  //   startSpinner = () => {
-  //     this.setState({ spinnerIndicator: true, modalFilter: false });
-  //   };
-  //   getFreeStadiums = async data => {
-  //     let parameters = data;
-  //     let filteredStadiums = data.filteredStadiums;
-  //     this.startSpinner();
-  //     let today = getTodaysDate();
-  //     let nowTime = getTodaysTime();
-  //     let stadiumsArray = [];
 
-  //     filteredStadiums.forEach(stadium => {
-  //       let details = {
-  //         id: stadium.stadiumId,
-  //         date: parameters.date,
-  //         time: parameters.time.type,
-  //         start: parameters.time.startTime,
-  //         address: stadium.address,
-  //         stadiumType: stadium.stadiumType,
-  //         floorType: stadium.floorType,
-  //         phone: stadium.phone,
-  //         stadiumName: stadium.stadiumName,
-  //         reservationStart: parameters.time.startTime,
-  //         reservationFinish: parameters.time.finishTime,
-  //         userId: this.props.userId,
-  //         stadiumId: stadium.stadiumId,
-  //         reservationConfirmTime: Date.now()
-  //       };
-  //       console.log("dsadas", details);
-  //       stadiumsArray.push(details);
-  //     });
-  //     console.log("isfiltruotos rezervacijos", stadiumsArray);
-
-  //     let allStadiums = await this.getStadiumsByDate(stadiumsArray);
-  //     await this.stateSetting(allStadiums);
-  //   };
-  //   getStadiumsByDate = async stadiums => {
-  //     let stadiumsCount = stadiums.length;
-  //     let allStadiums = [];
-  //     let stadiumIds = stadiums;
-  //     for (let i = 0; i < stadiumsCount; i++) {
-  //       await firebase
-  //         .firestore()
-  //         .collection("reservations")
-  //         .where("stadiumId", "==", stadiums[i].id)
-  //         .where("date", "==", stadiums[i].date)
-  //         .where("reservationStart", "==", stadiums[i].reservationStart)
-  //         .get()
-  //         .then(res => {
-  //           if (res.docs.length === 0) {
-  //             allStadiums.push(stadiums[i]);
-  //           }
-  //         });
-  //     }
-  //     console.log(allStadiums, "gavom?");
-  //     return allStadiums;
-  //   };
-
-  //   stateSetting = stadiums => {
-  //     this.setState({ stadiums, spinnerIndicator: false }, () =>
-  //       console.log("steitas", this.state.stadiums)
-  //     );
-  //   };
-
-  //   onRefreshing = () => {
-  //     this.setState(
-  //       { refresh: true },
-  //       () => this.getAllEvents(),
-  //       this.getUsersEvents(),
-  //       this.getUsersJoinedEvents()
-  //     );
-  //     setTimeout(() => {
-  //       this.setState({ refresh: false });
-  //     }, 2000);
-  //   };
-
-  //EVENT SETTER-------------------------------------
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
@@ -395,7 +319,7 @@ class WatchReservations extends React.Component {
             flexDirection: "row",
             width: moderateScale(330),
             flex: 1,
-            height: moderateScale(70),
+            height: moderateScale(45),
             marginTop: 20,
             borderRadius: 5,
             borderColor: "#90c5df",
@@ -411,20 +335,6 @@ class WatchReservations extends React.Component {
               flex: 2
             }}
           >
-            <Image
-              style={{ width: 100, height: 60, resizeMode: "contain" }}
-              source={require("../pictures/new.jpg")}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              flex: 3
-            }}
-          >
             <Text
               style={{
                 color: "black",
@@ -434,12 +344,21 @@ class WatchReservations extends React.Component {
             >
               {item.date}
             </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: 'center',
+              justifyContent: "center",
+              flex: 2
+            }}
+          >
+            
             <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-              {item.reservationStart}
+              {item.reservationStart} h
             </Text>
-            <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-              {item.reservationFinish}
-            </Text>
+            
           </View>
 
           <View
@@ -447,20 +366,22 @@ class WatchReservations extends React.Component {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              flex: 1
+              flex: 3
             }}
           >
             <View
               style={{ flexDirection: "row", justifyContent: "space-around" }}
-              onPress={() => navigate("EventsDetails", { item1: item })}
             >
-              <Text style={{ fontSize: 17, color: "black" }}>{item.time}</Text>
               <MCIcons
                 name="account-multiple-plus"
                 size={moderateScale(22)}
                 color="hsl(126, 62%, 40%)"
-                style={{ marginBottom: 3, marginLeft: 5 }}
+                style={{ marginLeft: 5 }}
               />
+              <Text style={{ color: "black", fontSize: moderateScale(14) }}>
+              Tuomas
+            </Text>
+              
             </View>
           </View>
         </View>
@@ -486,7 +407,7 @@ class WatchReservations extends React.Component {
             color="#555"
           />
           <Text style={{ fontSize: moderateScale(17), color: "lightgrey" }}>
-            Šiuo metu nėra aktyvių paieškų. . .
+            Stadionas rezervacijų neturi. . .
           </Text>
         </View>
       </View>

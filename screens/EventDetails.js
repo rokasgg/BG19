@@ -10,7 +10,7 @@ import {
   Button,
   ActivityIndicator
 } from "react-native";
-import Ionicons from "react-native-vector-icons/FontAwesome";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import firebase from "firebase";
 import "firebase/firestore";
 import Modal from "react-native-modalbox";
@@ -249,20 +249,18 @@ class EventDetails extends React.Component {
           style={{
             justifyContent: "center",
             alignSelf: "flex-start",
-            height: moderateScale(20),
+            height: moderateScale(30),
             width: moderateScale(100),
-            alignItems: "center"
+            alignItems: "center",
+             paddingRight:moderateScale(30)
           }}
           onPress={() => this.props.navigation.goBack()}
         >
-          <Text
-            style={{
-              fontWeight: "600",
-              fontSize: moderateScale(27)
-            }}
-          >
-            {"<"}
-          </Text>
+          <Ionicons
+            name='md-arrow-back'
+            size={moderateScale(20)}
+            color='gray'
+          />
         </TouchableOpacity>
         <View style={styles.topHalf}>
           <Image

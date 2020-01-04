@@ -80,7 +80,7 @@ export default class modalStadiumsFilter extends React.Component {
       >
         <View style={styles.modal}>
           <Text style={{ color: "black", fontSize: moderateScale(16) }}>
-            Filtracija
+            Pasirinkite norimą laiką rezervuoti
           </Text>
 
           {/* --------------------------FLOORTYPE/\-------------------------------- */}
@@ -127,7 +127,7 @@ export default class modalStadiumsFilter extends React.Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 <DateTimePicker
@@ -142,7 +142,7 @@ export default class modalStadiumsFilter extends React.Component {
                       fontSize: moderateScale(13)
                     },
                     dateInput: {
-                      alignItems: "flex-end",
+                      alignItems: 'center',
                       borderWidth: 0,
                       paddingLeft: 4,
                       marginRight: 4,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     height: moderateScale(27),
     backgroundColor: "white",
     borderColor: "hsl(126, 62%, 40%)",
-    borderWidth: 2,
+    borderWidth: 1,
     alignItems: "center",
     borderRadius: 5
   },

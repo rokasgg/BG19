@@ -310,7 +310,7 @@ class FilterByTime extends React.Component {
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
-      <TouchableOpacity onPressIn={() => this.openOnPressModal(item)}>
+      <TouchableOpacity onPress={() => this.openOnPressModal(item)}>
         <View
           style={{
             flexDirection: "row",

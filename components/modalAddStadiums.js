@@ -12,10 +12,12 @@ import { moderateScale } from "./ScaleElements";
 import DateTimePicker from "react-native-datepicker";
 import NumberCounter from "./numberCounter";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Spinner from "react-native-loading-spinner-overlay";
 import ModalDropdown from "react-native-modal-dropdown";
 import ModalPickLocation from "../components/modalPickLocation";
 import firebase from "firebase";
 import "firebase/firestore";
+import FlashMessage from "react-native-flash-message";
 
 export default class modalAddStadiums extends React.Component {
   constructor(props) {
@@ -33,7 +35,7 @@ export default class modalAddStadiums extends React.Component {
       address: "",
       phone: "",
       stadiumType: "",
-      floorType: "d",
+      floorType: "",
       longitude: "",
       latitude: "",
       inventor: false,
@@ -43,7 +45,8 @@ export default class modalAddStadiums extends React.Component {
       stadiumTypes: ["Laukas", "Vidus"],
       floorTypes: ["Sintetinė žolė", "Natūrali žolė", "Parketas"],
       inventorType: ["Teikia", "Neteikia"],
-      paidType: ["Mokamas", "Nemokamas"]
+      paidType: ["Mokamas", "Nemokamas"],
+      spinner:false
     };
   }
   showDateTimePicker = () => {
@@ -118,8 +121,13 @@ export default class modalAddStadiums extends React.Component {
     // } else console.log("BYBI NK NEGAUSI xD", this.props.data);
     // this.getStadiumsOptions();
   }
+  startSpinner=()=>{
+    this.setState({spinner:true})
+  }
 
   onFinish = async () => {
+    if(this.state.stadiumName !== '',this.state.address!=='',this.state.locationPoints !== null, this.state.inventor!==false, this.state.floorType!=='', this.state.stadiumType!== '', this.state.paid !== false)
+   { this.startSpinner();
     let stadiumData = {
       stadiumName: this.state.stadiumName,
       address: this.state.address,
@@ -169,12 +177,19 @@ export default class modalAddStadiums extends React.Component {
       .collection("stadiums")
       .add(stadiumData)
       .then(res => {
-        this.props.finish({
+        this.setState({spinner:false},()=>this.props.finish({
           stadiumId: res.id,
           stadiumName: this.state.stadiumName
-        }),
-          console.log("res", res);
-      });
+        }))
+      });}else{
+        this.refs.emptyFields.showMessage({
+          message: 'Prašome užpildyti visus laukelius!',
+          type: "warning",
+          duration: 8000,
+          autoHide: true,
+          hideOnPress: true
+        });
+      }
   };
   handleFloorType = async item => {
     switch (item) {
@@ -232,7 +247,7 @@ export default class modalAddStadiums extends React.Component {
           style={{
             backgroundColor: "#f2f2f2",
             height: moderateScale(395),
-            width: moderateScale(365),
+            width: moderateScale(340),
             borderRadius: 15
           }}
         >
@@ -241,11 +256,11 @@ export default class modalAddStadiums extends React.Component {
               justifyContent: "center",
               alignItems: "flex-start",
               height: moderateScale(45),
-              width: moderateScale(340),
+              width: moderateScale(300),
               marginLeft: moderateScale(7)
             }}
           >
-            <Text style={styles.textLeft}>Naujo stadiono pridėjimas</Text>
+            <Text style={[styles.textLeft,{fontSize:moderateScale(16)}]}>Naujo stadiono pridėjimas</Text>
           </View>
           <View
             style={{
@@ -261,18 +276,18 @@ export default class modalAddStadiums extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Pavadinimas:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Pavadinimas:</Text>
+              <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ stadiumName: val })}
                   value={this.state.stadiumName}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
             </View>
@@ -283,18 +298,18 @@ export default class modalAddStadiums extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Adresas:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Adresas:</Text>
+              <View style={[styles.textRight,{ alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ address: val })}
                   value={this.state.address}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
             </View>
@@ -304,18 +319,18 @@ export default class modalAddStadiums extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Telefono numeris:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Telefono numeris:</Text>
+              <View style={[styles.textRight,{ alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ phone: val })}
                   value={this.state.phone}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
             </View>
@@ -325,12 +340,12 @@ export default class modalAddStadiums extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Stadiono tipas:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Stadiono tipas:</Text>
               <View style={styles.textRight}>
                 <ModalDropdown
                   options={this.state.stadiumTypes}
@@ -346,13 +361,13 @@ export default class modalAddStadiums extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(300),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Dangos tipas:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Dangos tipas:</Text>
               <View style={styles.textRight}>
                 <ModalDropdown
                   options={this.state.floorTypes}
@@ -368,13 +383,13 @@ export default class modalAddStadiums extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(300),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Teikia inventorių:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Teikia inventorių:</Text>
               <View style={styles.textRight}>
                 <ModalDropdown
                   options={this.state.inventorType}
@@ -394,13 +409,13 @@ export default class modalAddStadiums extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(300),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Kaina:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Kaina:</Text>
               <View style={styles.textRight}>
                 <ModalDropdown
                   options={this.state.paidType}
@@ -420,13 +435,13 @@ export default class modalAddStadiums extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(300),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Stadiono koordinatės:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Stadiono koordinatės:</Text>
               <View style={styles.textRight}>
                 <TouchableOpacity
                   style={[
@@ -483,6 +498,13 @@ export default class modalAddStadiums extends React.Component {
           closeModal={this.closePickModal}
           finish={this.pickedLocation}
         />
+        <Spinner
+          visible={this.state.spinner}
+          textContent={"Kuriama. . ."}
+          textStyle={{ color: "#fff" }}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+        />
+        <FlashMessage ref='emptyFields' position="top" />
       </Modal>
     );
   }

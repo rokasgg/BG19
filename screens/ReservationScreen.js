@@ -425,7 +425,7 @@ class ReservationScreen extends React.Component {
           styles.container,
           {
             width: moderateScale(330),
-            height: moderateScale(330)
+            height: moderateScale(180)
           }
         ]}
       >
@@ -436,11 +436,11 @@ class ReservationScreen extends React.Component {
             color="#555"
           />
           <Text style={{ fontSize: 25, color: "lightgrey" }}>
-            Nėra rezervacijų istorijos
+            Nėra aktyvių rezervacijų
           </Text>
           <TouchableOpacity
             onPress={() => navigate("Main")}
-            style={[styles.button1, { marginTop: 100 }]}
+            style={[styles.button1, { marginTop: moderateScale(15) }]}
           >
             <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
               Ieškoti aikštelės
@@ -450,11 +450,11 @@ class ReservationScreen extends React.Component {
             onPress={() => navigate("Events")}
             style={[
               styles.button1,
-              { backgroundColor: "lightgrey", marginTop: 15 }
+              { backgroundColor: "lightgrey", marginTop: moderateScale(10) }
             ]}
           >
             <Text style={{ fontSize: moderateScale(17), color: "black" }}>
-              Ieškoti žaidejų
+              Ieškoti žaidėjų
             </Text>
           </TouchableOpacity>
         </View>
@@ -468,7 +468,7 @@ class ReservationScreen extends React.Component {
           styles.container,
           {
             width: moderateScale(330),
-            height: moderateScale(300)
+            height: moderateScale(200)
           }
         ]}
       >

@@ -48,24 +48,59 @@ export default class modalReservation extends React.Component {
     this.setState({ peopleNeeded: counter });
   };
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (prevProps.data !== this.props.data) {
       let index = this.state.dropDownOptions.findIndex(
         item => item === this.props.data.stadiumName
       );
-      console.log("BOOBS", this.props.data);
-      let stad = this.props.stadiums;
-
+      if(index !== -1)
+      if(this.state.dropDownOptions !== undefined)
+      {
+      let stadiums = await this.props.stadiums
+     
+      console.log("BOOBS", this.props.data,this.props.stadiums, index);
+      
+      if(this.props.data)
       this.setState({
         selectedStadium: index,
-        stadiumName: stad[index].stadiumName,
+        stadiumName: stadiums[index].stadiumName,
         dateTime: this.props.data.reservationDate,
         time: this.props.data.reservationStart,
         stadiumAddress: this.props.data.address,
         defaultIndex: index
-      });
+      },()=>console.log("setinam", this.state.stadiumName, this.state.selectedStadium));
+      console.log("cozinam rerender", this.props.data, index);}
+      else{
+        let dropDownOptions = []
+        let stadiums = await this.props.stadiums ;
+        stadiums.forEach(stadium => {
+          dropDownOptions.push(stadium.stadiumName);
+        });
+        let index =  dropDownOptions.findIndex(
+          item => item === this.props.data.stadiumName
+        );
+        console.log("papas", this.props.data,this.props.stadiums,index);
+        this.setState({
+          selectedStadium: index,
+          stadiumName: stadiums[index].stadiumName,
+          dateTime: this.props.data.reservationDate,
+          time: this.props.data.reservationStart,
+          stadiumAddress: this.props.data.address,
+          defaultIndex: index
+        });
+      }
+      else{
+        this.setState({
+          selectedStadium: index,
+          stadiumName: '',
+          dateTime: '',
+          time: '',
+          stadiumAddress: '',
+          defaultIndex: index
+        });
+      }
 
-      console.log("cozinam rerender", this.props.data, index);
+      
     } else return false;
   }
 
@@ -140,8 +175,8 @@ export default class modalReservation extends React.Component {
         <View
           style={{
             backgroundColor: "#f2f2f2",
-            height: moderateScale(310),
-            width: moderateScale(375),
+            height: moderateScale(255),
+            width: moderateScale(340),
             borderRadius: 15
           }}
         >
@@ -149,12 +184,13 @@ export default class modalReservation extends React.Component {
             style={{
               justifyContent: "center",
               alignItems: "flex-start",
-              height: moderateScale(45),
-              width: moderateScale(340),
-              marginLeft: moderateScale(7)
+              height: moderateScale(20),
+              width: moderateScale(305),
+              marginLeft: moderateScale(10),
+              marginTop:moderateScale(10)
             }}
           >
-            <Text style={styles.textLeft}>Naujas įvykis</Text>
+            <Text style={[styles.textLeft,{fontSize:moderateScale(17)}]}>Naujas įvykis</Text>
           </View>
           <View
             style={{
@@ -169,13 +205,13 @@ export default class modalReservation extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                height: moderateScale(45),
-                width: moderateScale(340),
+                height: moderateScale(42),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Stadionas:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Stadionas:</Text>
               <View style={styles.textRight}>
                 <ModalDropdown
                   options={this.state.dropDownOptions}
@@ -186,7 +222,7 @@ export default class modalReservation extends React.Component {
                       ? "Pasirinkite"
                       : this.state.stadiumName
                   }
-                  defaultIndex={this.state.selectedStadium}
+                  // defaultIndex={this.state.selectedStadium}
                   onSelect={this.selectStadium}
                 />
               </View>
@@ -197,13 +233,13 @@ export default class modalReservation extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                height: moderateScale(45),
-                width: moderateScale(340),
+                height: moderateScale(42),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Data:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Data:</Text>
               <DateTimePicker
                 style={{
                   marginBottom: 5,
@@ -240,13 +276,13 @@ export default class modalReservation extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                height: moderateScale(45),
-                width: moderateScale(340),
+                height: moderateScale(42),
+                width: moderateScale(305),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Laikas:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Laikas:</Text>
               <DateTimePicker
                 style={{
                   marginBottom: 5,
@@ -284,12 +320,13 @@ export default class modalReservation extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(305),
+                height:moderateScale(42),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Ieškomų žmonių skaičius:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Ieškomų žmonių skaičius:</Text>
               <NumberCounter
                 finishCount={count => this.onCounterChange(count)}
               />

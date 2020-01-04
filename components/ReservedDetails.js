@@ -77,10 +77,11 @@ class ReservedDetails extends React.Component {
         <View style={styles.bottomHalf}>
           <View
             style={{
-              height: moderateScale(150),
+              height: moderateScale(165),
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
+              backgroundColor: "#f2f2f2"
             }}
           >
             <View
@@ -149,12 +150,13 @@ class ReservedDetails extends React.Component {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: moderateScale(375),
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    width: moderateScale(340),
                     borderColor: "hsl(186, 62%, 40%)",
                     borderBottomWidth: 1,
-                    marginTop: moderateScale(5)
+                    marginTop: moderateScale(5),
+                    marginBottom:moderateScale(3)
                   }}
                 >
                   <TouchableOpacity
@@ -163,7 +165,10 @@ class ReservedDetails extends React.Component {
                       {
                         backgroundColor: "white",
                         borderWidth: 1,
-                        borderColor: "hsl(186, 62%, 40%)"
+                        borderColor: "hsl(186, 62%, 40%)",
+                        height:moderateScale(25),
+                        width:moderateScale(110),marginBottom:moderateScale(2),marginRight:moderateScale(5)
+                      
                       }
                     ]}
                     onPress={this.navToEvents}
@@ -185,9 +190,10 @@ class ReservedDetails extends React.Component {
           <View
             style={{
               justifyContent: "space-around",
-              alignItems: "center",
+              alignItems: 'flex-start',
               flexDirection: "row",
-              marginBottom: moderateScale(15)
+              marginBottom: moderateScale(20),
+              height:moderateScale(35)
             }}
           >
             <TouchableOpacity
@@ -216,8 +222,8 @@ class ReservedDetails extends React.Component {
                   style={styles.button1}
                   onPress={() => this.askPermToDelete()}
                 >
-                  <Text style={{ fontSize: moderateScale(17), color: "#fff" }}>
-                    Atšaukti rezervaciją
+                  <Text style={{ fontSize: moderateScale(17), color: "#fff", fontWeight:'500' }}>
+                    Atšaukti
                   </Text>
                 </TouchableOpacity>
               )
@@ -316,7 +322,6 @@ const styles = StyleSheet.create({
   topHalf: {
     flex: 2,
     flexDirection: "column",
-    backgroundColor: "yellow"
   },
   bottomHalf: {
     flex: 1,
@@ -326,8 +331,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width
   },
   button1: {
-    width: moderateScale(170),
-    height: 40,
+    width: moderateScale(115),
+    height: moderateScale(28),
     backgroundColor: "red",
     alignItems: "center",
     justifyContent: "center",

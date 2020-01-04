@@ -223,15 +223,15 @@ export default class modalFilter extends React.Component {
         onBackdropPress={this.props.closeModal}
       >
         <View style={styles.modal}>
-          <Text style={{ color: "black", fontSize: moderateScale(16) }}>
-            Filtracija
+          <Text style={{ color: "black", fontSize: moderateScale(17) }}>
+            Filtras
           </Text>
           <View
             style={{
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(240),
+              width: moderateScale(235),
               flexDirection: "column",
               borderTopWidth: 1,
               borderColor: "hsl(186, 62%, 40%)"
@@ -249,7 +249,7 @@ export default class modalFilter extends React.Component {
               <Text
                 style={{
                   color: "black",
-                  fontSize: moderateScale(11),
+                  fontSize: moderateScale(13),
                   paddingBottom: moderateScale(1),
                   fontWeight: "800"
                 }}
@@ -291,7 +291,7 @@ export default class modalFilter extends React.Component {
                   <Text
                     style={{
                       marginLeft: 5,
-                      fontSize: moderateScale(10),
+                      fontSize: moderateScale(11),
                       color: "black"
                     }}
                   >
@@ -325,7 +325,7 @@ export default class modalFilter extends React.Component {
                   <Text
                     style={{
                       marginLeft: 5,
-                      fontSize: moderateScale(10),
+                      fontSize: moderateScale(11),
                       color: "black"
                     }}
                   >
@@ -341,7 +341,7 @@ export default class modalFilter extends React.Component {
                 flex: 2,
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                width: moderateScale(240),
+                width: moderateScale(235),
                 flexDirection: "column",
                 borderTopWidth: 1,
                 borderColor: "hsl(186, 62%, 40%)"
@@ -359,7 +359,7 @@ export default class modalFilter extends React.Component {
                 <Text
                   style={{
                     color: "black",
-                    fontSize: moderateScale(11),
+                    fontSize: moderateScale(13),
                     paddingBottom: moderateScale(1),
                     fontWeight: "800"
                   }}
@@ -409,7 +409,7 @@ export default class modalFilter extends React.Component {
                       <Text
                         style={{
                           marginLeft: 5,
-                          fontSize: moderateScale(10),
+                          fontSize: moderateScale(11),
                           color: "black"
                         }}
                       >
@@ -443,7 +443,7 @@ export default class modalFilter extends React.Component {
                       <Text
                         style={{
                           marginLeft: 5,
-                          fontSize: moderateScale(10),
+                          fontSize: moderateScale(11),
                           color: "black"
                         }}
                       >
@@ -460,7 +460,7 @@ export default class modalFilter extends React.Component {
                 flex: 2,
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
-                width: moderateScale(240),
+                width: moderateScale(235),
                 flexDirection: "column",
                 borderTopWidth: 1,
                 borderColor: "hsl(186, 62%, 40%)"
@@ -478,7 +478,7 @@ export default class modalFilter extends React.Component {
                 <Text
                   style={{
                     color: "black",
-                    fontSize: moderateScale(11),
+                    fontSize: moderateScale(13),
                     paddingBottom: moderateScale(1),
                     fontWeight: "800"
                   }}
@@ -528,7 +528,7 @@ export default class modalFilter extends React.Component {
                       <Text
                         style={{
                           marginLeft: 5,
-                          fontSize: moderateScale(10),
+                          fontSize: moderateScale(11),
                           color: "black"
                         }}
                       >
@@ -562,7 +562,7 @@ export default class modalFilter extends React.Component {
                       <Text
                         style={{
                           marginLeft: 5,
-                          fontSize: moderateScale(10),
+                          fontSize: moderateScale(11),
                           color: "black"
                         }}
                       >
@@ -615,7 +615,7 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(240),
+              width: moderateScale(235),
               flexDirection: "column",
               borderTopWidth: 1,
               borderColor: "hsl(186, 62%, 40%)"
@@ -633,7 +633,7 @@ export default class modalFilter extends React.Component {
               <Text
                 style={{
                   color: "black",
-                  fontSize: moderateScale(11),
+                  fontSize: moderateScale(13),
                   paddingBottom: moderateScale(1),
                   fontWeight: "800"
                 }}
@@ -675,7 +675,7 @@ export default class modalFilter extends React.Component {
                   <Text
                     style={{
                       marginLeft: 5,
-                      fontSize: moderateScale(10),
+                      fontSize: moderateScale(11),
                       color: "black"
                     }}
                   >
@@ -709,7 +709,7 @@ export default class modalFilter extends React.Component {
                   <Text
                     style={{
                       marginLeft: 5,
-                      fontSize: moderateScale(10),
+                      fontSize: moderateScale(11),
                       color: "black"
                     }}
                   >
@@ -725,7 +725,7 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(240),
+              width: moderateScale(235),
               flexDirection: "column",
               borderTopWidth: 1,
               borderColor: "hsl(186, 62%, 40%)"
@@ -749,7 +749,7 @@ export default class modalFilter extends React.Component {
                 <Text
                   style={{
                     color: "black",
-                    fontSize: moderateScale(11),
+                    fontSize: moderateScale(13),
 
                     marginLeft: moderateScale(15),
                     fontWeight: "800"
@@ -773,7 +773,7 @@ export default class modalFilter extends React.Component {
                         : "toggle-off"
                     }
                     color="black"
-                    size={moderateScale(17)}
+                    size={moderateScale(19)}
                   />
                 </TouchableOpacity>
               </View>
@@ -785,7 +785,7 @@ export default class modalFilter extends React.Component {
               flex: 2,
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              width: moderateScale(240),
+              width: moderateScale(235),
               flexDirection: "column",
               borderTopWidth: 1,
               borderColor: "hsl(186, 62%, 40%)"
@@ -809,7 +809,7 @@ export default class modalFilter extends React.Component {
                 <Text
                   style={{
                     color: "black",
-                    fontSize: moderateScale(11),
+                    fontSize: moderateScale(13),
 
                     marginLeft: moderateScale(15),
                     fontWeight: "800"
@@ -827,13 +827,14 @@ export default class modalFilter extends React.Component {
               >
                 <TouchableOpacity onPress={this.selectTime}>
                   {this.state.chosenTime === null ? (
-                    <Ionicons
-                      name="md-time"
-                      color="black"
-                      size={moderateScale(18)}
-                    />
+                    // <Ionicons
+                    //   name="md-time"
+                    //   color="black"
+                    //   size={moderateScale(19)}
+                    // />
+                    <Text style={{fontWeight:'500'}}>Pasirinkite</Text>
                   ) : (
-                    <Text>
+                    <Text style={{fontWeight:'500'}}>
                       {this.state.chosenTime.date},
                       {this.state.chosenTime.time.startTime}
                     </Text>
@@ -870,8 +871,8 @@ export default class modalFilter extends React.Component {
               <Text
                 style={{
                   color: "hsl(126, 62%, 40%)",
-                  fontSize: moderateScale(13),
-                  fontWeight: "300"
+                  fontSize: moderateScale(15),
+                  fontWeight: '600'
                 }}
               >
                 Išvalyti
@@ -892,8 +893,8 @@ export default class modalFilter extends React.Component {
               <Text
                 style={{
                   color: "hsl(126, 62%, 40%)",
-                  fontSize: moderateScale(13),
-                  fontWeight: "300"
+                  fontSize: moderateScale(15),
+                  fontWeight: '600'
                 }}
               >
                 Patvirtinti
@@ -916,8 +917,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    height: moderateScale(300),
-    width: moderateScale(250),
+    height: moderateScale(310),
+    width: moderateScale(270),
     flexDirection: "column",
     borderRadius: 15
   },

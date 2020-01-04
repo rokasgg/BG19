@@ -110,6 +110,11 @@ export default class ModalChooseTime extends React.Component {
         onBackdropPress={this.props.closeModal}
       >
         <View style={styles.modal}>
+          <View style={{margin:moderateScale(5),justifyContent:'flex-start', alignItems:'center'}}>
+            <Text style={{fontSize:moderateScale(17)}}>
+              Pasirinkite norimą laiko tarpą
+            </Text>
+          </View>
           <FlatList
             contentContainerStyle={{
               justifyContent: "center",
@@ -143,7 +148,7 @@ export default class ModalChooseTime extends React.Component {
                         fontSize: moderateScale(13)
                       }}
                     >
-                      {item.item.time}
+                      {item.item.time} h
                     </Text>
                   </TouchableOpacity>
                 );
@@ -170,7 +175,7 @@ export default class ModalChooseTime extends React.Component {
                         fontSize: moderateScale(13)
                       }}
                     >
-                      {item.item.time}
+                      {item.item.time} h
                     </Text>
                   </TouchableOpacity>
                 ) : (
@@ -195,7 +200,7 @@ export default class ModalChooseTime extends React.Component {
                         fontSize: moderateScale(13)
                       }}
                     >
-                      {item.item.time}
+                      {item.item.time} h
                     </Text>
                   </TouchableOpacity>
                 );
@@ -212,11 +217,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    height: moderateScale(150),
+    height: moderateScale(135),
     width: moderateScale(250),
     flexDirection: "column",
     borderRadius: 15,
-    backgroundColor: "yellow"
+    
   },
   text: {
     color: "black",

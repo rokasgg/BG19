@@ -217,7 +217,7 @@ class Main extends React.Component {
           <View
             style={{
               flexDirection: "row",
-              paddingBottom: moderateScale(20),
+              paddingBottom: moderateScale(30),
               width: Dimensions.get("window").width,
               height: Dimensions.get("window").height - moderateScale(100)
             }}
@@ -226,7 +226,7 @@ class Main extends React.Component {
               style={{
                 justifyContent: "flex-end",
 
-                marginTop: moderateScale(10),
+                
                 alignItems: "flex-start",
                 marginLeft: moderateScale(10),
                 flex: 1
@@ -235,8 +235,8 @@ class Main extends React.Component {
               <TouchableOpacity
                 onPress={this.openAddStadium}
                 style={{
-                  height: moderateScale(35),
-                  width: moderateScale(35),
+                  height: moderateScale(37),
+                  width: moderateScale(37),
                   borderRadius: 90,
                   backgroundColor: "hsla(240, 50%, 50%, 0.79)",
                   justifyContent: "center",
@@ -245,7 +245,7 @@ class Main extends React.Component {
               >
                 <MaterialIcons
                   name="note-add"
-                  size={moderateScale(18)}
+                  size={moderateScale(19)}
                   color={this.state.filterColor}
                 />
               </TouchableOpacity>
@@ -281,8 +281,9 @@ class Main extends React.Component {
           <View
             style={{
               flexDirection: "row",
-              paddingBottom: moderateScale(20),
-              width: Dimensions.get("window").width
+              paddingBottom: moderateScale(30),
+              width: Dimensions.get("window").width,
+              height: Dimensions.get("window").height - moderateScale(100)
             }}
           >
             <View
@@ -297,8 +298,8 @@ class Main extends React.Component {
               <TouchableOpacity
                 onPress={this.checkReservations}
                 style={{
-                  height: moderateScale(35),
-                  width: moderateScale(35),
+                  height: moderateScale(37),
+                  width: moderateScale(37),
                   borderRadius: 90,
                   backgroundColor: "hsla(300, 45%, 35%, 0.75)",
                   justifyContent: "center",
@@ -306,8 +307,8 @@ class Main extends React.Component {
                 }}
               >
                 <MaterialIcons
-                  name="note-add"
-                  size={moderateScale(18)}
+                  name="import-contacts"
+                  size={moderateScale(19)}
                   color={this.state.filterColor}
                 />
               </TouchableOpacity>

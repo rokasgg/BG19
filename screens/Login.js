@@ -7,16 +7,15 @@ import logout from '../redux/actions/logoutAction';
 import firebase from 'firebase';
 import 'firebase/firestore';
 import Icon from 'react-native-vector-icons/Feather';
-
+import Spinner from "react-native-loading-spinner-overlay";
 
 class Login extends React.Component {
-  static navigationOption = {
-    title: 'Where to',
-  }
+  static navigationOptions = { header: null };
   constructor(){
     super()
     this.state={
-      name:''
+      name:'',
+      spinner:false
     }
   }
   
@@ -34,14 +33,21 @@ class Login extends React.Component {
     
     console.log("Data from firebase", this.state.name);
   }
+  startSpinner = () => {
+    this.setState({ spinner: true });
+  };
   logoutFunction = () => {
-    this.props.logout().then(res =>{
-      if(res)
-      this.props.navigation.navigate('Auth')
-      else
-      alert("Beach!")
-  
-    });
+    this.startSpinner();
+    setTimeout(() => {
+      this.props.logout().then(res =>{
+        if(res)
+        this.setState({ spinner: false },()=>{this.props.navigation.navigate('Auth')}
+        )
+        else
+        alert("Beach!")
+    
+      })
+    }, 3000);;
     
   }
 
@@ -100,6 +106,12 @@ class Login extends React.Component {
             <Text style={{ color: "hsl(186, 62%, 40%)", fontSize: moderateScale(17) }}>Atsijungti</Text>
           </TouchableOpacity>
         </View>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={"Atsijungiama..."}
+          textStyle={{ color: "#fff" }}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+        />
       </View>
     );
   }

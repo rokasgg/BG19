@@ -15,6 +15,8 @@ import { moderateScale } from "../components/ScaleElements";
 import register from "../redux/actions/regAction";
 import { connect } from "react-redux";
 import firebase from "firebase";
+import FlashMessage from "react-native-flash-message";
+import Spinner from "react-native-loading-spinner-overlay";
 
 class RegistrationScreen extends React.Component {
   static navigationOptions = { header: null };
@@ -26,7 +28,8 @@ class RegistrationScreen extends React.Component {
       name: "",
       position: "",
       signInErrorMessage: null,
-      loadingIndicator: false
+      loadingIndicator: false,
+      spinner:false
     };
   }
   componentDidMount() {
@@ -47,8 +50,21 @@ class RegistrationScreen extends React.Component {
   navigateToRegForm = () => {
     this.props.navigation.goBack();
   };
+  startSpinner = () => {
+    this.setState({ spinner: true });
+  };
+  finishSpinner = () => {
+    setTimeout(() => {
+      this.setState({ spinner: false }, () => {
+        this.setState({ signInErrorMessage: "bhy" });
+        this.props.navigation.navigate("Loginn");
+      });
+    }, 3000);
+  };
 
   regNewUser = () => {
+    if(this.state.email!=='',this.state.password!=='',this.state.name!=='')
+    {this.startSpinner();
     this.props
       .register(
         this.state.email,
@@ -58,14 +74,51 @@ class RegistrationScreen extends React.Component {
       )
       .then(isRegSuccess => {
         if (isRegSuccess === true) {
-          this.props.navigation.navigate("Loginn");
+          this.finishSpinner();
         } else {
           this.setState({
-            signInErrorMessage: isRegSuccess.message,
+            signInErrorMessage: isRegSuccess.message,spinner:false,
             loadingIndicator: false
-          });
+          },()=>this.showWarn(isRegSuccess.code));
         }
+      });}else this.showWarn();
+
+  };
+  showWarn = message => {
+    if(message==="auth/invalid-email"){
+      this.refs.errorMessage.showMessage({
+        message: 'Elektroninis paštas blogai suformatuotas!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
       });
+    }else  if(message==="auth/email-already-in-use"){
+      this.refs.errorMessage.showMessage({
+        message: 'Elektroninis paštas jau yra naudojamas!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }else  if(message==="auth/weak-password"){
+      this.refs.errorMessage.showMessage({
+        message: 'Slaptažodi turi sudaryti bent 6 simboliai!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }else{
+      this.refs.errorMessage.showMessage({
+        message: 'Prašome užpildyti visus privalomus registracijos laukelius!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }
+    
   };
 
   render() {
@@ -76,23 +129,16 @@ class RegistrationScreen extends React.Component {
       >
         <TextInput
           style={styles.textInput}
-          placeholder="Vartotojo vardas"
-          onChangeText={text => this.setState({ name: text })}
-          value={this.state.name}
-        />
-        <TextInput
-          style={styles.textInput}
           placeholder="Elektroninis paštas"
           onChangeText={text => this.setState({ email: text })}
           value={this.state.email}
         />
         <TextInput
           style={styles.textInput}
-          placeholder="Pozicija"
-          onChangeText={text => this.setState({ position: text })}
-          value={this.state.position}
+          placeholder="Vardas"
+          onChangeText={text => this.setState({ name: text })}
+          value={this.state.name}
         />
-
         <TextInput
           style={styles.textInput}
           placeholder="Slaptažodis"
@@ -104,7 +150,7 @@ class RegistrationScreen extends React.Component {
           style={{
             height: moderateScale(30),
             width: moderateScale(200),
-            backgroundColor: "green",
+            backgroundColor:'#215740',
             borderColor: "white",
             borderWidth: 2,
             borderRadius: 10,
@@ -124,7 +170,7 @@ class RegistrationScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this.navigateToRegForm}
-          style={{ justifyContent: "center", alignItems: "flex-end" }}
+          style={[styles.okButton, { marginTop: moderateScale(5),backgroundColor:'#3f6655' }]}
         >
           <Text
             style={{
@@ -133,16 +179,16 @@ class RegistrationScreen extends React.Component {
               fontWeight: "600"
             }}
           >
-            Jau esatę prisiregistravęs?
+            Prisijungti
           </Text>
         </TouchableOpacity>
-        <Text style={{ color: "white" }}>{this.state.signInErrorMessage}</Text>
-
-        {/* <ActivityIndicator style={styles.activityIndicator}
-            animating={this.props.isLoading}
-            color = 'white'
-            size = "large"
-            /> */}
+            <Spinner
+          visible={this.state.spinner}
+          textContent={"Registruojama..."}
+          textStyle={{ color: "#fff" }}
+          overlayColor="rgba(0, 0, 0, 0.5)"
+        />
+            <FlashMessage ref="errorMessage" position="top" />
       </ImageBackground>
     );
   }
@@ -171,6 +217,16 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginBottom: 15,
     borderRadius: 10
+  },
+  okButton: {
+    height: moderateScale(30),
+    width: moderateScale(200),
+    backgroundColor: "green",
+    borderColor: "white",
+    borderWidth: 2,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 const mapStateToProps = state => ({

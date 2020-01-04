@@ -119,7 +119,7 @@ export default class modalFilter extends React.Component {
                       fontSize: moderateScale(13)
                     },
                     dateInput: {
-                      alignItems: "flex-end",
+                      alignItems: 'center',
                       borderWidth: 0,
                       paddingLeft: 4,
                       marginRight: 4,

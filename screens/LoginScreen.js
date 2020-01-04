@@ -99,15 +99,6 @@ class LoginScreen extends React.Component {
     }
   };
 
-  showWarn = message => {
-    this.refs.loginMessage.showMessage({
-      message: message,
-      type: "warning",
-      duration: 8000,
-      autoHide: true,
-      hideOnPress: true
-    });
-  };
 
   navigateToRegForm = () => {
     this.props.navigation.navigate("Registration");
@@ -125,10 +116,47 @@ class LoginScreen extends React.Component {
         } else {
           this.setState(
             { signInErrorMessage: isLogginSuccess.message, spinner: false },
-            () => this.showWarn(isLogginSuccess.message)
+            () => this.showWarn(isLogginSuccess.code)
           );
         }
       });
+  };
+
+  showWarn = message => {
+    if(message==="auth/invalid-email"){
+      this.refs.loginMessage.showMessage({
+        message: 'Elektroninis paštas blogai suformatuotas!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }else  if(message==="auth/user-not-found"){
+      this.refs.loginMessage.showMessage({
+        message: 'Naudotojas su tokiu elektroniniu paštu neegzistuoja!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }else  if(message==="auth/weak-password"){
+      this.refs.loginMessage.showMessage({
+        message: 'Netinkamas slaptažodis!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }else{
+      this.refs.loginMessage.showMessage({
+        message: 'Prašome užpildyti visus privalomus prisijungimo laukelius!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }
+    
   };
 
   onIsRememberedChange = () => {
@@ -171,7 +199,8 @@ class LoginScreen extends React.Component {
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            paddingLeft: moderateScale(100)
+            paddingLeft: moderateScale(100),
+            paddingBottom:moderateScale(10)
           }}
           onPress={this.onIsRememberedChange}
         >
@@ -184,9 +213,9 @@ class LoginScreen extends React.Component {
           >
             Prisiminti
           </Text>
-          <CheckBox color="gray" checked={this.state.isRemembered} />
+          <CheckBox style={{ borderRadius:15, backgroundColor:'#215740', borderColor:'#fff'}}  checked={this.state.isRemembered} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.signInUser} style={styles.okButton}>
+        <TouchableOpacity onPress={this.signInUser} style={[styles.okButton,{backgroundColor:'#215740'}]}>
           <Text
             style={{
               color: "white",
@@ -199,7 +228,7 @@ class LoginScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this.navigateToRegForm}
-          style={[styles.okButton, { marginTop: moderateScale(5) }]}
+          style={[styles.okButton, { marginTop: moderateScale(5), backgroundColor:'#3f6655' }]}
         >
           <Text
             style={{
@@ -208,7 +237,7 @@ class LoginScreen extends React.Component {
               fontWeight: "600"
             }}
           >
-            Dar neturite paskyros ?
+            Registruotis
           </Text>
         </TouchableOpacity>
         <Text style={{ color: "white" }}>{this.state.signInErrorMessage}</Text>

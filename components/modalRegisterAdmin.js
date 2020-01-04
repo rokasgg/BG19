@@ -97,8 +97,8 @@ export default class modalRegisterAdmin extends React.Component {
     return (
       <Modal
         isVisible={this.props.visible}
-        onSwipeComplete={this.props.closeModal}
-        onBackdropPress={this.props.closeModal}
+        // onSwipeComplete={this.props.closeModal}
+        // onBackdropPress={this.props.closeModal}
         hasBackdrop={true}
         backdropColor="black"
         backdropOpacity={0.4}
@@ -112,8 +112,8 @@ export default class modalRegisterAdmin extends React.Component {
         <View
           style={{
             backgroundColor: "#f2f2f2",
-            height: moderateScale(395),
-            width: moderateScale(365),
+            height: moderateScale(300),
+            width: moderateScale(340),
             borderRadius: 15
           }}
         >
@@ -122,11 +122,13 @@ export default class modalRegisterAdmin extends React.Component {
               justifyContent: "center",
               alignItems: "flex-start",
               height: moderateScale(45),
-              width: moderateScale(340),
-              marginLeft: moderateScale(7)
+              width: moderateScale(300),
+              marginLeft: moderateScale(12),
+               flexDirection:'column',
+               paddingTop:moderateScale(20)
             }}
           >
-            <Text style={styles.textLeft}>Administratoriaus kūrimas</Text>
+            <Text style={[styles.textLeft,{fontSize:moderateScale(16), textAlign:'left'} ]}>Stadionas sėkmingai pridėtas! Prašome užregistruoti stadiono administratorių.</Text>
           </View>
           <View
             style={{
@@ -142,18 +144,18 @@ export default class modalRegisterAdmin extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Prisijungimo vardas:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Prisijungimo vardas:</Text>
+              <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ email: val })}
                   value={this.state.email}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
             </View>
@@ -164,18 +166,18 @@ export default class modalRegisterAdmin extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Slaptažodis:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Slaptažodis:</Text>
+              <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ password: val })}
                   value={this.state.password}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                   secureTextEntry={true}
                 />
               </View>
@@ -186,18 +188,18 @@ export default class modalRegisterAdmin extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Telefono numeris:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Telefono numeris:</Text>
+              <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ phone: val })}
                   value={this.state.phone}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
             </View>
@@ -207,21 +209,21 @@ export default class modalRegisterAdmin extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(300),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
             >
-              <Text style={styles.textLeft}>Vardas:</Text>
-              <View style={styles.textRight}>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Vardas:</Text>
+              <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ name: val })}
                   value={this.state.name}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray" }}
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
-            </View>
+            </View><FlashMessage ref="warn" position="top" />
           </View>
           <View
             style={{
@@ -229,11 +231,11 @@ export default class modalRegisterAdmin extends React.Component {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
-              width: moderateScale(350),
+              width: moderateScale(320),
               alignSelf: "center"
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={[
                 styles.button,
                 {
@@ -245,16 +247,16 @@ export default class modalRegisterAdmin extends React.Component {
               onPress={this.props.closeModal}
             >
               <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={[styles.button, { justifyContent: "center" }]}
               onPress={this.registerAdmin}
             >
-              <Text style={{ color: "#fff", fontSize: 22 }}>Sukurti</Text>
+              <Text style={{ color: "#fff", fontSize: 22 }}>Registruoti</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <FlashMessage ref="warn" position="top" />
+        
       </Modal>
     );
   }
