@@ -13,7 +13,8 @@ import DateTimePicker from "react-native-datepicker";
 import NumberCounter from "./numberCounter";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalDropdown from "react-native-modal-dropdown";
-
+import FlashMessage from "react-native-flash-message";
+import { Dimensions } from "react-native"; Dimensions.get("window").width
 export default class modalReservation extends React.Component {
   constructor(props) {
     super(props);
@@ -105,7 +106,11 @@ export default class modalReservation extends React.Component {
   }
 
   onCreateEvent = () => {
-    let stadiums = this.props.stadiums;
+    console.log("bhy",this.state.dateTime, this.state.time, this.state.peopleNeeded)
+    if(this.state.selectedStadium!==-1)
+    {if(this.state.dateTime)
+      {if(this.state.time)
+    {let stadiums = this.props.stadiums;
 
     console.log(
       this.state.stadiumName,
@@ -121,7 +126,32 @@ export default class modalReservation extends React.Component {
       eventStart: this.state.time,
       stadiumId: this.props.data.stadiumId
     };
-    this.props.createEvent(searchDetails);
+    this.props.createEvent(searchDetails);}else{
+      this.refs.errorMessage.showMessage({
+        message: 'Prašome pasirinkti Laiką!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }}else{
+      this.refs.errorMessage.showMessage({
+        message: 'Prašome pasirinkti dieną!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }
+  }else{
+      this.refs.errorMessage.showMessage({
+        message: 'Prašome pasirinkti stadioną!',
+        type: "warning",
+        duration: 6000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }
   };
 
   getStadiumsOptions = () => {
@@ -172,12 +202,16 @@ export default class modalReservation extends React.Component {
         backdropColor="black"
         backdropOpacity={0.3}
       >
+        <View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
+            alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='errorMessage' position='top' />
+          
         <View
           style={{
             backgroundColor: "#f2f2f2",
             height: moderateScale(255),
             width: moderateScale(340),
-            borderRadius: 15
+            borderRadius: 15,
+            
           }}
         >
           <View
@@ -247,6 +281,8 @@ export default class modalReservation extends React.Component {
                   justifyContent: "flex-end",
                   paddingRight: 5
                 }}
+                placeholder="Pasirinkite"
+
                 customStyles={{
                   dateText: {
                     fontSize: moderateScale(13)
@@ -291,6 +327,7 @@ export default class modalReservation extends React.Component {
                   justifyContent: "flex-end",
                   paddingRight: 5
                 }}
+                placeholder="Pasirinkite"
                 customStyles={{
                   dateText: {
                     fontSize: moderateScale(13)
@@ -362,6 +399,10 @@ export default class modalReservation extends React.Component {
               <Text style={{ color: "#fff", fontSize: 22 }}>Sukurti</Text>
             </TouchableOpacity>
           </View>
+          
+
+        </View>
+       
         </View>
       </Modal>
     );

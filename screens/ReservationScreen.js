@@ -177,8 +177,8 @@ class ReservationScreen extends React.Component {
     let propsFromReservation = this.props.navigation.getParam("data");
 
     if (reservationSuccess) {
-      this.showWarn();
-      this.moreResDetails(propsFromReservation);
+      this.moreResDetails(propsFromReservation,true);
+       this.getUserReservations()
     } else {
       this.startSpinner();
       this.getUserReservations();
@@ -331,12 +331,13 @@ class ReservationScreen extends React.Component {
     return todayIs;
   }
 
-  moreResDetails = item => {
+  moreResDetails = (item,success) => {
     this.props.navigation.navigate("ReservationDetails", {
       onGoBack: () => {
         this.getUserReservations();
       },
-      data: item
+      data: item,
+      reserved: success
     });
   };
 
@@ -409,7 +410,7 @@ class ReservationScreen extends React.Component {
             flex: 1
           }}
           onPressIn={() => {
-            this.moreResDetails(item);
+            this.moreResDetails(item,false);
           }}
         >
           <Ionicons name="ios-more" size={moderateScale(30)} color="#09549F" />

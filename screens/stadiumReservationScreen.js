@@ -350,13 +350,13 @@ class stadiumReservationScreen extends React.Component {
     });
 
     for (let i = 0; i < 7; i++) {
-      if (today === date)
+      if (today >= date)
         if (currentTime > availableTimeItems[i].startTime)
           availableTimeItems[i].occupied = true;
     }
 
     this.setState({ form: availableTimeItems, downloadingData: false }, () =>
-      console.log(this.state.form, "NAUJASIAS CHECKAS")
+      console.log(this.state.form, "NAUJASIAS CHECKAS", today, date,currentTime )
     );
   };
 
@@ -507,7 +507,7 @@ class stadiumReservationScreen extends React.Component {
               markedDates={this.state.selectedDays}
               onDayPress={day => this.dayPress(day)}
               rowHasChanged={this.itemHasChanged}
-              current={"2019-11-28"}
+              current={getTodaysDate()}
             />
           </View>
           <View style={{ flex: 2, flexDirection: "column", marginBottom: 10 }}>

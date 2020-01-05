@@ -127,6 +127,7 @@ export default class modalFilter extends React.Component {
                     },
                     dateIcon: { display: "none" }
                   }}
+                  placeholder='Pasirinkite'
                   mode={"datetime"}
                   mode="date"
                   date={this.state.dateTime}

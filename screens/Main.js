@@ -126,6 +126,7 @@ class Main extends React.Component {
                     longitudeDelta: 0.0421,
                     latitudeDelta: 0.0922
                   }}
+                  style={{backgroundColor:'yellow'}}
                   onPress={() =>
                     this.setState(
                       {
@@ -530,7 +531,7 @@ class Main extends React.Component {
     };
     this.props.navigation.navigate("FilterByTime", { data });
   };
-  selectedStadium;
+
   filterStadiums = selectedStadiums => {
     console.log("koks tipas", typeof selectedStadiums);
     let stadiums = Array.from(this.state.markersOfficial);
@@ -775,15 +776,15 @@ class Main extends React.Component {
         "Gruo."
       ],
       dayNames: [
+        "Sekmadienis",
         "Pirmadienis",
         "Antradienis",
         "Trečiadienis",
         "Ketvirtadienis",
         "Penktadienis",
-        "Šeštadienis",
-        "Sekmadienis"
+        "Šeštadienis"
       ],
-      dayNamesShort: ["Pirm", "Antr", "Treč", "Ket", "Pen", "Šeš", "Sek"]
+      dayNamesShort: [ "Sek","Pirm", "Antr", "Treč", "Ket", "Pen", "Šeš"]
     };
 
     LocaleConfig.defaultLocale = "lt";

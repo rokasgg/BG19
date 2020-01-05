@@ -213,7 +213,7 @@ class ReservedDetails extends React.Component {
                   color: "hsl(186, 62%, 40%)"
                 }}
               >
-                Grižti
+                Grįžti
               </Text>
             </TouchableOpacity>
             {data.active ? (
@@ -252,7 +252,7 @@ class ReservedDetails extends React.Component {
     );
   }
   goingBack = () => {
-    this.props.navigation.state.params.onGoBack();
+    // this.props.navigation.state.params.onGoBack();
     this.props.navigation.goBack();
   };
 
@@ -309,6 +309,15 @@ class ReservedDetails extends React.Component {
 
   componentDidMount() {
     console.log("PROPSAI", this.props, this.props.navigation);
+    if(this.props.navigation.state.params.reserved){
+      this.refs.warnning.showMessage({
+        message: 'Aikštelė užrezervuota sėkmingai!',
+        type: "success",
+        duration: 7000,
+        autoHide: true,
+        hideOnPress: true
+      });
+    }
   }
 }
 const styles = StyleSheet.create({
