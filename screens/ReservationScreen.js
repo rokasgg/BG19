@@ -89,12 +89,28 @@ class ReservationScreen extends React.Component {
                 Aktyvios rezervacijos
               </Text>
             </View>
-            <View style={{ justifyContent: "flex-end", alignItems: "center" }}>
-              <TouchableOpacity
-                onPress={() => this.setState({ modalCreateEventVisible: true })}
-              >
-                {/* <Ionicons name="plus" size={25} color="#90c5df" /> */}
-              </TouchableOpacity>
+            <View style={{ justifyContent: "flex-end", alignItems: "center", paddingRight:moderateScale(15) }}>
+            <View
+                  style={{
+                    borderWidth: 2,
+                    borderRadius: 90,
+                    width: moderateScale(30),
+                    height: moderateScale(30),
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "#35a273"
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: moderateScale(12),
+                      color: "#fff",
+                      fontWeight: "700"
+                    }}
+                  >
+                    {this.state.activeReservations.length}/3
+                  </Text>
+                </View>
             </View>
           </View>
           {this.state.checkSpinner ? (
@@ -373,7 +389,7 @@ class ReservationScreen extends React.Component {
                 : "alarm-off"
             }
             size={moderateScale(32)}
-            color={item.active ? (item.started ? "#11D411" : "#2F89E4") : "red"}
+            color={item.active ? (item.started ? "#3cb371" : "#2F89E4") : "red"}
           />
         </View>
 

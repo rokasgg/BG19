@@ -240,7 +240,7 @@ class LoginScreen extends React.Component {
             Registruotis
           </Text>
         </TouchableOpacity>
-        <Text style={{ color: "white" }}>{this.state.signInErrorMessage}</Text>
+        {/* <Text style={{ color: "white" }}>{this.state.signInErrorMessage}</Text> */}
         <Spinner
           visible={this.state.spinner}
           textContent={"Vykdoma..."}

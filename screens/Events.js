@@ -452,8 +452,8 @@ class Events extends React.Component {
             creatorsId: data._document.proto.fields.userId.stringValue,
             id: data.id
           };
+         firebase.firestore().collection("events").doc(data.id).collection('playersList').get().then(datas=>{eventDetails.playersListLenght= datas.docs.length});
           eventList.push(eventDetails);
-          console.log(eventList);
         })
       );
     this.setState({
@@ -514,7 +514,7 @@ class Events extends React.Component {
             address: data._document.proto.fields.address.stringValue,
             id: data.id
           };
-
+           
           if (eventDetails.eventDate === today) {
             if (eventDetails.eventStart > nowTime) {
               eventList.push(eventDetails);
@@ -526,8 +526,21 @@ class Events extends React.Component {
         })
       );
 
-    await this.settingState(eventList);
+       
+     await this.settingState(eventList);
   };
+  getEventsJoindLenght= async(events)=>{
+    let eventList=[]
+    await events.forEach((data,index)=>{
+      firebase.firestore().collection("events").doc(data.id).collection('playersList').get().then(datas=>{
+        events[index].playersListLenght= datas.docs.length,
+        console.log('indexas', events)
+      });
+    })
+    await this.settingState(events);
+  }
+  // REIKIA CIA SUTVARKYTI SITA FUNKCIJA
+
   getUsersJoinedEvents = async () => {
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
@@ -620,6 +633,7 @@ class Events extends React.Component {
   //EVENT SETTER-------------------------------------
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
+    ()=>console.log('aitem'. item)
     return (
       <TouchableOpacity
         onPress={() => navigate("EventsDetails", { item1: item })}
@@ -689,7 +703,7 @@ class Events extends React.Component {
               onPress={() => navigate("EventsDetails", { item1: item })}
             >
               <Text style={{ fontSize: 17, color: "black" }}>
-                {item.peopleNeed}
+          {item.playersListLenght?item.playersListLenght:null}/{item.peopleNeed}
               </Text>
               <MCIcons
                 name="account-multiple-plus"
