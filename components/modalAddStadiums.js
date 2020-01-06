@@ -18,7 +18,7 @@ import ModalPickLocation from "../components/modalPickLocation";
 import firebase from "firebase";
 import "firebase/firestore";
 import FlashMessage from "react-native-flash-message";
-
+import { Dimensions } from "react-native";
 export default class modalAddStadiums extends React.Component {
   constructor(props) {
     super(props);
@@ -139,7 +139,7 @@ export default class modalAddStadiums extends React.Component {
     if (this.state.phone === "") {
       stadiumData.phone = 0;
     } else {
-      stadiumData.phone = this.state.phone;
+      stadiumData.phone = parseInt(this.state.phone);
     }
     if (this.state.inventor === "0") {
       stadiumData.providesInventor = true;
@@ -242,7 +242,8 @@ export default class modalAddStadiums extends React.Component {
         }}
         backdropColor="black"
         backdropOpacity={0.3}
-      >
+      ><View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
+      alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='emptyFields' position='top' />
         <View
           style={{
             backgroundColor: "#f2f2f2",
@@ -504,7 +505,7 @@ export default class modalAddStadiums extends React.Component {
           textStyle={{ color: "#fff" }}
           overlayColor="rgba(0, 0, 0, 0.5)"
         />
-        <FlashMessage ref='emptyFields' position="top" />
+        </View>
       </Modal>
     );
   }

@@ -46,9 +46,9 @@ class modalStadiumDetails extends React.Component {
       case "synthetic":
         return "Dirbtinė danga";
       case "futsal":
-        return "Salė";
+        return "Parketas";
       case "grass":
-        return "Tikra žolė";
+        return "Natūrali žolė";
       default:
         return null;
     }

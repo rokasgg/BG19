@@ -33,6 +33,7 @@ import ModalEditStadium from "../components/editStadium";
 import firebase from "firebase";
 import "firebase/firestore";
 
+
 class Main extends React.Component {
   static navigationOptions = { header: null };
 
@@ -226,8 +227,6 @@ class Main extends React.Component {
             <View
               style={{
                 justifyContent: "flex-end",
-
-                
                 alignItems: "flex-start",
                 marginLeft: moderateScale(10),
                 flex: 1
@@ -374,18 +373,7 @@ class Main extends React.Component {
         modalAddStadiums: false,
         modalRegisterAdmin: true,
         stadiumAdminData: data
-      },
-      () => {
-        this.getStadiumsData(),
-          this.refs.stadiumAdd.showMessage({
-            message: "Stadiona pridėtas sėkmingai!",
-            type: "success",
-            duration: 7000,
-            autoHide: true,
-            hideOnPress: true
-          });
-      }
-    );
+      });
   };
   finishRegistration = () => {
     this.setState(
@@ -438,8 +426,8 @@ class Main extends React.Component {
   };
 
   searchByTime = () => {
-    this.setState({ modalFilterState: false });
-    this.props.navigation.navigate("FilterByTime");
+    this.setState({ modalFilterState: false },()=>this.props.navigation.navigate("FilterByTime"));
+    
   };
   filterStadiumsByTime = selectedStadiums => {
     console.log("objetkas", typeof selectedStadiums);
@@ -540,7 +528,10 @@ class Main extends React.Component {
     console.log(data33, stadiums, selectedStadiums, "YO", slength);
     console.log("ka gaunam?", selectedStadiums);
     if (selectedStadiums.chosenTime !== undefined) {
-      this.filterStadiumsByTime(selectedStadiums);
+      this.setState({
+        modalFilterState: false
+      },()=>this.filterStadiumsByTime(selectedStadiums));
+      
     } else {
       if (selectedStadiums.length > 0) {
         let filteredStadiums = Array.from(this.state.markersOfficial);

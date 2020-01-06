@@ -29,6 +29,7 @@ import { formateTime } from "../components/timeConverte";
 import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Dimensions } from "react-native";
 
 class modalReserve extends React.Component {
   static navigationOptions = { header: null };
@@ -318,11 +319,22 @@ class modalReserve extends React.Component {
         onSwipeComplete={this.props.closeModal}
         backdropColor="black"
         backdropOpacity={0.3}
-        
+        style={{
+          justifyContent: "center",
+          alignItems: "center"
+        }}
         onBackdropPress={this.props.closeModal}
       >
-        <ScrollView>
-        <TouchableOpacity
+         <View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
+            alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='warnning' position='top' />
+           <View style={{
+              
+              height:moderateScale(420),backgroundColor: "#f2f2f2",
+              width:moderateScale(330),
+              borderRadius:moderateScale(15)
+
+            }}>    
+           <TouchableOpacity
           style={{
             justifyContent: "center",
             alignSelf: "flex-start",
@@ -339,22 +351,19 @@ class modalReserve extends React.Component {
             color='gray'
           />
         </TouchableOpacity>
-          <View
-            style={[
-              styles.modal,
-              { width: moderateScale(320), height: moderateScale(400),borderRadius:moderateScale(10) }
-            ]}
-          >
-            <Image
+            
+              <Image
               style={{
-                width: moderateScale(300),
+                width: moderateScale(320),
                 height: moderateScale(100),
                 resizeMode: "contain",
-                marginTop: 10,
-                marginBottom: 10
+                marginTop: 5,
+                marginBottom: 20
               }}
               source={require("../pictures/pitch4.png")}
             />
+
+
             <View
               style={{
                 flex: 1,
@@ -496,7 +505,8 @@ class modalReserve extends React.Component {
                 flex: 1,
                 flexDirection: "row",
                 justifyContent: "space-around",
-                alignItems: "center",
+                alignItems: 'flex-end',
+                paddingBottom:moderateScale(10),
                 width: moderateScale(320)
               }}
             >
@@ -524,14 +534,15 @@ class modalReserve extends React.Component {
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-          <Spinner
+          
+          
+        </View>
+        </View>
+        <Spinner
             visible={this.state.spinner}
             textContent={"Vykdoma..."}
             textStyle={{ color: "#fff" }}
           />
-          <FlashMessage ref="warnning" position="top" />
-        </ScrollView>
       </Modal>
     );
   }
@@ -543,31 +554,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff"
   },
-  modalEvent: {
-    height: 600
-  },
 
-  modalView1: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    marginLeft: moderateScale(25)
-  },
-  modalView2: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    marginRight: moderateScale(25)
-  },
-
-  text: {
-    color: "black",
-    fontSize: moderateScale(15),
-    marginBottom: 100,
-    textAlign: "left"
-  },
   textLeft: {
     color: "black",
     fontSize: moderateScale(15),
@@ -597,11 +584,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 15,
     borderRadius: 5
-  },
-  buttonEdit: {
-    backgroundColor: "orange",
-    marginLeft: 10
   }
+
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,

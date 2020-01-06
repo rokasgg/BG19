@@ -17,7 +17,8 @@ import ModalPickLocation from "../components/modalPickLocation";
 import FlashMessage from "react-native-flash-message";
 import firebase from "firebase";
 import "firebase/firestore";
-
+import { Dimensions } from "react-native";
+import Spinner from "react-native-loading-spinner-overlay";
 export default class modalRegisterAdmin extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +28,8 @@ export default class modalRegisterAdmin extends React.Component {
       name: "",
       password: "",
       phone: null,
-      email: ""
+      email: "",
+      spinner:false
     };
   }
 
@@ -52,15 +54,28 @@ export default class modalRegisterAdmin extends React.Component {
     //   console.log("GAVOME DATA I MODALA !!!!", this.props.data);
     // } else console.log("BYBI NK NEGAUSI xD", this.props.data);
     // this.getStadiumsOptions();
+    ()=>this.refs.warn.showMessage({
+      message: "Stadionas pridėtas sėkmingai!",
+      type: "success",
+      duration: 7000,
+      autoHide: true,
+      hideOnPress: true
+    });
   }
 
   closePickModal = () => {
     this.setState({ modalPickLocation: false });
   };
+  startSpinner=()=>{
+    this.setState({
+      spinner:true
+    })
+  }
 
   registerAdmin = async () => {
     const { name, email, password, phone } = this.state;
     if (name !== "" && email !== "" && password !== "" && phone !== "") {
+      this.startSpinner();
       await firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -81,7 +96,10 @@ export default class modalRegisterAdmin extends React.Component {
             .doc(`${userId}`)
             .set(usersData);
         });
-      this.props.finish();
+        this.setState({
+          spinner:false
+        },()=>this.props.finish())
+      
     } else {
       this.refs.warn.showMessage({
         message: "Prašome užpildyti visus laukelius!",
@@ -109,6 +127,8 @@ export default class modalRegisterAdmin extends React.Component {
         backdropColor="black"
         backdropOpacity={0.3}
       >
+        <View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
+            alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='warn' position='top' />
         <View
           style={{
             backgroundColor: "#f2f2f2",
@@ -223,7 +243,7 @@ export default class modalRegisterAdmin extends React.Component {
                   style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
                 />
               </View>
-            </View><FlashMessage ref="warn" position="top" />
+            </View>
           </View>
           <View
             style={{
@@ -256,7 +276,13 @@ export default class modalRegisterAdmin extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        
+        </View>
+        <Spinner
+visible={this.state.spinner}
+textContent={"Registruojama..."}
+textStyle={{ color: "#fff" }}
+overlayColor="rgba(0, 0, 0, 0.5)"
+/>
       </Modal>
     );
   }

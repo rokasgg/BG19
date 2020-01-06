@@ -14,7 +14,7 @@ import NumberCounter from "./numberCounter";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ModalDropdown from "react-native-modal-dropdown";
 import FlashMessage from "react-native-flash-message";
-import { Dimensions } from "react-native"; Dimensions.get("window").width
+import { Dimensions } from "react-native";
 export default class modalReservation extends React.Component {
   constructor(props) {
     super(props);

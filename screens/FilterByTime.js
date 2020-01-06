@@ -42,7 +42,7 @@ class FilterByTime extends React.Component {
       stadiums: [],
       refresh: false,
       filterActive: false,
-      modalFilter: true,
+      modalFilter: false,
       modalReserve: false,
       reserveData: []
     };
@@ -528,33 +528,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  modalView1: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    marginLeft: 50
-  },
-  modalView2: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    marginRight: 50
-  },
+
 
   text: {
     color: "black",
     fontSize: 22
   },
-  button: {
-    width: 300,
-    height: 50,
-    backgroundColor: "tomato",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 15
-  }
+
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid
