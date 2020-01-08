@@ -156,6 +156,7 @@ class modalStadiumDetails extends React.Component {
           </View>
           <View
             style={{
+              marginTop:moderateScale(15),
               flex: 1,
               flexDirection: "row",
               justifyContent: "space-around",
@@ -163,10 +164,10 @@ class modalStadiumDetails extends React.Component {
               width: moderateScale(350)
             }}
           >
-            <TouchableOpacity
+            {this.props.isAdmin ?<TouchableOpacity
               style={[
                 styles.button,
-                { flexDirection: "row", justifyContent: "space-around" }
+                { flexDirection: "row", justifyContent: "space-around", borderColor:'orange' }
               ]}
               onPress={
                 this.props.isAdmin
@@ -177,18 +178,18 @@ class modalStadiumDetails extends React.Component {
               <IconFeather
                 name={this.props.isAdmin ? "edit" : "navigation"}
                 size={moderateScale(20)}
-                color="hsl(126, 62%, 40%)"
+                color="orange"
               />
               <Text
                 style={{
-                  color: "hsl(126, 62%, 40%)",
+                  color: "orange",
                   fontSize: moderateScale(17),
                   fontWeight: "500"
                 }}
               >
                 {this.props.isAdmin ? "Redaguoti" : "Naviguoti"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity>:null}
             <TouchableOpacity
               style={[
                 styles.button,

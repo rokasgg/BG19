@@ -72,6 +72,7 @@ class WatchReservations extends React.Component {
           console.log("gaunama data", data);
           let reservationInfo = {
             userId: data._document.proto.fields.userId.stringValue,
+            userName:data._document.proto.fields.userName.stringValue,
             reservationStart:
               data._document.proto.fields.reservationStart.stringValue,
             reservationFinish:
@@ -371,7 +372,7 @@ class WatchReservations extends React.Component {
               style={{ flexDirection: "row", justifyContent: "space-around" }}
             >
               <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-              {item.name?item.name:'Tomas'}
+              {item.userName?item.userName:'Tomas'}
             </Text>
               
             </View>

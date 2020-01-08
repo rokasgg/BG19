@@ -191,6 +191,7 @@ class modalReserve extends React.Component {
           time: propsData.timeType,
           stadiumId: propsData.stadiumId,
           userId: this.props.userId,
+          userName:this.props.userName,
           reservationStart: propsData.reservationStart,
           reservationFinish: propsData.reservationFinish,
           reservationConfirmTime: Date.now(),
@@ -591,6 +592,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,
+  userName:state.auth.userName,
   activeNumb: state.active.activeReservationNumber
 });
 export default connect(mapStateToProps, { gettingActiveRes })(modalReserve);

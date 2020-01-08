@@ -272,6 +272,7 @@ class FilterByTime extends React.Component {
         reservationStart: parameters.time.startTime,
         reservationFinish: parameters.time.finishTime,
         userId: this.props.userId,
+        userName:this.props.userName,
         stadiumId: stadium.stadiumId,
         reservationConfirmTime: Date.now()
       };
@@ -555,6 +556,7 @@ const styles = StyleSheet.create({
 
 });
 const mapStateToProps = state => ({
-  userId: state.auth.userUid
+  userId: state.auth.userUid,
+  userName: state.auth.userName
 });
 export default connect(mapStateToProps, { gettingActiveRes })(FilterByTime);

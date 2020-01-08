@@ -234,6 +234,7 @@ class stadiumReservationScreen extends React.Component {
             time: this.state.selectedTime.type,
             stadiumId: propsData.stadiumId,
             userId: this.props.userId,
+            userName:this.props.userName,
             reservationStart: this.state.selectedTime.startTime,
             reservationFinish: this.state.selectedTime.finishTime,
             reservationConfirmTime: Date.now(),
@@ -734,6 +735,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,
+  userName:state.auth.userName,
   activeResNumber: state.active.activeReservationNumber
 });
 export default connect(mapStateToProps, { gettingActiveRes })(
