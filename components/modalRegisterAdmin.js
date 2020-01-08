@@ -169,13 +169,14 @@ export default class modalRegisterAdmin extends React.Component {
                 borderBottomWidth: 1
               }}
             >
-              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Prisijungimo vardas:</Text>
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Elektroninis paštas:</Text>
               <View style={[styles.textRight, { alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
                 <TextInput
                   onChangeText={val => this.setState({ email: val })}
                   value={this.state.email}
                   placeholder="Įveskite"
                   style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
+                  keyboardType='email-address'
                 />
               </View>
             </View>

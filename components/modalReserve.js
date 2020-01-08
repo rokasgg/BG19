@@ -428,8 +428,10 @@ class modalReserve extends React.Component {
                 <Text style={styles.textLeft}>Dangos tipas:</Text>
                 <Text style={styles.textRight}>
                   {this.props.data.floorType === "synthetic"
-                    ? "Dirbtinė danga"
-                    : null}
+                    ? "Dirbtinė žolė"
+                    : this.props.data.floorType === "futsal"
+                    ? "Parketas":this.props.data.floorType === "grass"
+                    ? "Natūrali žolė":null}
                 </Text>
               </View>
               <View
@@ -444,7 +446,7 @@ class modalReserve extends React.Component {
               >
                 <Text style={styles.textLeft}>Stadiono tipas:</Text>
                 <Text style={styles.textRight}>
-                  {this.props.data.stadiumType === "outdoor" ? "Lauko" : null}
+                  {this.props.data.stadiumType === "outdoor" ? "Laukas" : this.props.data.stadiumType === "indoor"?'Vidus':null}
                 </Text>
               </View>
               <View

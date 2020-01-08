@@ -65,7 +65,7 @@ class ReservationScreen extends React.Component {
       >
         <View
           style={{
-            flex: 1,
+            flex: 3,
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#F5FCFF",
@@ -132,7 +132,7 @@ class ReservationScreen extends React.Component {
         </View>
         <View
           style={{
-            flex: 1,
+            flex: 2,
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#F5FCFF",

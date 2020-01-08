@@ -44,7 +44,8 @@ class FilterByTime extends React.Component {
       filterActive: false,
       modalFilter: false,
       modalReserve: false,
-      reserveData: []
+      reserveData: [],
+      searchTimeText:''
     };
   }
 
@@ -61,6 +62,23 @@ class FilterByTime extends React.Component {
         }}
       >
         {/*style={[styles.tabStyle,this.state.chosenTab===3?{backgroundColor:'lightblue'}:null]}*/}
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignSelf: "flex-start",
+            height: moderateScale(30),
+            width: moderateScale(100),
+            alignItems: "center",
+             paddingRight:moderateScale(30)
+          }}
+          onPress={() => this.props.navigation.goBack()}
+        >
+          <Ionicons
+            name='md-arrow-back'
+            size={moderateScale(20)}
+            color='gray'
+          />
+        </TouchableOpacity>
         <View
           style={{
             justifyContent: "flex-start",
@@ -119,11 +137,10 @@ class FilterByTime extends React.Component {
                 }}
                 onPress={this.openFilter}
               >
-                <Ionicons
-                  name="md-time"
-                  size={moderateScale(23)}
-                  color="#FA7979"
-                />
+                
+                <Text style={{fontSize:moderateScale(14)}}> 
+                  {this.state.searchTimeText!==''?this.state.searchTimeText:null}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -227,6 +244,7 @@ class FilterByTime extends React.Component {
     this.props.gettingActiveRes(this.props.userId);
     let data = this.props.navigation.getParam("data");
     console.log("Ka gaunam is filtro?", data);
+    this.setState({searchTimeText:`${data.date.date}, ${data.date.time.startTime}`})
     this.onFiltering(data);
   }
   startSpinner = () => {
@@ -379,9 +397,9 @@ class FilterByTime extends React.Component {
                 {item.peopleNeed}
               </Text>
               <MCIcons
-                name="account-multiple-plus"
-                size={moderateScale(22)}
-                color="hsl(126, 62%, 40%)"
+                name="calendar-edit"
+                size={moderateScale(28)}
+                color="lightgray"
                 style={{ marginBottom: 3, marginLeft: 5 }}
               />
             </View>

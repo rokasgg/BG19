@@ -272,7 +272,7 @@ export default class askPerm extends React.Component {
                   }}
                 >
                   {this.props.data.approved
-                    ? `Žaidėjo dalyvavimas jau patvirtintas. Norite pašalinti ${this.props.data.name} ? }?`
+                    ? `Žaidėjo dalyvavimas jau patvirtintas. Norite pašalinti ${this.props.data.name} ?`
                     : "Ar norite patvirtinti šio žaidėjo prašymą prisijungti prie treniruotės?"}
                 </Text>
               </View>
@@ -284,7 +284,8 @@ export default class askPerm extends React.Component {
                   width: moderateScale(200)
                 }}
               >
-                <TouchableOpacity
+                {this.props.data.approved
+                    ?<TouchableOpacity
                   style={[
                     styles.button,
                     {
@@ -305,6 +306,30 @@ export default class askPerm extends React.Component {
                     Grįžti
                   </Text>
                 </TouchableOpacity>
+                    : <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black"
+                      }
+                    ]}
+                    onPress={this.cancelPermision}
+                  >
+                    {this.state.approveSpinner ? (
+                    <ActivityIndicator color="grey" size="small" />
+                  ) : (<Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      Pašalinti
+                    </Text>)}
+                  </TouchableOpacity>}
+                
                 <TouchableOpacity
                   style={[
                     styles.button,

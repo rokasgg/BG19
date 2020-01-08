@@ -5,7 +5,7 @@ import {
 } from "../actions/types";
 import firebase from "firebase";
 
-export default function register(email, password, userName, position) {
+export default function register(email, password, userName) {
   console.log("FIRE!");
   return dispatch => {
     dispatch({ type: REGISTRATION });
@@ -18,7 +18,7 @@ export default function register(email, password, userName, position) {
         const usersData = {
           name: userName,
           email: email,
-          position: position,
+         
           admin: false,
           administrator: false
         };
@@ -26,7 +26,7 @@ export default function register(email, password, userName, position) {
         const userId = response.user.uid;
         dispatch({
           type: REGISTRATION_SUCCESS,
-          payload: { email, userName, position, userId, admin }
+          payload: { email, userName, userId, admin }
         });
         firebase
           .firestore()

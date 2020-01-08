@@ -68,8 +68,20 @@ class LoginScreen extends React.Component {
       firebase.initializeApp(firebaseConfig);
     }
     this.autoSignIn();
+    let success= this.props.navigation.getParam("success");
+    if(success){
+this.showSuccess();
+    }
   }
-
+showSuccess=()=>{
+    this.refs.loginMessage.showMessage({
+      message: 'Sėkmingai užsiregistravote!',
+      type: "success",
+      duration: 6000,
+      autoHide: true,
+      hideOnPress: true
+    });
+  }
   autoSignIn = async () => {
     const userInfo = [];
     await AsyncStorage.multiGet(["username", "password"], (err, res) => {
@@ -186,6 +198,7 @@ class LoginScreen extends React.Component {
           placeholder="Elektroninis pašas"
           onChangeText={text => this.setState({ username: text })}
           value={this.state.username}
+          keyboardType='email-address'
         />
         <TextInput
           style={styles.textInput}

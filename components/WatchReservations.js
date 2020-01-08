@@ -311,9 +311,7 @@ class WatchReservations extends React.Component {
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
     return (
-      <TouchableOpacity
-        onPress={() => navigate("EventsDetails", { item1: item })}
-      >
+
         <View
           style={{
             flexDirection: "row",
@@ -372,20 +370,14 @@ class WatchReservations extends React.Component {
             <View
               style={{ flexDirection: "row", justifyContent: "space-around" }}
             >
-              <MCIcons
-                name="account-multiple-plus"
-                size={moderateScale(22)}
-                color="hsl(126, 62%, 40%)"
-                style={{ marginLeft: 5 }}
-              />
               <Text style={{ color: "black", fontSize: moderateScale(14) }}>
-              Tuomas
+              {item.name?item.name:'Tomas'}
             </Text>
               
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+
     );
   };
   renderEmptyEventList = () => {

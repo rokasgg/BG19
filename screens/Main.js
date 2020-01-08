@@ -141,7 +141,9 @@ class Main extends React.Component {
                           stadiumId: marker.stadiumId,
                           floorType: marker.floorType,
                           stadiumType: marker.stadiumType,
-                          phone: marker.phone
+                          phone: marker.phone,
+                          paid:marker.isPaid,
+                          price:marker.price
                         },
                         mapLongitude: marker.longitude,
                         mapLatitude: marker.latitude,
@@ -202,7 +204,7 @@ class Main extends React.Component {
                 height: moderateScale(45),
                 width: moderateScale(45),
                 borderRadius: 90,
-                backgroundColor: "hsla(120, 85%, 30%, 0.79)",
+                backgroundColor: "hsla(201, 50%, 50%,0.8)",
                 justifyContent: "center",
                 alignItems: "center"
               }}
@@ -395,7 +397,7 @@ class Main extends React.Component {
       if (type === "delete") {
         this.getStadiumsData(),
           this.refs.stadiumAdd.showMessage({
-            message: "Stadiono sėkmingai pašalintas iš sistemos!",
+            message: "Stadionas pašalintas iš sistemos sėkmingai!",
             type: "success",
             duration: 7000,
             autoHide: true,
@@ -684,6 +686,7 @@ class Main extends React.Component {
           floorType: data._document.proto.fields.floorType.stringValue,
           stadiumType: data._document.proto.fields.stadiumType.stringValue,
           inventor: data._document.proto.fields.providesInventor.booleanValue,
+          price:data._document.proto.fields.price.stringValue,
           stadiumId: data.ref.id,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421

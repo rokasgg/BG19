@@ -27,7 +27,6 @@ class Login extends React.Component {
        this.setState({
           name:snap._document.proto.fields.name.stringValue,
           email:snap._document.proto.fields.email.stringValue,
-          position:snap._document.proto.fields.position.stringValue,
         })
     }, ()=>{console.log('NAME:',this.state.name)})
     
@@ -54,7 +53,6 @@ class Login extends React.Component {
   changeUsersData = ()=>{
     const usersData = {
       name:this.state.name,
-      position:this.state.position
     }
     firebase.firestore().collection('users').doc(`${this.props.user.auth.userUid}`).update(usersData)
   }
@@ -85,14 +83,7 @@ class Login extends React.Component {
                 value={this.state.email}
               />
           </View>
-          <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center', width:moderateScale(340), borderColor:'hsla(126, 62%, 40%, 0.44)', borderBottomWidth:1,}}>
-              <Text style={styles.textLeft}>Žaidėjo pozicija:</Text>
-              <TextInput
-                style={styles.textRight}
-                onChangeText={text=>{this.setState({position:text})}}
-                value={this.state.position}
-              />
-          </View>
+          
         
           <TouchableOpacity style={[styles.button,{marginTop:20, flexDirection:'row',width:moderateScale(110), justifyContent:'space-evenly'}]} onPress={this.changeUsersData}>
             <Icon name='save' color='gray' size={15}/>

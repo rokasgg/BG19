@@ -26,7 +26,6 @@ class RegistrationScreen extends React.Component {
       email: "",
       password: "",
       name: "",
-      position: "",
       signInErrorMessage: null,
       loadingIndicator: false,
       spinner:false
@@ -57,7 +56,7 @@ class RegistrationScreen extends React.Component {
     setTimeout(() => {
       this.setState({ spinner: false }, () => {
         this.setState({ signInErrorMessage: "bhy" });
-        this.props.navigation.navigate("Loginn");
+        this.props.navigation.navigate("Loginn", {success:true});
       });
     }, 3000);
   };
@@ -70,7 +69,6 @@ class RegistrationScreen extends React.Component {
         this.state.email,
         this.state.password,
         this.state.name,
-        this.state.position
       )
       .then(isRegSuccess => {
         if (isRegSuccess === true) {
@@ -84,6 +82,15 @@ class RegistrationScreen extends React.Component {
       });}else this.showWarn();
 
   };
+  showSuccess=()=>{
+    this.refs.errorMessage.showMessage({
+      message: 'Sėkmingai užsiregistravote!',
+      type: "success",
+      duration: 6000,
+      autoHide: true,
+      hideOnPress: true
+    });
+  }
   showWarn = message => {
     if(message==="auth/invalid-email"){
       this.refs.errorMessage.showMessage({
@@ -132,6 +139,7 @@ class RegistrationScreen extends React.Component {
           placeholder="Elektroninis paštas"
           onChangeText={text => this.setState({ email: text })}
           value={this.state.email}
+          keyboardType='email-address'
         />
         <TextInput
           style={styles.textInput}
@@ -144,6 +152,7 @@ class RegistrationScreen extends React.Component {
           placeholder="Slaptažodis"
           onChangeText={text => this.setState({ password: text })}
           value={this.state.password}
+          secureTextEntry={true}
         />
         <TouchableOpacity
           onPress={this.regNewUser}

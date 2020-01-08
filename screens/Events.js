@@ -227,7 +227,7 @@ class Events extends React.Component {
                 style={{ marginTop: 2, flex: 1 }}
                 data={this.state.allEvents}
                 renderItem={this.renderItems}
-                keyExtractor={item => item.id}
+                keyExtractor={(item,index) => index.toString()}
                 extraData={this.state.allEvents}
                 onRefresh={() => this.onRefreshing()}
                 refreshing={this.state.refresh}
@@ -485,14 +485,15 @@ class Events extends React.Component {
   //-------------------------------------CREATING AN EVENT
 
   settingState = async data => {
-    console.log("SETINAMAS", data);
-    this.setState({ allEvents: data, allEventsCopy: data, spinner1: false });
+    
+    this.setState({ allEvents: data, allEventsCopy: data }, ()=>this.setState({spinner1:false}));
   };
   settingJoinedEventsState = async data => {
     console.log("SETINAMAS", data);
     this.setState({ eventsUserJoined: data, spinner3: false });
   };
   getAllEvents = async () => {
+    this.setState({spinner1:true})
     let today = getTodaysDate();
     let nowTime = getTodaysTime();
     let eventList = [];
@@ -504,6 +505,7 @@ class Events extends React.Component {
       .orderBy("eventStart", "asc")
       .get()
       .then(res =>
+        {console.log('FIREBASE', res),
         res.forEach(data => {
           let eventDetails = {
             stadiumName: data._document.proto.fields.stadiumName.stringValue,
@@ -523,21 +525,47 @@ class Events extends React.Component {
           } else {
             eventList.push(eventDetails);
           }
-        })
+        })}
       );
 
        
-     await this.settingState(eventList);
+    //  await this.settingState(eventList);
+      this.newNaxuiFunkciont(eventList);
   };
   getEventsJoindLenght= async(events)=>{
-    let eventList=[]
-    await events.forEach((data,index)=>{
+    let eventList=[];
+    let value=  await events.forEach((data,index)=>{
       firebase.firestore().collection("events").doc(data.id).collection('playersList').get().then(datas=>{
         events[index].playersListLenght= datas.docs.length,
         console.log('indexas', events)
+        eventList.push(events)
+     
       });
+    }) 
+    Promise.all(value).then(console.log("Dsad", value))
+     this.settingState(eventList)
+    
+      
+   
+    
+  }
+  newNaxuiFunkciont= (snap)=>{
+    let eventList2=[];
+    let b =  new Promise((resolve, reject)=>{
+      snap.forEach((data,index)=>{
+        firebase.firestore().collection("events").doc(data.id).collection('playersList').get().then(datas=>{
+          snap[index].playersListLenght= datas.docs.length,
+          console.log('indexas', snap[index])
+          eventList2.push(snap[index])
+       
+        });
+      }, resolve(eventList2)).catch(err=>reject(err)) 
     })
-    await this.settingState(events);
+
+    Promise.all([b]).then((res)=>{
+       this.settingState(res[0])
+    })
+    
   }
   // REIKIA CIA SUTVARKYTI SITA FUNKCIJA
 
@@ -633,7 +661,7 @@ class Events extends React.Component {
   //EVENT SETTER-------------------------------------
   renderItems = ({ item }) => {
     const { navigate } = this.props.navigation;
-    ()=>console.log('aitem'. item)
+    
     return (
       <TouchableOpacity
         onPress={() => navigate("EventsDetails", { item1: item })}
@@ -703,12 +731,12 @@ class Events extends React.Component {
               onPress={() => navigate("EventsDetails", { item1: item })}
             >
               <Text style={{ fontSize: 17, color: "black" }}>
-          {item.playersListLenght?item.playersListLenght:null}/{item.peopleNeed}
+          {item.playersListLenght?item.playersListLenght:'0'}/{item.peopleNeed}
               </Text>
               <MCIcons
-                name="account-multiple-plus"
-                size={moderateScale(22)}
-                color="hsl(126, 62%, 40%)"
+                name="account-multiple-check"
+                size={moderateScale(25)}
+                color='#35a273'
                 style={{ marginBottom: 3, marginLeft: 5 }}
               />
             </View>

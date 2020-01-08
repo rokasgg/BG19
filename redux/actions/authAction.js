@@ -41,7 +41,6 @@ export default function login(userName, password, isRemembered) {
           .then(snap => {
             console.log("id", snap);
             const name = snap._document.proto.fields.name.stringValue;
-            const position = "puolejas";
             const admin = snap._document.proto.fields.admin.booleanValue;
             const administrator =
               snap._document.proto.fields.administrator.booleanValue;
@@ -60,7 +59,7 @@ export default function login(userName, password, isRemembered) {
                       user,
                       uid,
                       name,
-                      position,
+                     
                       admin,
                       administrator,
                       stadiumId,
@@ -75,7 +74,7 @@ export default function login(userName, password, isRemembered) {
                     user,
                     uid,
                     name,
-                    position,
+                  
                     admin,
                     administrator,
                     stadiumId,
@@ -95,7 +94,7 @@ export default function login(userName, password, isRemembered) {
                       user,
                       uid,
                       name,
-                      position,
+                   
                       admin,
                       administrator,
                       stadiumId,
@@ -110,7 +109,7 @@ export default function login(userName, password, isRemembered) {
                     user,
                     uid,
                     name,
-                    position,
+               
                     admin,
                     administrator,
                     stadiumId,

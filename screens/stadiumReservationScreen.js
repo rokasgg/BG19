@@ -465,7 +465,7 @@ class stadiumReservationScreen extends React.Component {
             >
               <Text style={styles.textLeft}>Dangos tipas:</Text>
               <Text style={styles.textRight}>
-                {data.floorType === "synthetic" ? "Dirbtinė danga" : null}
+                {data.floorType === "synthetic" ? "Sintetinė žolė" : data.floorType === "grass" ? "Natūrali žolė":'Parketas'}
               </Text>
             </View>
             <View
@@ -480,9 +480,25 @@ class stadiumReservationScreen extends React.Component {
             >
               <Text style={styles.textLeft}>Stadiono tipas:</Text>
               <Text style={styles.textRight}>
-                {data.stadiumType === "outdoor" ? "Lauko" : null}
+                {data.stadiumType === "outdoor" ? "Laukas" : data.stadiumType === "indoor" ? "Vidus":null}
               </Text>
             </View>
+            {data.paid?  
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: moderateScale(340),
+                borderColor: "hsla(126, 62%, 40%, 0.44)",
+                borderBottomWidth: 1
+              }}
+            >
+              <Text style={styles.textLeft}>Kaina:</Text>
+              <Text style={styles.textRight}>
+                {`${data.price}€/h`}
+              </Text>
+            </View>:null}
           </View>
 
           <View style={{ flex: 3, flexDirection: "column", marginBottom: 20 }}>

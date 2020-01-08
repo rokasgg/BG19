@@ -26,7 +26,6 @@ export default class modalAddStadiums extends React.Component {
       modalPickLocation: false,
       dateTime: null,
       peopleNeeded: 1,
-      stadiumName: "",
       stadiumAddress: "",
       time: null,
       selectedStadium: null,
@@ -46,7 +45,8 @@ export default class modalAddStadiums extends React.Component {
       floorTypes: ["Sintetinė žolė", "Natūrali žolė", "Parketas"],
       inventorType: ["Teikia", "Neteikia"],
       paidType: ["Mokamas", "Nemokamas"],
-      spinner:false
+      spinner:false,
+      price:null
     };
   }
   showDateTimePicker = () => {
@@ -86,23 +86,7 @@ export default class modalAddStadiums extends React.Component {
   //     } else return false;
   //   }
 
-  onCreateEvent = () => {
-    console.log(
-      this.state.stadiumName,
-      this.state.stadiumAddress,
-      this.state.peopleNeeded,
-      this.state.dateTime
-    );
-    let searchDetails = {
-      stadiumName: this.state.selectedStadium,
-      address: this.state.stadiumAddress,
-      peopleNeeded: this.state.peopleNeeded,
-      eventDate: this.state.dateTime,
-      eventStart: this.state.time,
-      stadiumId: this.props.data.stadiumId
-    };
-    this.props.createEvent(searchDetails);
-  };
+
 
   getStadiumsOptions = () => {
     let stadiums = this.props.stadiums;
@@ -114,7 +98,21 @@ export default class modalAddStadiums extends React.Component {
       dropDownOptions
     });
   };
-
+closeModala=()=>{
+    this.setState({ stadiumName: "",
+    address: "",
+    phone: "",
+    stadiumType: "",
+    floorType: "",
+    longitude: "",
+    latitude: "",
+    inventor: false,
+    paid: false,
+    locationPoints: null,
+  price:'',
+  stadiumAddress: "",})
+    this.props.closeModal();
+  }
   componentDidMount() {
     // if (this.props.data !== null) {
     //   console.log("GAVOME DATA I MODALA !!!!", this.props.data);
@@ -163,6 +161,11 @@ export default class modalAddStadiums extends React.Component {
     } else {
       stadiumData.paid = false;
     }
+    if (this.state.paid === "0") {
+      stadiumData.price = this.state.price;
+    } else {
+      stadiumData.price = '0';
+    }
 
     console.log(
       this.state.phone,
@@ -203,6 +206,7 @@ export default class modalAddStadiums extends React.Component {
         return null;
     }
   };
+  
   async handleStadiumType(item) {
     switch (item) {
       case 1:
@@ -219,7 +223,7 @@ export default class modalAddStadiums extends React.Component {
   pickedLocation = locationPoints => {
     console.log("lokaicjos steitas", locationPoints);
     this.setState({
-      locationText: `${locationPoints.longitude}; ${locationPoints.latitude};`,
+      locationText: `Nustatyta`,
       modalPickLocation: false,
       locationPoints
     });
@@ -431,6 +435,28 @@ export default class modalAddStadiums extends React.Component {
                 />
               </View>
             </View>
+            {this.state.paid==='0'?<View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: moderateScale(300),
+                height: moderateScale(35),
+                borderColor: "hsla(126, 62%, 40%, 0.44)",
+                borderBottomWidth: 1
+              }}
+            >
+              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Valandinė kaina:</Text>
+              <View style={[styles.textRight,{ alignItems:'center', justifyContent:'center', paddingTop:moderateScale(8)}]}>
+                <TextInput
+                  onChangeText={val => this.setState({ price: val })}
+                  value={this.state.price}
+                  placeholder="€/h"
+                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
+                  keyboardType='decimal-pad'
+                />
+              </View>
+            </View>:null}
             <View
               style={{
                 flexDirection: "row",
@@ -456,7 +482,7 @@ export default class modalAddStadiums extends React.Component {
                   onPress={this.openLocationModal}
                 >
                   <Text style={{ color: "gray", fontSize: moderateScale(15) }}>
-                    {this.state.locationText}
+                    {this.state.locationPoints ? "Nustatyta":"Pasirinkite"}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -481,7 +507,7 @@ export default class modalAddStadiums extends React.Component {
                   backgroundColor: "orange"
                 }
               ]}
-              onPress={this.props.closeModal}
+              onPress={this.closeModala}
             >
               <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
             </TouchableOpacity>

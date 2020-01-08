@@ -8,7 +8,7 @@ const initialState = {
   username: null,
   userId: null,
   email: null,
-  position: null,
+
   password: null,
   admin: false,
 
@@ -32,7 +32,7 @@ export default function(state = initialState, action) {
         username: action.payload.userName,
         userId: action.payload.userId,
         email: action.payload.email,
-        position: action.payload.position,
+
         admin: false,
         administrator: false,
         isLoading: false,
