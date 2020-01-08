@@ -485,8 +485,10 @@ class Events extends React.Component {
   //-------------------------------------CREATING AN EVENT
 
   settingState = async data => {
+    setTimeout(() => {
+      this.setState({ allEvents: data, allEventsCopy: data }, ()=>this.setState({spinner1:false}));
+    }, 1000)
     
-    this.setState({ allEvents: data, allEventsCopy: data }, ()=>this.setState({spinner1:false}));
   };
   settingJoinedEventsState = async data => {
     console.log("SETINAMAS", data);
