@@ -290,7 +290,7 @@ export default class editStadium extends React.Component {
           style={{
             backgroundColor: "#f2f2f2",
             height: moderateScale(410),
-            width: moderateScale(365),
+            width: moderateScale(350),
             borderRadius: 15
           }}
         >
@@ -319,7 +319,7 @@ export default class editStadium extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(335),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -341,7 +341,7 @@ export default class editStadium extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(335),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -362,7 +362,7 @@ export default class editStadium extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(335),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -383,7 +383,7 @@ export default class editStadium extends React.Component {
                 justifyContent: "space-between",
                 alignItems: "center",
                 height: moderateScale(35),
-                width: moderateScale(340),
+                width: moderateScale(335),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
               }}
@@ -410,7 +410,7 @@ export default class editStadium extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(335),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -440,7 +440,7 @@ export default class editStadium extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(335),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -468,7 +468,7 @@ export default class editStadium extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(335),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -494,7 +494,7 @@ export default class editStadium extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(335),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -516,7 +516,7 @@ export default class editStadium extends React.Component {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                width: moderateScale(340),
+                width: moderateScale(335),
                 height: moderateScale(35),
                 borderColor: "hsla(126, 62%, 40%, 0.44)",
                 borderBottomWidth: 1
@@ -550,7 +550,7 @@ export default class editStadium extends React.Component {
               flexDirection: "row",
               justifyContent: "space-around",
               alignItems: "center",
-              width: moderateScale(350),
+              width: moderateScale(345),
               alignSelf: "center"
             }}
           >
