@@ -46,8 +46,8 @@ export default class editStadium extends React.Component {
       floorTypes: ["Sintetinė žolė", "Natūrali žolė", "Parketas"],
       inventorType: ["Teikia", "Neteikia"],
       paidType: ["Mokamas", "Nemokamas"],
-      askPermVisible:false,
-      price:''
+      askPermVisible: false,
+      price: ""
     };
   }
   showDateTimePicker = () => {
@@ -74,21 +74,43 @@ export default class editStadium extends React.Component {
   componentDidUpdate(prevProps) {
     let incomingProps = this.props.data;
     if (prevProps.data !== this.props.data) {
-      this.setState({
-        stadiumName: incomingProps.stadiumName,
-        address: incomingProps.address,
-        floorType: incomingProps.floorType==='synthetic'?'0':incomingProps.floorType==='grass'?'1':incomingProps.floorType==='futsal'?'2':null,
-        phone: incomingProps.phone,
-        stadiumType: incomingProps.stadiumType==='indoor'?'1':incomingProps.stadiumType==='outdoor'?'0':null,
-        paid: incomingProps.isPaid?'0':'1',
-        inventor: incomingProps.inventor,
-        stadiumId: incomingProps.stadiumId,
-        coords: {
-          latitude: incomingProps.latitude,
-          longitude: incomingProps.longitude
+      this.setState(
+        {
+          stadiumName: incomingProps.stadiumName,
+          address: incomingProps.address,
+          floorType:
+            incomingProps.floorType === "synthetic"
+              ? "0"
+              : incomingProps.floorType === "grass"
+              ? "1"
+              : incomingProps.floorType === "futsal"
+              ? "2"
+              : null,
+          phone: incomingProps.phone,
+          stadiumType:
+            incomingProps.stadiumType === "indoor"
+              ? "1"
+              : incomingProps.stadiumType === "outdoor"
+              ? "0"
+              : null,
+          paid: incomingProps.isPaid ? "0" : "1",
+          inventor: incomingProps.inventor,
+          stadiumId: incomingProps.stadiumId,
+          coords: {
+            latitude: incomingProps.latitude,
+            longitude: incomingProps.longitude
+          },
+          price: incomingProps.price
         },
-        price:incomingProps.price
-      }, ()=>console.log('kokiecia duomenys', this.state.floorType,this.state.stadiumType,this.state.paid,this.state.inventor));
+        () =>
+          console.log(
+            "kokiecia duomenys",
+            this.state.floorType,
+            this.state.stadiumType,
+            this.state.paid,
+            this.state.inventor
+          )
+      );
       console.log("cozinam rerender", this.props.data);
     } else return false;
   }
@@ -225,7 +247,11 @@ export default class editStadium extends React.Component {
       .collection("stadiums")
       .doc(this.props.data.stadiumId)
       .delete()
-      .then(() => this.props.finish("delete"));
+      .then(
+        this.setState({ askPermVisible: false }, () =>
+          this.props.finish("delete")
+        )
+      );
   };
   editStadiumInfo = () => {
     firebase
@@ -235,7 +261,12 @@ export default class editStadium extends React.Component {
       .update({
         stadiumName: this.state.stadiumName,
         address: this.state.address,
-        price:this.state.paid==='0'?this.state.price!==''?this.state.price:'0':'0',
+        price:
+          this.state.paid === "0"
+            ? this.state.price !== ""
+              ? this.state.price
+              : "0"
+            : "0",
         coordinates:
           this.state.locationPoints !== null
             ? new firebase.firestore.GeoPoint(
@@ -259,7 +290,7 @@ export default class editStadium extends React.Component {
             : this.state.floorType === "1"
             ? "grass"
             : "futsal",
-        paid: this.state.paid==='0'?true:false,
+        paid: this.state.paid === "0" ? true : false,
         stadiumType:
           this.state.stadiumType === "1"
             ? "indoor"
@@ -330,7 +361,11 @@ export default class editStadium extends React.Component {
                   onChangeText={val => this.setState({ stadiumName: val })}
                   value={this.state.stadiumName}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
+                  style={{
+                    fontSize: moderateScale(15),
+                    color: "gray",
+                    height: moderateScale(35)
+                  }}
                 />
               </View>
             </View>
@@ -352,7 +387,11 @@ export default class editStadium extends React.Component {
                   onChangeText={val => this.setState({ address: val })}
                   value={this.state.address}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
+                  style={{
+                    fontSize: moderateScale(15),
+                    color: "gray",
+                    height: moderateScale(35)
+                  }}
                 />
               </View>
             </View>
@@ -373,7 +412,11 @@ export default class editStadium extends React.Component {
                   onChangeText={val => this.setState({ phone: val })}
                   value={this.state.phone === "0" ? "" : this.state.phone}
                   placeholder="Įveskite"
-                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
+                  style={{
+                    fontSize: moderateScale(15),
+                    color: "gray",
+                    height: moderateScale(35)
+                  }}
                 />
               </View>
             </View>
@@ -480,7 +523,9 @@ export default class editStadium extends React.Component {
                   options={this.state.paidType}
                   textStyle={{ fontSize: moderateScale(15) }}
                   dropdownTextStyle={{ fontSize: moderateScale(15) }}
-                  defaultValue={this.state.paid==='0' ? "Mokamas" : "Nemokamas"}
+                  defaultValue={
+                    this.state.paid === "0" ? "Mokamas" : "Nemokamas"
+                  }
                   onSelect={val => {
                     this.setState({ paid: val }, () =>
                       console.log("pasirinkimas", val)
@@ -489,28 +534,40 @@ export default class editStadium extends React.Component {
                 />
               </View>
             </View>
-            {this.state.paid==='0'?<View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: moderateScale(335),
-                height: moderateScale(35),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={styles.textLeft}>Valandinė kaina:</Text>
-              <View style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}>
-              <TextInput
-                  onChangeText={val => this.setState({ price: val })}
-                  value={this.state.price}
-                  placeholder="€/h"
-                  style={{ fontSize: moderateScale(15), color: "gray", height:moderateScale(35)}}
-                  keyboardType='decimal-pad'
-                />
+            {this.state.paid === "0" ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: moderateScale(335),
+                  height: moderateScale(35),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={styles.textLeft}>Valandinė kaina:</Text>
+                <View
+                  style={{
+                    fontSize: moderateScale(15),
+                    color: "gray",
+                    height: moderateScale(35)
+                  }}
+                >
+                  <TextInput
+                    onChangeText={val => this.setState({ price: val })}
+                    value={this.state.price}
+                    placeholder="€/h"
+                    style={{
+                      fontSize: moderateScale(15),
+                      color: "gray",
+                      height: moderateScale(35)
+                    }}
+                    keyboardType="decimal-pad"
+                  />
+                </View>
               </View>
-            </View>:null}
+            ) : null}
             <View
               style={{
                 flexDirection: "row",
@@ -578,7 +635,7 @@ export default class editStadium extends React.Component {
                 styles.button,
                 { justifyContent: "center", backgroundColor: "red" }
               ]}
-              onPress={()=>this.setState({askPermVisible: true})}
+              onPress={() => this.setState({ askPermVisible: true })}
             >
               <Text style={{ color: "#fff", fontSize: 22 }}>Ištrinti</Text>
             </TouchableOpacity>
@@ -590,7 +647,7 @@ export default class editStadium extends React.Component {
           closeModal={this.closePickModal}
           finish={this.pickedLocation}
         />
-         <AskPerm
+        <AskPerm
           visible={this.state.askPermVisible}
           acceptBtnText="Atšaukti"
           declineBtnText="Ištrinti"
