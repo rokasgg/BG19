@@ -105,7 +105,7 @@ export default class askPerm extends React.Component {
       .get()
       .then(res => {
         res.forEach(snap => {
-          console.log(snap, "boobs");
+          console.log(snap, "check");
           let review = {
             comment: snap._document.proto.fields.comment.stringValue,
             rating: snap._document.proto.fields.rating.integerValue
@@ -284,29 +284,30 @@ export default class askPerm extends React.Component {
                   width: moderateScale(200)
                 }}
               >
-                {this.props.data.approved
-                    ?<TouchableOpacity
-                  style={[
-                    styles.button,
-                    {
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      borderColor: "black"
-                    }
-                  ]}
-                  onPress={this.goback}
-                >
-                  <Text
-                    style={{
-                      color: "black",
-                      fontSize: moderateScale(13),
-                      fontWeight: "300"
-                    }}
+                {this.props.data.approved ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.button,
+                      {
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        borderColor: "black"
+                      }
+                    ]}
+                    onPress={this.goback}
                   >
-                    Grįžti
-                  </Text>
-                </TouchableOpacity>
-                    : <TouchableOpacity
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: moderateScale(13),
+                        fontWeight: "300"
+                      }}
+                    >
+                      Grįžti
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
                     style={[
                       styles.button,
                       {
@@ -318,18 +319,21 @@ export default class askPerm extends React.Component {
                     onPress={this.cancelPermision}
                   >
                     {this.state.approveSpinner ? (
-                    <ActivityIndicator color="grey" size="small" />
-                  ) : (<Text
-                      style={{
-                        color: "black",
-                        fontSize: moderateScale(13),
-                        fontWeight: "300"
-                      }}
-                    >
-                      Pašalinti
-                    </Text>)}
-                  </TouchableOpacity>}
-                
+                      <ActivityIndicator color="grey" size="small" />
+                    ) : (
+                      <Text
+                        style={{
+                          color: "black",
+                          fontSize: moderateScale(13),
+                          fontWeight: "300"
+                        }}
+                      >
+                        Pašalinti
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                )}
+
                 <TouchableOpacity
                   style={[
                     styles.button,

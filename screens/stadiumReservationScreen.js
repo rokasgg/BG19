@@ -148,7 +148,7 @@ class stadiumReservationScreen extends React.Component {
       if (res.docs.length > 0) {
         console.log("YRA DATA");
       } else {
-        console.log("BYBI! CONGRATS");
+        console.log("no data");
       }
     });
   };
@@ -234,7 +234,7 @@ class stadiumReservationScreen extends React.Component {
             time: this.state.selectedTime.type,
             stadiumId: propsData.stadiumId,
             userId: this.props.userId,
-            userName:this.props.userName,
+            userName: this.props.userName,
             reservationStart: this.state.selectedTime.startTime,
             reservationFinish: this.state.selectedTime.finishTime,
             reservationConfirmTime: Date.now(),
@@ -342,7 +342,7 @@ class stadiumReservationScreen extends React.Component {
             const index = availableTimeItems.findIndex(
               item => data._document.proto.fields.time.stringValue === item.type
             );
-            console.log("BUUBSAI", availableTimeItems[index]);
+            console.log("fire", availableTimeItems[index]);
             // if(today === data._document.proto.fields.date.stringValue) -----------------------------------------PATAISYT SU ATEINANCIU DIENU OKUPACIJA
 
             availableTimeItems[index].occupied = true;
@@ -357,7 +357,13 @@ class stadiumReservationScreen extends React.Component {
     }
 
     this.setState({ form: availableTimeItems, downloadingData: false }, () =>
-      console.log(this.state.form, "NAUJASIAS CHECKAS", today, date,currentTime )
+      console.log(
+        this.state.form,
+        "NAUJASIAS CHECKAS",
+        today,
+        date,
+        currentTime
+      )
     );
   };
 
@@ -466,7 +472,11 @@ class stadiumReservationScreen extends React.Component {
             >
               <Text style={styles.textLeft}>Dangos tipas:</Text>
               <Text style={styles.textRight}>
-                {data.floorType === "synthetic" ? "Sintetinė žolė" : data.floorType === "grass" ? "Natūrali žolė":'Parketas'}
+                {data.floorType === "synthetic"
+                  ? "Sintetinė žolė"
+                  : data.floorType === "grass"
+                  ? "Natūrali žolė"
+                  : "Parketas"}
               </Text>
             </View>
             <View
@@ -481,25 +491,28 @@ class stadiumReservationScreen extends React.Component {
             >
               <Text style={styles.textLeft}>Stadiono tipas:</Text>
               <Text style={styles.textRight}>
-                {data.stadiumType === "outdoor" ? "Laukas" : data.stadiumType === "indoor" ? "Vidus":null}
+                {data.stadiumType === "outdoor"
+                  ? "Laukas"
+                  : data.stadiumType === "indoor"
+                  ? "Vidus"
+                  : null}
               </Text>
             </View>
-            {data.paid?  
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: moderateScale(340),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={styles.textLeft}>Kaina:</Text>
-              <Text style={styles.textRight}>
-                {`${data.price}€/h`}
-              </Text>
-            </View>:null}
+            {data.paid ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: moderateScale(340),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={styles.textLeft}>Kaina:</Text>
+                <Text style={styles.textRight}>{`${data.price}€/h`}</Text>
+              </View>
+            ) : null}
           </View>
 
           <View style={{ flex: 3, flexDirection: "column", marginBottom: 20 }}>
@@ -735,7 +748,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,
-  userName:state.auth.userName,
+  userName: state.auth.userName,
   activeResNumber: state.active.activeReservationNumber
 });
 export default connect(mapStateToProps, { gettingActiveRes })(

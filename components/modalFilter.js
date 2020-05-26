@@ -107,7 +107,7 @@ export default class modalFilter extends React.Component {
 
     if (inventor.selected === true) {
       filterBy.push(inventor);
-      console.log("(.)( .)", filterBy);
+      console.log("sdf", filterBy);
     }
     if (this.state.chosenTime !== null) {
       let data = {
@@ -832,9 +832,9 @@ export default class modalFilter extends React.Component {
                     //   color="black"
                     //   size={moderateScale(19)}
                     // />
-                    <Text style={{fontWeight:'500'}}>Pasirinkite</Text>
+                    <Text style={{ fontWeight: "500" }}>Pasirinkite</Text>
                   ) : (
-                    <Text style={{fontWeight:'500'}}>
+                    <Text style={{ fontWeight: "500" }}>
                       {this.state.chosenTime.date},
                       {this.state.chosenTime.time.startTime}
                     </Text>
@@ -872,7 +872,7 @@ export default class modalFilter extends React.Component {
                 style={{
                   color: "hsl(126, 62%, 40%)",
                   fontSize: moderateScale(15),
-                  fontWeight: '600'
+                  fontWeight: "600"
                 }}
               >
                 Išvalyti
@@ -894,7 +894,7 @@ export default class modalFilter extends React.Component {
                 style={{
                   color: "hsl(126, 62%, 40%)",
                   fontSize: moderateScale(15),
-                  fontWeight: '600'
+                  fontWeight: "600"
                 }}
               >
                 Patvirtinti

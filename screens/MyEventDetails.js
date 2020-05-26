@@ -64,7 +64,7 @@ class MyEventDetails extends React.Component {
       let index = connectedUsers.findIndex(
         item => item.userId === this.props.userId
       );
-      console.log(index, "ka gaunam seni ?");
+      console.log(index, "ka gaunam  ?");
       if (index !== -1)
         return this.setState({
           buttonIcon: "times",
@@ -258,14 +258,14 @@ class MyEventDetails extends React.Component {
             height: moderateScale(30),
             width: moderateScale(100),
             alignItems: "center",
-             paddingRight:moderateScale(30)
+            paddingRight: moderateScale(30)
           }}
           onPress={() => this.props.navigation.goBack()}
         >
           <Ionicons
-            name='md-arrow-back'
+            name="md-arrow-back"
             size={moderateScale(20)}
-            color='gray'
+            color="gray"
           />
         </TouchableOpacity>
         <View style={styles.topHalf}>

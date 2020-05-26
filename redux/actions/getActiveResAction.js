@@ -28,7 +28,7 @@ const checkIfResActive = item => {
 };
 
 export default function gettingActiveRes(userId) {
-  console.log("FIRENX!");
+  console.log("FIREN!");
   let today = getTodaysDate();
   let listOfActiveRes = [];
   return dispatch => {

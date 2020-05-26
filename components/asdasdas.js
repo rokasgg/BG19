@@ -46,7 +46,7 @@ class Watchreservations extends React.Component {
   componentDidMount() {
     // if (this.props.data !== null) {
     //   console.log("GAVOME DATA I MODALA !!!!", this.props.data);
-    // } else console.log("BYBI NK NEGAUSI xD", this.props.data);
+    // } else console.log(" N", this.props.data);
     this.getAllRserevations();
     console.log("adsadsadasdasd");
   }

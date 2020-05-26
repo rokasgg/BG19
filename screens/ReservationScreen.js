@@ -89,28 +89,34 @@ class ReservationScreen extends React.Component {
                 Aktyvios rezervacijos
               </Text>
             </View>
-            <View style={{ justifyContent: "flex-end", alignItems: "center", paddingRight:moderateScale(15) }}>
             <View
+              style={{
+                justifyContent: "flex-end",
+                alignItems: "center",
+                paddingRight: moderateScale(15)
+              }}
+            >
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 90,
+                  width: moderateScale(30),
+                  height: moderateScale(30),
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#35a273"
+                }}
+              >
+                <Text
                   style={{
-                    borderWidth: 2,
-                    borderRadius: 90,
-                    width: moderateScale(30),
-                    height: moderateScale(30),
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#35a273"
+                    fontSize: moderateScale(12),
+                    color: "#fff",
+                    fontWeight: "700"
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: moderateScale(12),
-                      color: "#fff",
-                      fontWeight: "700"
-                    }}
-                  >
-                    {this.state.activeReservations.length}/3
-                  </Text>
-                </View>
+                  {this.state.activeReservations.length}/3
+                </Text>
+              </View>
             </View>
           </View>
           {this.state.checkSpinner ? (
@@ -193,8 +199,8 @@ class ReservationScreen extends React.Component {
     let propsFromReservation = this.props.navigation.getParam("data");
 
     if (reservationSuccess) {
-      this.moreResDetails(propsFromReservation,true);
-       this.getUserReservations()
+      this.moreResDetails(propsFromReservation, true);
+      this.getUserReservations();
     } else {
       this.startSpinner();
       this.getUserReservations();
@@ -234,7 +240,7 @@ class ReservationScreen extends React.Component {
   };
 
   getUserReservations = async () => {
-    console.log("BLABLABLA", this.props.userId, getTodaysDate());
+    console.log("check", this.props.userId, getTodaysDate());
     let activeReservations = [];
     let inactiveReservations = [];
     let yesterday = this.getYesterdaysDate();
@@ -347,7 +353,7 @@ class ReservationScreen extends React.Component {
     return todayIs;
   }
 
-  moreResDetails = (item,success) => {
+  moreResDetails = (item, success) => {
     this.props.navigation.navigate("ReservationDetails", {
       onGoBack: () => {
         this.getUserReservations();
@@ -426,7 +432,7 @@ class ReservationScreen extends React.Component {
             flex: 1
           }}
           onPressIn={() => {
-            this.moreResDetails(item,false);
+            this.moreResDetails(item, false);
           }}
         >
           <Ionicons name="ios-more" size={moderateScale(30)} color="#09549F" />

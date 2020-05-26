@@ -33,7 +33,6 @@ import ModalEditStadium from "../components/editStadium";
 import firebase from "firebase";
 import "firebase/firestore";
 
-
 class Main extends React.Component {
   static navigationOptions = { header: null };
 
@@ -127,7 +126,10 @@ class Main extends React.Component {
                     longitudeDelta: 0.0421,
                     latitudeDelta: 0.0922
                   }}
-                  style={{backgroundColor:'yellow'}}
+                  style={{
+                    height: moderateScale(100),
+                    width: moderateScale(50)
+                  }}
                   onPress={() =>
                     this.setState(
                       {
@@ -142,15 +144,15 @@ class Main extends React.Component {
                           floorType: marker.floorType,
                           stadiumType: marker.stadiumType,
                           phone: marker.phone,
-                          paid:marker.isPaid,
-                          price:marker.price
+                          paid: marker.isPaid,
+                          price: marker.price
                         },
                         mapLongitude: marker.longitude,
                         mapLatitude: marker.latitude,
                         lastMarkersData: marker
                       },
                       () => {
-                        console.log("pute", marker);
+                        console.log("check", marker);
                       }
                     )
                   }
@@ -370,12 +372,11 @@ class Main extends React.Component {
     );
   }
   addedStadium = data => {
-    this.setState(
-      {
-        modalAddStadiums: false,
-        modalRegisterAdmin: true,
-        stadiumAdminData: data
-      });
+    this.setState({
+      modalAddStadiums: false,
+      modalRegisterAdmin: true,
+      stadiumAdminData: data
+    });
   };
   finishRegistration = () => {
     this.setState(
@@ -428,8 +429,9 @@ class Main extends React.Component {
   };
 
   searchByTime = () => {
-    this.setState({ modalFilterState: false },()=>this.props.navigation.navigate("FilterByTime"));
-    
+    this.setState({ modalFilterState: false }, () =>
+      this.props.navigation.navigate("FilterByTime")
+    );
   };
   filterStadiumsByTime = selectedStadiums => {
     console.log("objetkas", typeof selectedStadiums);
@@ -530,10 +532,12 @@ class Main extends React.Component {
     console.log(data33, stadiums, selectedStadiums, "YO", slength);
     console.log("ka gaunam?", selectedStadiums);
     if (selectedStadiums.chosenTime !== undefined) {
-      this.setState({
-        modalFilterState: false
-      },()=>this.filterStadiumsByTime(selectedStadiums));
-      
+      this.setState(
+        {
+          modalFilterState: false
+        },
+        () => this.filterStadiumsByTime(selectedStadiums)
+      );
     } else {
       if (selectedStadiums.length > 0) {
         let filteredStadiums = Array.from(this.state.markersOfficial);
@@ -686,7 +690,7 @@ class Main extends React.Component {
           floorType: data._document.proto.fields.floorType.stringValue,
           stadiumType: data._document.proto.fields.stadiumType.stringValue,
           inventor: data._document.proto.fields.providesInventor.booleanValue,
-          price:data._document.proto.fields.price.stringValue,
+          price: data._document.proto.fields.price.stringValue,
           stadiumId: data.ref.id,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421
@@ -778,7 +782,7 @@ class Main extends React.Component {
         "Penktadienis",
         "Šeštadienis"
       ],
-      dayNamesShort: [ "Sek","Pirm", "Antr", "Treč", "Ket", "Pen", "Šeš"]
+      dayNamesShort: ["Sek", "Pirm", "Antr", "Treč", "Ket", "Pen", "Šeš"]
     };
 
     LocaleConfig.defaultLocale = "lt";

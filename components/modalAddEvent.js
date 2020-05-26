@@ -54,98 +54,110 @@ export default class modalReservation extends React.Component {
       let index = this.state.dropDownOptions.findIndex(
         item => item === this.props.data.stadiumName
       );
-      if(index !== -1)
-      if(this.state.dropDownOptions !== undefined)
-      {
-      let stadiums = await this.props.stadiums
-     
-      console.log("BOOBS", this.props.data,this.props.stadiums, index);
-      
-      if(this.props.data)
-      this.setState({
-        selectedStadium: index,
-        stadiumName: stadiums[index].stadiumName,
-        dateTime: this.props.data.reservationDate,
-        time: this.props.data.reservationStart,
-        stadiumAddress: this.props.data.address,
-        defaultIndex: index
-      },()=>console.log("setinam", this.state.stadiumName, this.state.selectedStadium));
-      console.log("cozinam rerender", this.props.data, index);}
-      else{
-        let dropDownOptions = []
-        let stadiums = await this.props.stadiums ;
-        stadiums.forEach(stadium => {
-          dropDownOptions.push(stadium.stadiumName);
-        });
-        let index =  dropDownOptions.findIndex(
-          item => item === this.props.data.stadiumName
-        );
-        console.log("papas", this.props.data,this.props.stadiums,index);
-        this.setState({
-          selectedStadium: index,
-          stadiumName: stadiums[index].stadiumName,
-          dateTime: this.props.data.reservationDate,
-          time: this.props.data.reservationStart,
-          stadiumAddress: this.props.data.address,
-          defaultIndex: index
-        });
-      }
-      else{
-        this.setState({
-          selectedStadium: index,
-          stadiumName: '',
-          dateTime: '',
-          time: '',
-          stadiumAddress: '',
-          defaultIndex: index
-        });
-      }
+      if (index !== -1)
+        if (this.state.dropDownOptions !== undefined) {
+          let stadiums = await this.props.stadiums;
 
-      
+          console.log("op", this.props.data, this.props.stadiums, index);
+
+          if (this.props.data)
+            this.setState(
+              {
+                selectedStadium: index,
+                stadiumName: stadiums[index].stadiumName,
+                dateTime: this.props.data.reservationDate,
+                time: this.props.data.reservationStart,
+                stadiumAddress: this.props.data.address,
+                defaultIndex: index
+              },
+              () =>
+                console.log(
+                  "setinam",
+                  this.state.stadiumName,
+                  this.state.selectedStadium
+                )
+            );
+          console.log("cozinam rerender", this.props.data, index);
+        } else {
+          let dropDownOptions = [];
+          let stadiums = await this.props.stadiums;
+          stadiums.forEach(stadium => {
+            dropDownOptions.push(stadium.stadiumName);
+          });
+          let index = dropDownOptions.findIndex(
+            item => item === this.props.data.stadiumName
+          );
+          console.log("pa", this.props.data, this.props.stadiums, index);
+          this.setState({
+            selectedStadium: index,
+            stadiumName: stadiums[index].stadiumName,
+            dateTime: this.props.data.reservationDate,
+            time: this.props.data.reservationStart,
+            stadiumAddress: this.props.data.address,
+            defaultIndex: index
+          });
+        }
+      else {
+        this.setState({
+          selectedStadium: index,
+          stadiumName: "",
+          dateTime: "",
+          time: "",
+          stadiumAddress: "",
+          defaultIndex: index
+        });
+      }
     } else return false;
   }
 
   onCreateEvent = () => {
-    console.log("bhy",this.state.dateTime, this.state.time, this.state.peopleNeeded)
-    if(this.state.selectedStadium!==-1)
-    {if(this.state.dateTime)
-      {if(this.state.time)
-    {let stadiums = this.props.stadiums;
-
     console.log(
-      this.state.stadiumName,
-      this.state.stadiumAddress,
-      this.state.peopleNeeded,
-      this.state.dateTime
+      "bhy",
+      this.state.dateTime,
+      this.state.time,
+      this.state.peopleNeeded
     );
-    let searchDetails = {
-      stadiumName: stadiums[this.state.selectedStadium].stadiumName,
-      address: stadiums[this.state.selectedStadium].address,
-      peopleNeeded: this.state.peopleNeeded,
-      eventDate: this.state.dateTime,
-      eventStart: this.state.time,
-      stadiumId: this.props.data.stadiumId
-    };
-    this.props.createEvent(searchDetails);}else{
+    if (this.state.selectedStadium !== -1) {
+      if (this.state.dateTime) {
+        if (this.state.time) {
+          let stadiums = this.props.stadiums;
+
+          console.log(
+            this.state.stadiumName,
+            this.state.stadiumAddress,
+            this.state.peopleNeeded,
+            this.state.dateTime
+          );
+          let searchDetails = {
+            stadiumName: stadiums[this.state.selectedStadium].stadiumName,
+            address: stadiums[this.state.selectedStadium].address,
+            peopleNeeded: this.state.peopleNeeded,
+            eventDate: this.state.dateTime,
+            eventStart: this.state.time,
+            stadiumId: this.props.data.stadiumId
+          };
+          this.props.createEvent(searchDetails);
+        } else {
+          this.refs.errorMessage.showMessage({
+            message: "Prašome pasirinkti Laiką!",
+            type: "warning",
+            duration: 6000,
+            autoHide: true,
+            hideOnPress: true
+          });
+        }
+      } else {
+        this.refs.errorMessage.showMessage({
+          message: "Prašome pasirinkti dieną!",
+          type: "warning",
+          duration: 6000,
+          autoHide: true,
+          hideOnPress: true
+        });
+      }
+    } else {
       this.refs.errorMessage.showMessage({
-        message: 'Prašome pasirinkti Laiką!',
-        type: "warning",
-        duration: 6000,
-        autoHide: true,
-        hideOnPress: true
-      });
-    }}else{
-      this.refs.errorMessage.showMessage({
-        message: 'Prašome pasirinkti dieną!',
-        type: "warning",
-        duration: 6000,
-        autoHide: true,
-        hideOnPress: true
-      });
-    }
-  }else{
-      this.refs.errorMessage.showMessage({
-        message: 'Prašome pasirinkti stadioną!',
+        message: "Prašome pasirinkti stadioną!",
         type: "warning",
         duration: 6000,
         autoHide: true,
@@ -182,7 +194,7 @@ export default class modalReservation extends React.Component {
   componentDidMount() {
     if (this.props.data !== null) {
       console.log("GAVOME DATA I MODALA !!!!", this.props.data);
-    } else console.log("BYBI NK NEGAUSI xD", this.props.data);
+    } else console.log("NK NEGAUSI", this.props.data);
     this.getStadiumsOptions();
   }
 
@@ -202,207 +214,227 @@ export default class modalReservation extends React.Component {
         backdropColor="black"
         backdropOpacity={0.3}
       >
-        <View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
-            alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='errorMessage' position='top' />
-          
         <View
           style={{
-            backgroundColor: "#f2f2f2",
-            height: moderateScale(255),
-            width: moderateScale(340),
-            borderRadius: 15,
-            
+            width: Dimensions.get("window").width,
+            height: Dimensions.get("window").height,
+            justifyContent: "center",
+            alignItems: "center"
           }}
         >
-          <View
+          <FlashMessage
             style={{
-              justifyContent: "center",
-              alignItems: "flex-start",
-              height: moderateScale(20),
-              width: moderateScale(305),
-              marginLeft: moderateScale(10),
-              marginTop:moderateScale(10)
+              width: Dimensions.get("window").width,
+              justifyContent: "flex-start",
+              marginTop: moderateScale(10)
             }}
-          >
-            <Text style={[styles.textLeft,{fontSize:moderateScale(17)}]}>Naujas įvykis</Text>
-          </View>
+            ref="errorMessage"
+            position="top"
+          />
+
           <View
             style={{
-              flex: 4,
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center"
+              backgroundColor: "#f2f2f2",
+              height: moderateScale(255),
+              width: moderateScale(340),
+              borderRadius: 15
             }}
           >
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                height: moderateScale(42),
+                justifyContent: "center",
+                alignItems: "flex-start",
+                height: moderateScale(20),
                 width: moderateScale(305),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
+                marginLeft: moderateScale(10),
+                marginTop: moderateScale(10)
               }}
             >
-              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Stadionas:</Text>
-              <View style={styles.textRight}>
-                <ModalDropdown
-                  options={this.state.dropDownOptions}
-                  textStyle={{ fontSize: moderateScale(15) }}
-                  dropdownTextStyle={{ fontSize: moderateScale(15) }}
-                  defaultValue={
-                    this.state.selectedStadium === -1
-                      ? "Pasirinkite"
-                      : this.state.stadiumName
-                  }
-                  // defaultIndex={this.state.selectedStadium}
-                  onSelect={this.selectStadium}
+              <Text style={[styles.textLeft, { fontSize: moderateScale(17) }]}>
+                Naujas įvykis
+              </Text>
+            </View>
+            <View
+              style={{
+                flex: 4,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  height: moderateScale(42),
+                  width: moderateScale(305),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={[styles.textLeft, { fontWeight: "500" }]}>
+                  Stadionas:
+                </Text>
+                <View style={styles.textRight}>
+                  <ModalDropdown
+                    options={this.state.dropDownOptions}
+                    textStyle={{ fontSize: moderateScale(15) }}
+                    dropdownTextStyle={{ fontSize: moderateScale(15) }}
+                    defaultValue={
+                      this.state.selectedStadium === -1
+                        ? "Pasirinkite"
+                        : this.state.stadiumName
+                    }
+                    // defaultIndex={this.state.selectedStadium}
+                    onSelect={this.selectStadium}
+                  />
+                </View>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  height: moderateScale(42),
+                  width: moderateScale(305),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={[styles.textLeft, { fontWeight: "500" }]}>
+                  Data:
+                </Text>
+                <DateTimePicker
+                  style={{
+                    marginBottom: 5,
+                    marginTop: 5,
+                    justifyContent: "flex-end",
+                    paddingRight: 5
+                  }}
+                  placeholder="Pasirinkite"
+                  customStyles={{
+                    dateText: {
+                      fontSize: moderateScale(13)
+                    },
+                    dateInput: {
+                      alignItems: "flex-end",
+                      borderWidth: 0,
+                      paddingLeft: 4,
+                      marginRight: 4,
+                      flex: 1
+                    },
+                    dateIcon: { display: "none" }
+                  }}
+                  mode={"datetime"}
+                  mode="date"
+                  date={this.state.dateTime}
+                  androidMode="spinner"
+                  onDateChange={val => {
+                    this.setState({ dateTime: val });
+                  }}
+                  confirmBtnText="Pick"
+                  cancelBtnText="Cancel"
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  height: moderateScale(42),
+                  width: moderateScale(305),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={[styles.textLeft, { fontWeight: "500" }]}>
+                  Laikas:
+                </Text>
+                <DateTimePicker
+                  style={{
+                    marginBottom: 5,
+                    marginTop: 5,
+
+                    justifyContent: "flex-end",
+                    paddingRight: 5
+                  }}
+                  placeholder="Pasirinkite"
+                  customStyles={{
+                    dateText: {
+                      fontSize: moderateScale(13)
+                    },
+                    dateInput: {
+                      alignItems: "flex-end",
+                      borderWidth: 0,
+                      paddingLeft: 4,
+                      marginRight: 4,
+                      flex: 1
+                    },
+                    dateIcon: { display: "none" }
+                  }}
+                  mode={"time"}
+                  mode="time"
+                  date={this.state.time}
+                  androidMode="spinner"
+                  onDateChange={value => {
+                    this.setState({ time: value });
+                  }}
+                  confirmBtnText="Pick"
+                  cancelBtnText="Cancel"
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: moderateScale(305),
+                  height: moderateScale(42),
+                  borderColor: "hsla(126, 62%, 40%, 0.44)",
+                  borderBottomWidth: 1
+                }}
+              >
+                <Text style={[styles.textLeft, { fontWeight: "500" }]}>
+                  Ieškomų žmonių skaičius:
+                </Text>
+                <NumberCounter
+                  finishCount={count => this.onCounterChange(count)}
                 />
               </View>
             </View>
-
             <View
               style={{
+                flex: 1,
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                height: moderateScale(42),
-                width: moderateScale(305),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
+                justifyContent: "space-around",
+                alignItems: "flex-start",
+                width: moderateScale(350),
+                alignSelf: "center"
               }}
             >
-              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Data:</Text>
-              <DateTimePicker
-                style={{
-                  marginBottom: 5,
-                  marginTop: 5,
-                  justifyContent: "flex-end",
-                  paddingRight: 5
-                }}
-                placeholder="Pasirinkite"
-
-                customStyles={{
-                  dateText: {
-                    fontSize: moderateScale(13)
-                  },
-                  dateInput: {
-                    alignItems: "flex-end",
-                    borderWidth: 0,
-                    paddingLeft: 4,
-                    marginRight: 4,
-                    flex: 1
-                  },
-                  dateIcon: { display: "none" }
-                }}
-                mode={"datetime"}
-                mode="date"
-                date={this.state.dateTime}
-                androidMode="spinner"
-                onDateChange={val => {
-                  this.setState({ dateTime: val });
-                }}
-                confirmBtnText="Pick"
-                cancelBtnText="Cancel"
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                height: moderateScale(42),
-                width: moderateScale(305),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Laikas:</Text>
-              <DateTimePicker
-                style={{
-                  marginBottom: 5,
-                  marginTop: 5,
-
-                  justifyContent: "flex-end",
-                  paddingRight: 5
-                }}
-                placeholder="Pasirinkite"
-                customStyles={{
-                  dateText: {
-                    fontSize: moderateScale(13)
-                  },
-                  dateInput: {
-                    alignItems: "flex-end",
-                    borderWidth: 0,
-                    paddingLeft: 4,
-                    marginRight: 4,
-                    flex: 1
-                  },
-                  dateIcon: { display: "none" }
-                }}
-                mode={"time"}
-                mode="time"
-                date={this.state.time}
-                androidMode="spinner"
-                onDateChange={value => {
-                  this.setState({ time: value });
-                }}
-                confirmBtnText="Pick"
-                cancelBtnText="Cancel"
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: moderateScale(305),
-                height:moderateScale(42),
-                borderColor: "hsla(126, 62%, 40%, 0.44)",
-                borderBottomWidth: 1
-              }}
-            >
-              <Text style={[styles.textLeft,{fontWeight:'500'}]}>Ieškomų žmonių skaičius:</Text>
-              <NumberCounter
-                finishCount={count => this.onCounterChange(count)}
-              />
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    backgroundColor: "orange"
+                  }
+                ]}
+                onPress={this.props.closeModal}
+              >
+                <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { justifyContent: "center" }]}
+                onPress={this.onCreateEvent}
+              >
+                <Text style={{ color: "#fff", fontSize: 22 }}>Sukurti</Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "flex-start",
-              width: moderateScale(350),
-              alignSelf: "center"
-            }}
-          >
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  backgroundColor: "orange"
-                }
-              ]}
-              onPress={this.props.closeModal}
-            >
-              <Text style={{ color: "#fff", fontSize: 22 }}>Atšaukti</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { justifyContent: "center" }]}
-              onPress={this.onCreateEvent}
-            >
-              <Text style={{ color: "#fff", fontSize: 22 }}>Sukurti</Text>
-            </TouchableOpacity>
-          </View>
-          
-
-        </View>
-       
         </View>
       </Modal>
     );

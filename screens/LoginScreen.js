@@ -68,20 +68,20 @@ class LoginScreen extends React.Component {
       firebase.initializeApp(firebaseConfig);
     }
     this.autoSignIn();
-    let success= this.props.navigation.getParam("success");
-    if(success){
-this.showSuccess();
+    let success = this.props.navigation.getParam("success");
+    if (success) {
+      this.showSuccess();
     }
   }
-showSuccess=()=>{
+  showSuccess = () => {
     this.refs.loginMessage.showMessage({
-      message: 'Sėkmingai užsiregistravote!',
+      message: "Sėkmingai užsiregistravote!",
       type: "success",
       duration: 6000,
       autoHide: true,
       hideOnPress: true
     });
-  }
+  };
   autoSignIn = async () => {
     const userInfo = [];
     await AsyncStorage.multiGet(["username", "password"], (err, res) => {
@@ -111,7 +111,6 @@ showSuccess=()=>{
     }
   };
 
-
   navigateToRegForm = () => {
     this.props.navigation.navigate("Registration");
   };
@@ -135,40 +134,39 @@ showSuccess=()=>{
   };
 
   showWarn = message => {
-    if(message==="auth/invalid-email"){
+    if (message === "auth/invalid-email") {
       this.refs.loginMessage.showMessage({
-        message: 'Elektroninis paštas blogai suformatuotas!',
+        message: "Elektroninis paštas blogai suformatuotas!",
         type: "warning",
         duration: 6000,
         autoHide: true,
         hideOnPress: true
       });
-    }else  if(message==="auth/user-not-found"){
+    } else if (message === "auth/user-not-found") {
       this.refs.loginMessage.showMessage({
-        message: 'Naudotojas su tokiu elektroniniu paštu neegzistuoja!',
+        message: "Naudotojas su tokiu elektroniniu paštu neegzistuoja!",
         type: "warning",
         duration: 6000,
         autoHide: true,
         hideOnPress: true
       });
-    }else  if(message==="auth/weak-password"){
+    } else if (message === "auth/weak-password") {
       this.refs.loginMessage.showMessage({
-        message: 'Netinkamas slaptažodis!',
+        message: "Netinkamas slaptažodis!",
         type: "warning",
         duration: 6000,
         autoHide: true,
         hideOnPress: true
       });
-    }else{
+    } else {
       this.refs.loginMessage.showMessage({
-        message: 'Prašome užpildyti visus privalomus prisijungimo laukelius!',
+        message: "Prašome užpildyti visus privalomus prisijungimo laukelius!",
         type: "warning",
         duration: 6000,
         autoHide: true,
         hideOnPress: true
       });
     }
-    
   };
 
   onIsRememberedChange = () => {
@@ -195,10 +193,10 @@ showSuccess=()=>{
       >
         <TextInput
           style={styles.textInput}
-          placeholder="Elektroninis pašas"
+          placeholder="Elektroninis paštas"
           onChangeText={text => this.setState({ username: text })}
           value={this.state.username}
-          keyboardType='email-address'
+          keyboardType="email-address"
         />
         <TextInput
           style={styles.textInput}
@@ -213,7 +211,7 @@ showSuccess=()=>{
             justifyContent: "center",
             alignItems: "center",
             paddingLeft: moderateScale(100),
-            paddingBottom:moderateScale(10)
+            paddingBottom: moderateScale(10)
           }}
           onPress={this.onIsRememberedChange}
         >
@@ -226,9 +224,19 @@ showSuccess=()=>{
           >
             Prisiminti
           </Text>
-          <CheckBox style={{ borderRadius:15, backgroundColor:'#215740', borderColor:'#fff'}}  checked={this.state.isRemembered} />
+          <CheckBox
+            style={{
+              borderRadius: 15,
+              backgroundColor: "#215740",
+              borderColor: "#fff"
+            }}
+            checked={this.state.isRemembered}
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={this.signInUser} style={[styles.okButton,{backgroundColor:'#215740'}]}>
+        <TouchableOpacity
+          onPress={this.signInUser}
+          style={[styles.okButton, { backgroundColor: "#215740" }]}
+        >
           <Text
             style={{
               color: "white",
@@ -241,7 +249,10 @@ showSuccess=()=>{
         </TouchableOpacity>
         <TouchableOpacity
           onPress={this.navigateToRegForm}
-          style={[styles.okButton, { marginTop: moderateScale(5), backgroundColor:'#3f6655' }]}
+          style={[
+            styles.okButton,
+            { marginTop: moderateScale(5), backgroundColor: "#3f6655" }
+          ]}
         >
           <Text
             style={{

@@ -28,7 +28,7 @@ import { gettingActiveRes } from "../redux/actions/getActiveResAction";
 import { formateTime } from "../components/timeConverte";
 import { getTodaysTime } from "../components/getTodaysTime";
 import { getTodaysDate } from "../components/getTodaysDate";
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { Dimensions } from "react-native";
 
 class modalReserve extends React.Component {
@@ -159,7 +159,7 @@ class modalReserve extends React.Component {
       if (res.docs.length > 0) {
         console.log("YRA DATA");
       } else {
-        console.log("BYBI! CONGRATS");
+        console.log("CONGRATS");
       }
     });
   };
@@ -191,7 +191,7 @@ class modalReserve extends React.Component {
           time: propsData.timeType,
           stadiumId: propsData.stadiumId,
           userId: this.props.userId,
-          userName:this.props.userName,
+          userName: this.props.userName,
           reservationStart: propsData.reservationStart,
           reservationFinish: propsData.reservationFinish,
           reservationConfirmTime: Date.now(),
@@ -326,34 +326,50 @@ class modalReserve extends React.Component {
         }}
         onBackdropPress={this.props.closeModal}
       >
-         <View style={{width: Dimensions.get("window").width, height:Dimensions.get("window").height,justifyContent:'center',
-            alignItems:'center'}}><FlashMessage style={{width: Dimensions.get("window").width, justifyContent:'flex-start', marginTop:moderateScale(10)}} ref='warnning' position='top' />
-           <View style={{
-              
-              height:moderateScale(420),backgroundColor: "#f2f2f2",
-              width:moderateScale(330),
-              borderRadius:moderateScale(15)
-
-            }}>    
-           <TouchableOpacity
+        <View
           style={{
+            width: Dimensions.get("window").width,
+            height: Dimensions.get("window").height,
             justifyContent: "center",
-            alignSelf: "flex-start",
-            height: moderateScale(30),
-            width: moderateScale(100),
-            alignItems: "center",
-             paddingRight:moderateScale(30)
+            alignItems: "center"
           }}
-          onPress={this.props.closeModal}
         >
-          <Ionicons
-            name='md-arrow-back'
-            size={moderateScale(20)}
-            color='gray'
+          <FlashMessage
+            style={{
+              width: Dimensions.get("window").width,
+              justifyContent: "flex-start",
+              marginTop: moderateScale(10)
+            }}
+            ref="warnning"
+            position="top"
           />
-        </TouchableOpacity>
-            
-              <Image
+          <View
+            style={{
+              height: moderateScale(420),
+              backgroundColor: "#f2f2f2",
+              width: moderateScale(330),
+              borderRadius: moderateScale(15)
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                justifyContent: "center",
+                alignSelf: "flex-start",
+                height: moderateScale(30),
+                width: moderateScale(100),
+                alignItems: "center",
+                paddingRight: moderateScale(30)
+              }}
+              onPress={this.props.closeModal}
+            >
+              <Ionicons
+                name="md-arrow-back"
+                size={moderateScale(20)}
+                color="gray"
+              />
+            </TouchableOpacity>
+
+            <Image
               style={{
                 width: moderateScale(320),
                 height: moderateScale(100),
@@ -363,7 +379,6 @@ class modalReserve extends React.Component {
               }}
               source={require("../pictures/pitch4.png")}
             />
-
 
             <View
               style={{
@@ -431,8 +446,10 @@ class modalReserve extends React.Component {
                   {this.props.data.floorType === "synthetic"
                     ? "Dirbtinė žolė"
                     : this.props.data.floorType === "futsal"
-                    ? "Parketas":this.props.data.floorType === "grass"
-                    ? "Natūrali žolė":null}
+                    ? "Parketas"
+                    : this.props.data.floorType === "grass"
+                    ? "Natūrali žolė"
+                    : null}
                 </Text>
               </View>
               <View
@@ -447,7 +464,11 @@ class modalReserve extends React.Component {
               >
                 <Text style={styles.textLeft}>Stadiono tipas:</Text>
                 <Text style={styles.textRight}>
-                  {this.props.data.stadiumType === "outdoor" ? "Laukas" : this.props.data.stadiumType === "indoor"?'Vidus':null}
+                  {this.props.data.stadiumType === "outdoor"
+                    ? "Laukas"
+                    : this.props.data.stadiumType === "indoor"
+                    ? "Vidus"
+                    : null}
                 </Text>
               </View>
               <View
@@ -508,8 +529,8 @@ class modalReserve extends React.Component {
                 flex: 1,
                 flexDirection: "row",
                 justifyContent: "space-around",
-                alignItems: 'flex-end',
-                paddingBottom:moderateScale(10),
+                alignItems: "flex-end",
+                paddingBottom: moderateScale(10),
                 width: moderateScale(320)
               }}
             >
@@ -537,15 +558,13 @@ class modalReserve extends React.Component {
                 </Text>
               </TouchableOpacity>
             </View>
-          
-          
-        </View>
+          </View>
         </View>
         <Spinner
-            visible={this.state.spinner}
-            textContent={"Vykdoma..."}
-            textStyle={{ color: "#fff" }}
-          />
+          visible={this.state.spinner}
+          textContent={"Vykdoma..."}
+          textStyle={{ color: "#fff" }}
+        />
       </Modal>
     );
   }
@@ -588,11 +607,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 5
   }
-
 });
 const mapStateToProps = state => ({
   userId: state.auth.userUid,
-  userName:state.auth.userName,
+  userName: state.auth.userName,
   activeNumb: state.active.activeReservationNumber
 });
 export default connect(mapStateToProps, { gettingActiveRes })(modalReserve);
