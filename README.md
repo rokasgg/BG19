@@ -1,2 +1,3 @@
-# bd2019
-Football stadium reservation mobile application created with React-Native and Firebase database.
+# Football stadiums reservation app.
+
+Created football stadium reservation mobile application with React-Native and Firebase.
