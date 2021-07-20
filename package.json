@@ -19,7 +19,7 @@
     "native-base": "^2.13.8",
     "react": "^16.8.3",
     "react-moment": "^0.9.2",
-    "react-native": "^0.59.8",
+    "react-native": "^0.62.3",
     "react-native-calendars": "^1.213.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^1.2.7",
